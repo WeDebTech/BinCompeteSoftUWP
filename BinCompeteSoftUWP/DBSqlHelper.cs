@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BinCompeteSoftUWP;
+using System;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
@@ -10,24 +11,27 @@ namespace BinCompeteSoft
     /// </summary>
     public static class DBSqlHelper
     {
+        #region Class variables
         // The connection object.
-        public static SqlConnection Connection;
-
+        public static SqlConnection Connection { get; set; }
+        public static string ConnectionString { get; set; }
         public static Settings Settings { get; set; }
+        #endregion
 
+        #region Class methods
         /// <summary>
         /// Initializes the connection to the database with the provided connection string.
         /// </summary>
         /// <param name="connectionString">The string to connect to the database.</param>
         /// <returns>True if the connection was successfull, false otherwise.</returns>
-        public async static Task<bool> InitializeConnection(string connectionString)
+        public async static Task<bool> InitializeConnectionAsync()
         {
             try
             {
                 // Opens a new connection with the provided conection string.
-                Connection = new SqlConnection(connectionString);
+                Connection = new SqlConnection(ConnectionString);
 
-                Connection.Open();
+                await Connection.OpenAsync();
 
                 return true;
             }
@@ -41,7 +45,7 @@ namespace BinCompeteSoft
                 };
 
                 // Show ContentDialog with error message.
-                await errorDialog.ShowAsync();
+                App.ShowContentDialog(errorDialog, null);
 
                 return false;
             }
@@ -71,6 +75,7 @@ namespace BinCompeteSoft
                 return hashedInputStringBuilder.ToString();
             }
         }
+        #endregion
     }
 
     /// <summary>

@@ -4,7 +4,7 @@
   <mp:PhoneIdentity PhoneProductId="7c099500-9b49-4bd2-b797-9cd6e38e557f" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>BinCompeteSoftUWP</DisplayName>
-    <PublisherDisplayName>diato</PublisherDisplayName>
+    <PublisherDisplayName>WeDeb</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>

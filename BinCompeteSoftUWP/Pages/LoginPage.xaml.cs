@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Windows.ApplicationModel;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -17,18 +19,29 @@ namespace BinCompeteSoftUWP.Pages
     /// </summary>
     public sealed partial class LoginPage : Page
     {
+        #region Class variables
+        private bool ConnectedSuccessfully = false;
+        private bool ErroredConnecting = false;
+        #endregion
+
+        #region Class constructor
         public LoginPage()
         {
             this.InitializeComponent();
 
             // Read config file so we can connect to the database.
-            ReadConfigFile();
-        }
+            ReadConfigFileAsync();
 
+            // Try to connect to the database.
+            ConnectToDBAsync();
+        }
+        #endregion
+
+        #region Class methods
         /// <summary>
         /// This class will load config.xml and place it's contents in the Settings.
         /// </summary>
-        private async void ReadConfigFile()
+        private async void ReadConfigFileAsync()
         {
             try
             {
@@ -75,8 +88,7 @@ namespace BinCompeteSoftUWP.Pages
                     builder["Password"] = DBSqlHelper.Settings.Password;
                 }
 
-                // Build connection string and initialize connection with it.
-                await DBSqlHelper.InitializeConnection(builder.ConnectionString);
+                DBSqlHelper.ConnectionString = builder.ConnectionString;
             }
             catch(FileNotFoundException ex)
             {
@@ -88,7 +100,7 @@ namespace BinCompeteSoftUWP.Pages
                 };
 
                 // Show ContentDialog with error message.
-                await errorDialog.ShowAsync();
+                App.ShowContentDialog(errorDialog, null);
             }
             catch(Exception ex)
             {
@@ -100,8 +112,87 @@ namespace BinCompeteSoftUWP.Pages
                 };
 
                 // Show ContentDialog with error message.
-                await errorDialog.ShowAsync();
+                App.ShowContentDialog(errorDialog, null);
             }
         }
+
+        /// <summary>
+        /// This method will try to connect to the database.
+        /// </summary>
+        private async Task ConnectToDBAsync()
+        {
+            // Reset the values so we can start anew.
+            ConnectedSuccessfully = false;
+            ErroredConnecting = false;
+
+            // Build connection string and initialize connection with it.
+            Task<bool> result = DBSqlHelper.InitializeConnectionAsync();
+
+            bool conected = await result;
+
+            // Check if conection to database has been successfully established.
+            if (conected)
+            {
+                ConnectedSuccessfully = true;
+            }
+            else
+            {
+                ErroredConnecting = true;
+            }
+        }
+
+        /// <summary>
+        /// This method will check if the app is connected to the database,
+        /// if it errored out, or if the connection hasn't concluded yet.
+        /// </summary>
+        private async void VerifyIfIsConnectedToDB()
+        {
+            if (ConnectedSuccessfully)
+            {
+
+            }
+            else if (ErroredConnecting)
+            {
+                ContentDialog errorDialog = new ContentDialog()
+                {
+                    Title = "Error connecting",
+                    Content = "Couldn't connect to the database, try again?",
+                    PrimaryButtonText = "Yes",
+                    CloseButtonText = "No"
+                };
+
+                // Create callback to be called when ContentDialog closes.
+                Action<ContentDialogResult> callback = async (result) =>
+                {
+                    if (result == ContentDialogResult.Primary)
+                    {
+                        await ConnectToDBAsync();
+                    }
+                };
+
+                // Show ContentDialog with error message.
+                App.ShowContentDialog(errorDialog, callback);
+            }
+            else
+            {
+                ContentDialog errorDialog = new ContentDialog()
+                {
+                    Title = "Connecting",
+                    Content = "Connecting to database, please be patient.",
+                    CloseButtonText = "Ok"
+                };
+
+                // Show ContentDialog with error message.
+                App.ShowContentDialog(errorDialog, null);
+            }
+        }
+        #endregion
+
+        #region Class event handlers
+        private void LoginButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            VerifyIfIsConnectedToDB();
+        }
+        #endregion
     }
 }
