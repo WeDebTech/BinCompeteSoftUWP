@@ -7,130 +7,102 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
 
 namespace BinCompeteSoftUWP
 {
     /// <summary>
     /// This class holds all the necessary data for the program to work.
     /// </summary>
-    class Data
+    public static class Data
     {
-        // Make it so the class is a singleton
-        public static readonly Data _instance = new Data();
-
-        public User loggedInUser { get; set; }
+        #region Class variables
+        public static User LoggedInUser { get; set; }
 
         /*public Form currentForm { get; set; }
         public Form loginform { get; set; }*/
 
-        private List<JudgeMember> judgeMembers = new List<JudgeMember>();
-        private List<Contest> contests = new List<Contest>();
-        private List<ContestDetails> contestDetails = new List<ContestDetails>();
-        private List<Project> projects = new List<Project>();
-        private List<Category> categories = new List<Category>();
-        private List<Statistic> statistics = new List<Statistic>();
-        private List<Criteria> criterias = new List<Criteria>();
+        public static List<JudgeMember> JudgeMembers { get; set; } = new List<JudgeMember>();
+        public static List<Contest> Contests { get; set; } = new List<Contest>();
+        public static List<ContestDetails> ContestDetails { get; set; } = new List<ContestDetails>();
+        public static List<Project> Projects { get; set; } = new List<Project>();
+        public static List<Category> Categories { get; set; } = new List<Category>();
+        public static List<Statistic> Statistics { get; set; } = new List<Statistic>();
+        public static List<Criteria> Criterias { get; set; } = new List<Criteria>();
+        #endregion
 
-        private Data()
-        {
-            // Well, nothing to do here
-        }
-
+        #region Class methods
         /// <summary>
-        /// Gets or sets the list of judge members.
+        /// Gets the user from the database with the inserted data.
         /// </summary>
-        public List<JudgeMember> JudgeMembers
+        /// <param name="username">The User username.</param>
+        /// <param name="password">The User password.</param>
+        /// <returns>The User from the database.</returns>
+        public static User GetUserDataFromDB(string username, string password)
         {
-            get { return judgeMembers; }
-            set { judgeMembers = value; }
-        }
+            SqlCommand cmd;
+            SqlParameter sqlUsername;
+            SqlParameter sqlPassword;
 
-        /// <summary>
-        /// Gets or sets the list of contests.
-        /// </summary>
-        public List<Contest> Contests
-        {
-            get { return contests; }
-            set { contests = value; }
-        }
+            try
+            {
+                // Hash the input password.
+                string hashedPassword = DBSqlHelper.SHA512(password);
 
-        /// <summary>
-        /// Gets or sets the list of contest details.
-        /// </summary>
-        public List<ContestDetails> ContestDetails
-        {
-            get { return contestDetails; }
-            set { contestDetails = value; }
-        }
+                // Select user if username and password are correct OR first_time_login is set.
+                string query = "SELECT id_user, fullname, email, username, administrator, first_time_login, valid FROM user_table " +
+                    "WHERE (username = @username OR email = @username) AND (pw = @password OR first_time_login = 1)";
 
-        /// <summary>
-        /// Gets or sets the list of projects.
-        /// </summary>
-        public List<Project> Projects
-        {
-            get { return projects; }
-            set { projects = value; }
-        }
+                cmd = DBSqlHelper.Connection.CreateCommand();
+                cmd.CommandText = query;
 
-        /// <summary>
-        /// Gets or sets the list of categories.
-        /// </summary>
-        public List<Category> Categories
-        {
-            get { return categories; }
-            set { categories = value; }
-        }
+                sqlUsername = new SqlParameter("@username", SqlDbType.NVarChar);
+                sqlUsername.Value = username;
+                cmd.Parameters.Add(sqlUsername);
 
-        /// <summary>
-        /// Gets or sets the list of statistics.
-        /// </summary>
-        public List<Statistic> Statistics
-        {
-            get { return statistics; }
-            set { statistics = value; }
-        }
+                sqlPassword = new SqlParameter("@password", SqlDbType.NVarChar);
+                sqlPassword.Value = hashedPassword;
+                cmd.Parameters.Add(sqlPassword);
 
-        /// <summary>
-        /// Gets or sets the list of criterias.
-        /// </summary>
-        public List<Criteria> Criterias
-        {
-            get { return criterias; }
-            set { criterias = value; }
-        }
+                // Execute query.
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    // Check if user exists.
+                    if (reader.HasRows)
+                    {
+                        // Construct user information from database.
+                        reader.Read();
 
-        /// <summary>
-        /// Add a judge member to the judge members list.
-        /// </summary>
-        /// <param name="judgeMember"></param>
-        public void AddJudgeMember(JudgeMember judgeMember)
-        {
-            judgeMembers.Add(judgeMember);
-        }
+                        User loggedUser = new User(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetBoolean(4), reader.GetBoolean(5), reader.GetBoolean(6));
 
-        /// <summary>
-        /// Add a contest to the contests list.
-        /// </summary>
-        /// <param name="contest"></param>
-        public void AddContest(Contest contest)
-        {
-            contests.Add(contest);
-        }
+                        return loggedUser;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ContentDialog errorDialog = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "Error reading user data from database.\nError: " + ex.Message,
+                    CloseButtonText = "Ok"
+                };
 
-        /// <summary>
-        /// Add a project to the projects list.
-        /// </summary>
-        /// <param name="project"></param>
-        public void AddProject(Project project)
-        {
-            projects.Add(project);
+                App.ShowContentDialog(errorDialog, null);
+
+                return null;
+            }
         }
 
         /// <summary>
         /// This method retrieves the most up-to-date list of judges from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public bool RefreshJudges()
+        public static bool RefreshJudges()
         {
             // Load the judges from the Database
             string query = "SELECT id_user, fullname, email FROM user_table WHERE valid = 1";
@@ -144,7 +116,7 @@ namespace BinCompeteSoftUWP
                 // Check if user exists
                 if (reader.HasRows)
                 {
-                    judgeMembers.Clear();
+                    JudgeMembers.Clear();
 
                     while (reader.Read())
                     {
@@ -152,10 +124,10 @@ namespace BinCompeteSoftUWP
                         JudgeMember judge = new JudgeMember(reader.GetInt32(0), reader.GetString(1), reader.GetString(2));
 
                         // Check if judge is not the current user
-                        if (judge.Id != loggedInUser.Id)
+                        if (judge.Id != LoggedInUser.Id)
                         {
                             // Add it to the list
-                            judgeMembers.Add(judge);
+                            JudgeMembers.Add(judge);
                         }
                     }
 
@@ -172,7 +144,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of categories from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public bool RefreshCategories()
+        public static bool RefreshCategories()
         {
             // Load the categories from the Database
             string query = "SELECT id_category, category_name FROM project_category";
@@ -186,12 +158,12 @@ namespace BinCompeteSoftUWP
                 // Check if category exists
                 if (reader.HasRows)
                 {
-                    categories.Clear();
+                    Categories.Clear();
 
                     while (reader.Read())
                     {
                         Category category = new Category(reader.GetInt32(0), reader.GetString(1));
-                        categories.Add(category);
+                        Categories.Add(category);
                     }
 
                     return true;
@@ -207,7 +179,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of contests from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public bool RefreshContests()
+        public static bool RefreshContests()
         {
             // Load the contest that the users has part in from the Database
             string query = "SELECT id_contest, contest_name, descript, start_date, limit_date, voting_limit_date " +
@@ -220,7 +192,7 @@ namespace BinCompeteSoftUWP
             cmd.CommandText = query;
 
             SqlParameter sqlUserId = new SqlParameter("id_user", SqlDbType.Int);
-            sqlUserId.Value = Data._instance.loggedInUser.Id;
+            sqlUserId.Value = Data.LoggedInUser.Id;
             cmd.Parameters.Add(sqlUserId);
 
             // Execute query
@@ -229,12 +201,12 @@ namespace BinCompeteSoftUWP
                 // Check if contest exists
                 if (reader.HasRows)
                 {
-                    contestDetails.Clear();
+                    ContestDetails.Clear();
 
                     while (reader.Read())
                     {
                         ContestDetails contest = new ContestDetails(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetDateTime(3), reader.GetDateTime(4), reader.GetDateTime(5), false, false, false);
-                        contestDetails.Add(contest);
+                        ContestDetails.Add(contest);
                     }
 
                     return true;
@@ -251,7 +223,7 @@ namespace BinCompeteSoftUWP
         /// </summary>
         /// <param name="contestId">The contest id to check.</param>
         /// <returns>True if results have been calculated, false otherwise.</returns>
-        public bool GetContestResultsCalculatedStatus(int contestId)
+        public static bool GetContestResultsCalculatedStatus(int contestId)
         {
             string query = "SELECT id_contest FROM final_result_table WHERE id_contest = @id_contest";
 
@@ -281,7 +253,7 @@ namespace BinCompeteSoftUWP
         /// </summary>
         /// <param name="contestId">The contest id to check.</param>
         /// <returns>True if is voted, false otherwise.</returns>
-        public bool GetContestVoteStatus(int contestId)
+        public static bool GetContestVoteStatus(int contestId)
         {
             string query = "SELECT has_voted FROM contest_juri_table WHERE id_contest = @id_contest AND id_user = @id_user";
 
@@ -293,7 +265,7 @@ namespace BinCompeteSoftUWP
             cmd.Parameters.Add(sqlContestId);
 
             SqlParameter sqlUserId = new SqlParameter("@id_user", SqlDbType.Int);
-            sqlUserId.Value = loggedInUser.Id;
+            sqlUserId.Value = LoggedInUser.Id;
             cmd.Parameters.Add(sqlUserId);
 
             // Execute query.
@@ -318,7 +290,7 @@ namespace BinCompeteSoftUWP
         /// </summary>
         /// <param name="contestId">The contest id to check.</param>
         /// <returns>True if is created by current user, false otherwise.</returns>
-        public bool GetIfContestIsCreatedByCurrentUser(int contestId)
+        public static bool GetIfContestIsCreatedByCurrentUser(int contestId)
         {
             string query = "SELECT president FROM contest_juri_table WHERE id_contest = @id_contest AND id_user = @id_user";
 
@@ -330,7 +302,7 @@ namespace BinCompeteSoftUWP
             cmd.Parameters.Add(sqlContestId);
 
             SqlParameter sqlUserId = new SqlParameter("@id_user", SqlDbType.Int);
-            sqlUserId.Value = loggedInUser.Id;
+            sqlUserId.Value = LoggedInUser.Id;
             cmd.Parameters.Add(sqlUserId);
 
             // Execute query.
@@ -354,7 +326,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of criterias from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public bool RefreshCriterias()
+        public static bool RefreshCriterias()
         {
             // Load the criterias from the Database
             string query = "SELECT id_criteria, criteria_name, descript FROM criteria_data_table";
@@ -368,13 +340,13 @@ namespace BinCompeteSoftUWP
                 // Check if criterias exists
                 if (reader.HasRows)
                 {
-                    criterias.Clear();
+                    Criterias.Clear();
 
                     while (reader.Read())
                     {
                         Criteria criteria = new Criteria(reader.GetInt32(0), reader.GetString(1), reader.GetString(2));
 
-                        criterias.Add(criteria);
+                        Criterias.Add(criteria);
                     }
 
                     return true;
@@ -391,7 +363,7 @@ namespace BinCompeteSoftUWP
         /// </summary>
         /// <param name="id">The contest id to retrieve.</param>
         /// <returns>The contest object if it exists, null otherwise.</returns>
-        public Contest GetContest(int id)
+        public static Contest GetContest(int id)
         {
             // Varaiables declaration.
             Contest contest;
@@ -415,7 +387,7 @@ namespace BinCompeteSoftUWP
             cmd.CommandText = query;
 
             sqlUserId = new SqlParameter("id_user", SqlDbType.Int);
-            sqlUserId.Value = loggedInUser.Id;
+            sqlUserId.Value = LoggedInUser.Id;
             cmd.Parameters.Add(sqlUserId);
 
             sqlContestId = new SqlParameter("id_contest", SqlDbType.Int);
@@ -472,7 +444,7 @@ namespace BinCompeteSoftUWP
             // Cycle through all projects and get the full category.
             foreach (Project project in contestProjects)
             {
-                foreach (Category category in this.Categories)
+                foreach (Category category in Data.Categories)
                 {
                     // Check if the project category id is the same as the category id.
                     if (project.Category.Id == category.Id)
@@ -517,7 +489,7 @@ namespace BinCompeteSoftUWP
             // Cycle through all judges and get the full details.
             foreach (JudgeMember contestJudge in contestJudges)
             {
-                foreach (JudgeMember judge in this.JudgeMembers)
+                foreach (JudgeMember judge in Data.JudgeMembers)
                 {
                     // Check if the contest judge id is the same as the stored judge id.
                     if (contestJudge.Id == judge.Id)
@@ -557,12 +529,12 @@ namespace BinCompeteSoftUWP
             }
 
             // Refresh the criteria list.
-            this.RefreshCriterias();
+            Data.RefreshCriterias();
 
             // Cycle through all criteria and get the full details.
             foreach (Criteria contestCriteria in contestCriterias)
             {
-                foreach (Criteria criteria in this.criterias)
+                foreach (Criteria criteria in Data.Criterias)
                 {
                     // Check if the criteria judge id is the same as the stored judge id.
                     if (contestCriteria.Id == criteria.Id)
@@ -583,7 +555,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of statistics from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public bool RefreshStatistics()
+        public static bool RefreshStatistics()
         {
             // Load the general statistics from the Database.
             string query = "SELECT * FROM general_statistics";
@@ -596,12 +568,12 @@ namespace BinCompeteSoftUWP
                 // Check if statistics exist.
                 if (reader.HasRows)
                 {
-                    statistics.Clear();
+                    Statistics.Clear();
 
                     while (reader.Read())
                     {
                         Statistic statistic = new Statistic(reader.GetInt32(0), (double)reader.GetDecimal(1), reader.GetInt32(2), reader.GetInt32(3), new List<CategoryStatistics>(), new List<BestProjects>());
-                        statistics.Add(statistic);
+                        Statistics.Add(statistic);
                     }
                 }
                 else
@@ -633,7 +605,7 @@ namespace BinCompeteSoftUWP
                         // Get the corresponding category from the category list.
                         Category category = new Category();
 
-                        foreach (Category tempCategory in Data._instance.Categories)
+                        foreach (Category tempCategory in Data.Categories)
                         {
                             // Check if it's the category we want.
                             if (tempCategory.Id == categoryId)
@@ -648,7 +620,7 @@ namespace BinCompeteSoftUWP
 
                         // Cycle through all statistics until we get to the appropriate year
                         // If no appropriate one is found, ignore it, although it shouldn't happen on the database side.
-                        foreach (Statistic statistic in statistics)
+                        foreach (Statistic statistic in Statistics)
                         {
                             if (statistic.Year == year)
                             {
@@ -666,7 +638,7 @@ namespace BinCompeteSoftUWP
         /// This method show a messagebox asking the user if they really wanna logout, and if yes,
         /// it will clear all variables and revert back to the login form.
         /// </summary>
-        public void LogoutUser()
+        public static void LogoutUser()
         {
             // Show MessageBox asking user for confirmation.
             /*DialogResult dialogResult = MessageBox.Show("Do you really want to logout?", "Prompt", MessageBoxButtons.YesNo);
@@ -688,5 +660,6 @@ namespace BinCompeteSoftUWP
                 currentForm.Close();
             }*/
         }
+        #endregion
     }
 }

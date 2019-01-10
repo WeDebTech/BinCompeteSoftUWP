@@ -102,6 +102,11 @@ namespace BinCompeteSoftUWP
         private void CustomizeTitleBar()
         {
             CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
+            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+            titleBar.BackgroundColor = null;
+            titleBar.ForegroundColor = null;
+            titleBar.ButtonBackgroundColor = null;
+            titleBar.ButtonForegroundColor = null;
         }
 
         /// <summary>

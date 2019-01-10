@@ -28,12 +28,6 @@ namespace BinCompeteSoftUWP.Pages
         public LoginPage()
         {
             this.InitializeComponent();
-
-            // Read config file so we can connect to the database.
-            ReadConfigFileAsync();
-
-            // Try to connect to the database.
-            ConnectToDBAsync();
         }
         #endregion
 
@@ -41,7 +35,7 @@ namespace BinCompeteSoftUWP.Pages
         /// <summary>
         /// This class will load config.xml and place it's contents in the Settings.
         /// </summary>
-        private async void ReadConfigFileAsync()
+        private void ReadConfigFile()
         {
             try
             {
@@ -145,11 +139,11 @@ namespace BinCompeteSoftUWP.Pages
         /// This method will check if the app is connected to the database,
         /// if it errored out, or if the connection hasn't concluded yet.
         /// </summary>
-        private async void VerifyIfIsConnectedToDB()
+        private void VerifyIfIsConnectedToDB()
         {
             if (ConnectedSuccessfully)
             {
-
+                VerifyLoginData();
             }
             else if (ErroredConnecting)
             {
@@ -175,7 +169,7 @@ namespace BinCompeteSoftUWP.Pages
             }
             else
             {
-                ContentDialog errorDialog = new ContentDialog()
+                ContentDialog messageDialog = new ContentDialog()
                 {
                     Title = "Connecting",
                     Content = "Connecting to database, please be patient.",
@@ -183,13 +177,111 @@ namespace BinCompeteSoftUWP.Pages
                 };
 
                 // Show ContentDialog with error message.
+                App.ShowContentDialog(messageDialog, null);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void VerifyLoginData()
+        {
+            string username = UsernameTextBox.Text;
+            string password = PasswordBox.Password;
+
+            // Check if all values have been filled.
+            if(!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
+            {
+                // Verify if user exists in the database.
+                User loggedUser = Data.GetUserDataFromDB(username, password);
+
+                // Check if any user was found.
+                if(loggedUser != null)
+                {
+                    // Check if user has valid flag enabled.
+                    if (loggedUser.Valid)
+                    {
+                        // Check if user is logging in for the first time or has had it's password reset.
+                        if (loggedUser.FirstTimeLogin)
+                        {
+                            // Reset password
+                        }
+                        else
+                        {
+                            LoginUser(loggedUser);
+                        }
+                    }
+                    else
+                    {
+                        ContentDialog errorDialog = new ContentDialog
+                        {
+                            Title = "Diabled user",
+                            Content = "User has it's account deactivated.\nPlease contact the administrator to reactivate your account.",
+                            CloseButtonText = "Ok"
+                        };
+
+                        App.ShowContentDialog(errorDialog, null);
+                    }
+                }
+                else
+                {
+                    ContentDialog errorDialog = new ContentDialog
+                    {
+                        Title = "Incorrect credentials",
+                        Content = "Login informations are incorrect.\nIf you have forgotten your login details, please contact your administrator to get new login details.",
+                        CloseButtonText = "Ok"
+                    };
+
+                    App.ShowContentDialog(errorDialog, null);
+                }
+            }
+            else
+            {
+                ContentDialog errorDialog = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "All fields must be filled.",
+                    CloseButtonText = "Ok"
+                };
+
                 App.ShowContentDialog(errorDialog, null);
             }
+        }
+
+        /// <summary>
+        /// Assigns the given user to the current logged user, and logs in.
+        /// </summary>
+        /// <param name="userToLogin">The user details to log in.</param>
+        private void LoginUser(User userToLogin)
+        {
+            // Clear all textboxes in case the user logs out.
+            UsernameTextBox.Text = "";
+            PasswordBox.Password = "";
+
+            // Set the current logged in user to the user that is trying to login.
+            Data.LoggedInUser = userToLogin;
+
+            // Open next page.
+            /*JudgeDashboardForm judgeDashboardForm = new JudgeDashboardForm();
+            judgeDashboardForm.MdiParent = this.MdiParent;
+            judgeDashboardForm.Dock = DockStyle.Fill;
+            judgeDashboardForm.Show();
+            this.MdiParent.Text = "Dashboard";
+            this.Hide();*/
         }
         #endregion
 
         #region Class event handlers
-        private void LoginButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Read config file so we can connect to the database.
+            ReadConfigFile();
+
+            // Try to connect to the database.
+            await ConnectToDBAsync();
+        }
+
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             VerifyIfIsConnectedToDB();
         }
