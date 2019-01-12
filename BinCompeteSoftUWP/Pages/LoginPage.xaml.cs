@@ -182,10 +182,13 @@ namespace BinCompeteSoftUWP.Pages
         }
 
         /// <summary>
-        /// 
+        /// Check if everything is filled and check if credentials are correct.
         /// </summary>
         private void VerifyLoginData()
         {
+            SigningInTextBlock.Visibility = Visibility.Visible;
+            SigningInProgressRing.IsActive = true;
+
             string username = UsernameTextBox.Text;
             string password = PasswordBox.Password;
 
@@ -208,6 +211,9 @@ namespace BinCompeteSoftUWP.Pages
                         }
                         else
                         {
+                            SigningInTextBlock.Visibility = Visibility.Visible;
+                            SigningInProgressRing.IsActive = true;
+
                             LoginUser(loggedUser);
                         }
                     }
@@ -221,6 +227,9 @@ namespace BinCompeteSoftUWP.Pages
                         };
 
                         App.ShowContentDialog(errorDialog, null);
+
+                        SigningInTextBlock.Visibility = Visibility.Visible;
+                        SigningInProgressRing.IsActive = true;
                     }
                 }
                 else
@@ -233,6 +242,9 @@ namespace BinCompeteSoftUWP.Pages
                     };
 
                     App.ShowContentDialog(errorDialog, null);
+
+                    SigningInTextBlock.Visibility = Visibility.Visible;
+                    SigningInProgressRing.IsActive = true;
                 }
             }
             else
@@ -245,6 +257,9 @@ namespace BinCompeteSoftUWP.Pages
                 };
 
                 App.ShowContentDialog(errorDialog, null);
+
+                SigningInTextBlock.Visibility = Visibility.Visible;
+                SigningInProgressRing.IsActive = true;
             }
         }
 
@@ -261,13 +276,8 @@ namespace BinCompeteSoftUWP.Pages
             // Set the current logged in user to the user that is trying to login.
             Data.LoggedInUser = userToLogin;
 
-            // Open next page.
-            /*JudgeDashboardForm judgeDashboardForm = new JudgeDashboardForm();
-            judgeDashboardForm.MdiParent = this.MdiParent;
-            judgeDashboardForm.Dock = DockStyle.Fill;
-            judgeDashboardForm.Show();
-            this.MdiParent.Text = "Dashboard";
-            this.Hide();*/
+            // Navigate to next page.
+            this.Frame.Navigate(typeof(MainPage));
         }
         #endregion
 
