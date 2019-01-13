@@ -1,10 +1,13 @@
-﻿using BinCompeteSoft;
+﻿using BinCompeteSoftUWP.Classes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
@@ -14,21 +17,34 @@ namespace BinCompeteSoftUWP
     /// <summary>
     /// This class holds all the necessary data for the program to work.
     /// </summary>
-    public static class Data
+    public class Data : INotifyPropertyChanged
     {
         #region Class variables
-        public static User LoggedInUser { get; set; }
+        public static Data Instance { get; }
+
+        private Data() { }
+
+        public User LoggedInUser { get; set; }
 
         /*public Form currentForm { get; set; }
         public Form loginform { get; set; }*/
 
-        public static List<JudgeMember> JudgeMembers { get; set; } = new List<JudgeMember>();
-        public static List<Contest> Contests { get; set; } = new List<Contest>();
-        public static List<ContestDetails> ContestDetails { get; set; } = new List<ContestDetails>();
-        public static List<Project> Projects { get; set; } = new List<Project>();
-        public static List<Category> Categories { get; set; } = new List<Category>();
-        public static List<Statistic> Statistics { get; set; } = new List<Statistic>();
-        public static List<Criteria> Criterias { get; set; } = new List<Criteria>();
+        public List<JudgeMember> JudgeMembers { get; set; } = new List<JudgeMember>();
+        public ObservableCollection<Contest> Contests { get; set; } = new ObservableCollection<Contest>();
+        public List<ContestDetails> ContestDetails { get; set; } = new List<ContestDetails>();
+        public List<Project> Projects { get; set; } = new List<Project>();
+        public List<Category> Categories { get; set; } = new List<Category>();
+        public List<Statistic> Statistics { get; set; } = new List<Statistic>();
+        public List<Criteria> Criterias { get; set; } = new List<Criteria>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
+        #region Class constructors
+        static Data()
+        {
+            Instance = new Data();
+        }
         #endregion
 
         #region Class methods
@@ -38,7 +54,7 @@ namespace BinCompeteSoftUWP
         /// <param name="username">The User username.</param>
         /// <param name="password">The User password.</param>
         /// <returns>The User from the database.</returns>
-        public static User GetUserDataFromDB(string username, string password)
+        public User GetUserDataFromDB(string username, string password)
         {
             SqlCommand cmd;
             SqlParameter sqlUsername;
@@ -102,7 +118,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of judges from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public static bool RefreshJudges()
+        public bool RefreshJudges()
         {
             // Load the judges from the Database
             string query = "SELECT id_user, fullname, email FROM user_table WHERE valid = 1";
@@ -144,7 +160,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of categories from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public static bool RefreshCategories()
+        public bool RefreshCategories()
         {
             // Load the categories from the Database
             string query = "SELECT id_category, category_name FROM project_category";
@@ -179,7 +195,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of contests from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public static bool RefreshContests()
+        public async Task<bool> RefreshContests()
         {
             // Load the contest that the users has part in from the Database
             string query = "SELECT id_contest, contest_name, descript, start_date, limit_date, voting_limit_date " +
@@ -192,20 +208,20 @@ namespace BinCompeteSoftUWP
             cmd.CommandText = query;
 
             SqlParameter sqlUserId = new SqlParameter("id_user", SqlDbType.Int);
-            sqlUserId.Value = Data.LoggedInUser.Id;
+            sqlUserId.Value = this.LoggedInUser.Id;
             cmd.Parameters.Add(sqlUserId);
 
             // Execute query
-            using (DbDataReader reader = cmd.ExecuteReader())
+            using (DbDataReader reader = await cmd.ExecuteReaderAsync())
             {
                 // Check if contest exists
                 if (reader.HasRows)
                 {
                     ContestDetails.Clear();
-
-                    while (reader.Read())
+                    
+                    while (await reader.ReadAsync())
                     {
-                        ContestDetails contest = new ContestDetails(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetDateTime(3), reader.GetDateTime(4), reader.GetDateTime(5), false, false, false);
+                        ContestDetails contest = new ContestDetails((int)reader[0], reader[1].ToString(), reader[2].ToString(), (DateTime)reader[3], (DateTime)reader[4], (DateTime)reader[5], false, false, false);
                         ContestDetails.Add(contest);
                     }
 
@@ -223,7 +239,7 @@ namespace BinCompeteSoftUWP
         /// </summary>
         /// <param name="contestId">The contest id to check.</param>
         /// <returns>True if results have been calculated, false otherwise.</returns>
-        public static bool GetContestResultsCalculatedStatus(int contestId)
+        public bool GetContestResultsCalculatedStatus(int contestId)
         {
             string query = "SELECT id_contest FROM final_result_table WHERE id_contest = @id_contest";
 
@@ -253,7 +269,7 @@ namespace BinCompeteSoftUWP
         /// </summary>
         /// <param name="contestId">The contest id to check.</param>
         /// <returns>True if is voted, false otherwise.</returns>
-        public static bool GetContestVoteStatus(int contestId)
+        public bool GetContestVoteStatus(int contestId)
         {
             string query = "SELECT has_voted FROM contest_juri_table WHERE id_contest = @id_contest AND id_user = @id_user";
 
@@ -290,7 +306,7 @@ namespace BinCompeteSoftUWP
         /// </summary>
         /// <param name="contestId">The contest id to check.</param>
         /// <returns>True if is created by current user, false otherwise.</returns>
-        public static bool GetIfContestIsCreatedByCurrentUser(int contestId)
+        public bool GetIfContestIsCreatedByCurrentUser(int contestId)
         {
             string query = "SELECT president FROM contest_juri_table WHERE id_contest = @id_contest AND id_user = @id_user";
 
@@ -326,7 +342,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of criterias from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public static bool RefreshCriterias()
+        public bool RefreshCriterias()
         {
             // Load the criterias from the Database
             string query = "SELECT id_criteria, criteria_name, descript FROM criteria_data_table";
@@ -363,7 +379,7 @@ namespace BinCompeteSoftUWP
         /// </summary>
         /// <param name="id">The contest id to retrieve.</param>
         /// <returns>The contest object if it exists, null otherwise.</returns>
-        public static Contest GetContest(int id)
+        public Contest GetContest(int id)
         {
             // Varaiables declaration.
             Contest contest;
@@ -444,7 +460,7 @@ namespace BinCompeteSoftUWP
             // Cycle through all projects and get the full category.
             foreach (Project project in contestProjects)
             {
-                foreach (Category category in Data.Categories)
+                foreach (Category category in this.Categories)
                 {
                     // Check if the project category id is the same as the category id.
                     if (project.Category.Id == category.Id)
@@ -489,7 +505,7 @@ namespace BinCompeteSoftUWP
             // Cycle through all judges and get the full details.
             foreach (JudgeMember contestJudge in contestJudges)
             {
-                foreach (JudgeMember judge in Data.JudgeMembers)
+                foreach (JudgeMember judge in this.JudgeMembers)
                 {
                     // Check if the contest judge id is the same as the stored judge id.
                     if (contestJudge.Id == judge.Id)
@@ -529,12 +545,12 @@ namespace BinCompeteSoftUWP
             }
 
             // Refresh the criteria list.
-            Data.RefreshCriterias();
+            this.RefreshCriterias();
 
             // Cycle through all criteria and get the full details.
             foreach (Criteria contestCriteria in contestCriterias)
             {
-                foreach (Criteria criteria in Data.Criterias)
+                foreach (Criteria criteria in this.Criterias)
                 {
                     // Check if the criteria judge id is the same as the stored judge id.
                     if (contestCriteria.Id == criteria.Id)
@@ -555,7 +571,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of statistics from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public static bool RefreshStatistics()
+        public bool RefreshStatistics()
         {
             // Load the general statistics from the Database.
             string query = "SELECT * FROM general_statistics";
@@ -605,7 +621,7 @@ namespace BinCompeteSoftUWP
                         // Get the corresponding category from the category list.
                         Category category = new Category();
 
-                        foreach (Category tempCategory in Data.Categories)
+                        foreach (Category tempCategory in this.Categories)
                         {
                             // Check if it's the category we want.
                             if (tempCategory.Id == categoryId)
@@ -638,7 +654,7 @@ namespace BinCompeteSoftUWP
         /// This method show a messagebox asking the user if they really wanna logout, and if yes,
         /// it will clear all variables and revert back to the login form.
         /// </summary>
-        public static void LogoutUser()
+        public void LogoutUser()
         {
             // Show MessageBox asking user for confirmation.
             /*DialogResult dialogResult = MessageBox.Show("Do you really want to logout?", "Prompt", MessageBoxButtons.YesNo);
@@ -659,6 +675,11 @@ namespace BinCompeteSoftUWP
                 loginform.MdiParent.Text = "Login";
                 currentForm.Close();
             }*/
+        }
+
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
     }

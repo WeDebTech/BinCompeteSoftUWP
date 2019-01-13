@@ -1,4 +1,4 @@
-﻿using BinCompeteSoft;
+﻿using BinCompeteSoftUWP.Classes;
 using System;
 using System.Data.SqlClient;
 using System.IO;
@@ -8,7 +8,6 @@ using System.Xml.Linq;
 using Windows.ApplicationModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -196,7 +195,7 @@ namespace BinCompeteSoftUWP.Pages
             if(!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
             {
                 // Verify if user exists in the database.
-                User loggedUser = Data.GetUserDataFromDB(username, password);
+                User loggedUser = Data.Instance.GetUserDataFromDB(username, password);
 
                 // Check if any user was found.
                 if(loggedUser != null)
@@ -274,7 +273,7 @@ namespace BinCompeteSoftUWP.Pages
             PasswordBox.Password = "";
 
             // Set the current logged in user to the user that is trying to login.
-            Data.LoggedInUser = userToLogin;
+            Data.Instance.LoggedInUser = userToLogin;
 
             // Navigate to next page.
             this.Frame.Navigate(typeof(MainPage));

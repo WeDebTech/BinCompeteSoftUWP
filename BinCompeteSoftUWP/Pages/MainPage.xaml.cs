@@ -63,7 +63,7 @@ namespace BinCompeteSoftUWP.Pages
         private void NavigationViewPane_Loaded(object sender, RoutedEventArgs e)
         {
             // Check if current user is an administrator.
-            if (Data.LoggedInUser.Administrator)
+            if (Data.Instance.LoggedInUser.Administrator)
             {
                 // Add Navigation View Items for navigation.
                 foreach ((NavigationViewItem NavigationViewItem, Type Page) NavigationItem in AdministratorMenuItems)

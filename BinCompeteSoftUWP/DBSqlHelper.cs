@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 
-namespace BinCompeteSoft
+namespace BinCompeteSoftUWP
 {
     /// <summary>
     /// This class is a helper so all database connections pass through here.

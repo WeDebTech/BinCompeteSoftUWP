@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BinCompeteSoft
+namespace BinCompeteSoftUWP.Classes
 {
     /// <summary>
     /// This class contains the category data.

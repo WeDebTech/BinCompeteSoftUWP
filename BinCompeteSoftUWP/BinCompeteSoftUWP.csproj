@@ -128,10 +128,14 @@
     <Compile Include="Classes\Criteria.cs" />
     <Compile Include="Classes\Evaluation.cs" />
     <Compile Include="Classes\JudgeMember.cs" />
+    <Compile Include="Classes\NotificationListItem.cs" />
     <Compile Include="Classes\Project.cs" />
-    <Compile Include="Classes\ProjectEvaluation.cs" />
+    <Compile Include="Classes\ProjectContestEvaluation.cs" />
     <Compile Include="Classes\Statistic.cs" />
     <Compile Include="Classes\User.cs" />
+    <Compile Include="Converters\BooleanToTooltipConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\StringFormatConverter.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DBSqlHelper.cs" />
     <Compile Include="Pages\AddContestPage.xaml.cs">
@@ -184,6 +188,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls.DataGrid">
+      <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.1</Version>
