@@ -37,9 +37,9 @@ namespace BinCompeteSoftUWP
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            ApplicationView.PreferredLaunchViewSize = new Size(1200, 900);
+            ApplicationView.PreferredLaunchViewSize = new Size(1600, 900);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(500, 500));
+            ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(1280, 800));
 
             Frame rootFrame = Window.Current.Content as Frame;
 

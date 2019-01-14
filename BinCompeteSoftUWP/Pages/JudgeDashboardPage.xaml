@@ -5,6 +5,7 @@
     xmlns:local="using:BinCompeteSoftUWP"
     xmlns:classes="using:BinCompeteSoftUWP.Classes"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:charting="using:WinRTXamlToolkit.Controls.DataVisualization.Charting"
     xmlns:conv="using:BinCompeteSoftUWP.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -15,16 +16,16 @@
         <conv:BooleanToVisibilityConverter x:Name="BoolToVis" />
         <conv:BooleanToTooltipConverter x:Name="BoolToTooltip" />
     </Page.Resources>
-    
+
     <Grid x:Name="RootGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MinWidth="200" />
+            <ColumnDefinition Width="*" MinWidth="300" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" MinWidth="350" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" MinWidth="300" />
+            <ColumnDefinition Width="*" MinWidth="350" />
         </Grid.ColumnDefinitions>
-        
+
         <Grid Grid.Column="0" Margin="0,0,0,0" Padding="10,10,10,10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -40,6 +41,14 @@
                 <TextBlock Text="Notifications" FontSize="24" Grid.Column="1" />
             </Grid>
             <Border BorderThickness="0,0,0,1" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" Margin="0,0,0,0" Grid.Row="1" Padding="0,5,0,0" />
+            <Grid Grid.Row="2" Margin="0,10,0,0" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ProgressRing x:Name="LoadingNotificationsProgressRing" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0" />
+                <TextBlock x:Name="LoadingNotificationsTextBlock" Grid.Column="1" Text="Generating notifications..." FontSize="20" HorizontalAlignment="Stretch" TextAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed" />
+            </Grid>
             <ListView x:Name="NotificationsListView" Grid.Row="2" Margin="0,5,0,0">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
@@ -75,6 +84,14 @@
             </Grid>
             <Button x:Name="RefreshContestsButton" Content="&#xE72C;" Click="RefreshContestsButton_Click" HorizontalAlignment="Right" VerticalAlignment="Top" FontFamily="Segoe MDL2 Assets" ToolTipService.ToolTip="Refresh contests list" />
             <Border BorderThickness="0,0,0,1" Margin="0,0,0,0" Grid.Row="1" Padding="0,5,0,0" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" />
+            <Grid Grid.Row="2" Margin="0,10,0,0" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ProgressRing x:Name="LoadingContestProgressRing" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0" />
+                <TextBlock x:Name="LoadingContestsTextBlock" Grid.Column="1" Text="Loading contests..." FontSize="20" HorizontalAlignment="Stretch" TextAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed" />
+            </Grid>
             <ListView x:Name="ContestsListView" Grid.Row="2" Margin="0,5,0,0">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
@@ -107,7 +124,7 @@
             </ListView>
             <Button x:Name="ShowContestDetailsButton" Content="Show details" ToolTipService.ToolTip="Show contest details" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="ShowContestDetailsButton_Click" />
         </Grid>
-        
+
         <Grid Grid.Column="4" Margin="0,0,0,0" BorderThickness="0,0,1,0" Padding="10,10,10,10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -123,6 +140,58 @@
                 <TextBlock Text="Statistics" FontSize="24" Grid.Column="1" />
             </Grid>
             <Border BorderThickness="0,0,0,1" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" Margin="0,0,0,0" Grid.Row="1" Padding="0,5,0,0" />
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0,5,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="PreviousYearButton" HorizontalAlignment="Right" Content="&#xEC52;" FontFamily="Segoe MDL2 Assets" Click="PreviousYearButton_Click" />
+                    <TextBlock x:Name="YearTextBlock" Text="XXXX" Grid.Column="1" HorizontalAlignment="Center" FontSize="20" Margin="5,0,5,0" />
+                    <Button x:Name="NextYearButton" HorizontalAlignment="Left" Content="&#xEBE7;" FontFamily="Segoe MDL2 Assets" Grid.Column="2" Click="NextYearButton_Click" />
+                </Grid>
+                <charting:Chart x:Name="StatisticsPieChart" Grid.Row="1">
+                    <charting:PieSeries IndependentValuePath="Category.Name" DependentValuePath="TimesUsed" Margin="-10,-35,-10,-15" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                </charting:Chart>
+                <Grid Grid.Row="2" Margin="0,50,0,0" HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ProgressRing x:Name="LoadingStatisticsProgressRing" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0" />
+                    <TextBlock x:Name="LoadingStatisticsTextBlock" Grid.Column="1" Text="Loading statistics..." FontSize="20" HorizontalAlignment="Stretch" TextAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed" />
+                </Grid>
+                <controls:DataGrid x:Name="BestProjectsDataGrid" Grid.Row="2" IsReadOnly="True" AreRowDetailsFrozen="True" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" GridLinesVisibility="All" FontSize="16" Margin="0,0,0,10">
+                    <controls:DataGrid.Columns>
+                        <controls:DataGridTextColumn Header="Project Name" Binding="{Binding ProjectName}" />
+                        <controls:DataGridTextColumn Header="Project Score" Binding="{Binding Score, Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:N3}'}" />
+                    </controls:DataGrid.Columns>
+                </controls:DataGrid>
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Total # of competitions: " FontSize="18" />
+                    <TextBlock x:Name="TotalCompetitionsTextBlock" Text="x" Grid.Column="1" FontSize="18" />
+                    <TextBlock Text="Total # of projects: " Grid.Row="1" FontSize="18" />
+                    <TextBlock x:Name="TotalProjectsTextBlock" Text="x" Grid.Column="1" Grid.Row="1" FontSize="18" />
+                    <TextBlock Text="Average # of projects per competition: " Grid.Row="2" FontSize="18" />
+                    <TextBlock x:Name="AverageProjectsCompetitionTextBlock" Text="x" Grid.Column="1" Grid.Row="2" FontSize="18" />
+                </Grid>
+            </Grid>
         </Grid>
 
         <controls:GridSplitter ResizeBehavior="BasedOnAlignment" ResizeDirection="Columns" Grid.Column="1">

@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <NavigationView x:Name="NavigationViewPane" ItemInvoked="NavigationViewPane_ItemInvoked" Loaded="NavigationViewPane_Loaded" BackRequested="NavigationViewPane_BackRequested" IsBackButtonVisible="Collapsed" OpenPaneLength="240" PaneTitle="BinCompeteSoft">
+    <NavigationView x:Name="NavigationViewPane" ItemInvoked="NavigationViewPane_ItemInvoked" Loaded="NavigationViewPane_Loaded" BackRequested="NavigationViewPane_BackRequested" IsBackButtonVisible="Collapsed" OpenPaneLength="240" PaneTitle="BinCompeteSoft" CompactModeThresholdWidth="1250" ExpandedModeThresholdWidth="1400">
         <NavigationView.PaneFooter>
             <NavigationViewItem Icon="Contact" Content="{x:Bind root:Data.Instance.LoggedInUser.Name}" IsEnabled="False" />
         </NavigationView.PaneFooter>

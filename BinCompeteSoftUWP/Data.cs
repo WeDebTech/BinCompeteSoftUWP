@@ -54,7 +54,7 @@ namespace BinCompeteSoftUWP
         /// <param name="username">The User username.</param>
         /// <param name="password">The User password.</param>
         /// <returns>The User from the database.</returns>
-        public User GetUserDataFromDB(string username, string password)
+        public async Task<User> GetUserDataFromDBAsync(string username, string password)
         {
             SqlCommand cmd;
             SqlParameter sqlUsername;
@@ -81,13 +81,13 @@ namespace BinCompeteSoftUWP
                 cmd.Parameters.Add(sqlPassword);
 
                 // Execute query.
-                using (DbDataReader reader = cmd.ExecuteReader())
+                using (DbDataReader reader = await cmd.ExecuteReaderAsync())
                 {
                     // Check if user exists.
                     if (reader.HasRows)
                     {
                         // Construct user information from database.
-                        reader.Read();
+                        await reader.ReadAsync();
 
                         User loggedUser = new User(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetBoolean(4), reader.GetBoolean(5), reader.GetBoolean(6));
 
@@ -118,7 +118,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of judges from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public bool RefreshJudges()
+        public async Task<bool> RefreshJudgesAsync()
         {
             // Load the judges from the Database
             string query = "SELECT id_user, fullname, email FROM user_table WHERE valid = 1";
@@ -127,17 +127,17 @@ namespace BinCompeteSoftUWP
             cmd.CommandText = query;
 
             // Execute query
-            using (DbDataReader reader = cmd.ExecuteReader())
+            using (DbDataReader reader = await cmd.ExecuteReaderAsync())
             {
                 // Check if user exists
                 if (reader.HasRows)
                 {
                     JudgeMembers.Clear();
 
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         // Construct user information from database
-                        JudgeMember judge = new JudgeMember(reader.GetInt32(0), reader.GetString(1), reader.GetString(2));
+                        JudgeMember judge = new JudgeMember((int)reader[0], reader[1].ToString(), reader[2].ToString());
 
                         // Check if judge is not the current user
                         if (judge.Id != LoggedInUser.Id)
@@ -160,7 +160,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of categories from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public bool RefreshCategories()
+        public async Task<bool> RefreshCategoriesAsync()
         {
             // Load the categories from the Database
             string query = "SELECT id_category, category_name FROM project_category";
@@ -169,16 +169,16 @@ namespace BinCompeteSoftUWP
             cmd.CommandText = query;
 
             // Execute query
-            using (DbDataReader reader = cmd.ExecuteReader())
+            using (DbDataReader reader = await cmd.ExecuteReaderAsync())
             {
                 // Check if category exists
                 if (reader.HasRows)
                 {
                     Categories.Clear();
 
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
-                        Category category = new Category(reader.GetInt32(0), reader.GetString(1));
+                        Category category = new Category((int)reader[0], reader[1].ToString());
                         Categories.Add(category);
                     }
 
@@ -195,7 +195,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of contests from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public async Task<bool> RefreshContests()
+        public async Task<bool> RefreshContestsAsync()
         {
             // Load the contest that the users has part in from the Database
             string query = "SELECT id_contest, contest_name, descript, start_date, limit_date, voting_limit_date " +
@@ -342,7 +342,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of criterias from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public bool RefreshCriterias()
+        public async Task<bool> RefreshCriteriasAsync()
         {
             // Load the criterias from the Database
             string query = "SELECT id_criteria, criteria_name, descript FROM criteria_data_table";
@@ -351,16 +351,16 @@ namespace BinCompeteSoftUWP
             cmd.CommandText = query;
 
             // Execute query
-            using (DbDataReader reader = cmd.ExecuteReader())
+            using (DbDataReader reader = await cmd.ExecuteReaderAsync())
             {
                 // Check if criterias exists
                 if (reader.HasRows)
                 {
                     Criterias.Clear();
 
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
-                        Criteria criteria = new Criteria(reader.GetInt32(0), reader.GetString(1), reader.GetString(2));
+                        Criteria criteria = new Criteria((int)reader[0], reader[1].ToString(), reader[2].ToString());
 
                         Criterias.Add(criteria);
                     }
@@ -545,7 +545,7 @@ namespace BinCompeteSoftUWP
             }
 
             // Refresh the criteria list.
-            this.RefreshCriterias();
+            this.RefreshCriteriasAsync();
 
             // Cycle through all criteria and get the full details.
             foreach (Criteria contestCriteria in contestCriterias)
@@ -571,7 +571,7 @@ namespace BinCompeteSoftUWP
         /// This method retrieves the most up-to-date list of statistics from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
-        public bool RefreshStatistics()
+        public async Task<bool> RefreshStatisticsAsync()
         {
             // Load the general statistics from the Database.
             string query = "SELECT * FROM general_statistics";
@@ -579,16 +579,16 @@ namespace BinCompeteSoftUWP
             SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
             cmd.CommandText = query;
 
-            using (DbDataReader reader = cmd.ExecuteReader())
+            using (DbDataReader reader = await cmd.ExecuteReaderAsync())
             {
                 // Check if statistics exist.
                 if (reader.HasRows)
                 {
                     Statistics.Clear();
 
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
-                        Statistic statistic = new Statistic(reader.GetInt32(0), (double)reader.GetDecimal(1), reader.GetInt32(2), reader.GetInt32(3), new List<CategoryStatistics>(), new List<BestProjects>());
+                        Statistic statistic = new Statistic((int)reader[0], decimal.ToDouble((decimal)reader[1]), (int)reader[2], (int)reader[3], new ObservableCollection<CategoryStatistics>(), new ObservableCollection<BestProjects>());
                         Statistics.Add(statistic);
                     }
                 }

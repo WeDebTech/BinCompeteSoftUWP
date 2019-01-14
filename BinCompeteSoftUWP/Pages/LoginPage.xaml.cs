@@ -138,11 +138,11 @@ namespace BinCompeteSoftUWP.Pages
         /// This method will check if the app is connected to the database,
         /// if it errored out, or if the connection hasn't concluded yet.
         /// </summary>
-        private void VerifyIfIsConnectedToDB()
+        private async void VerifyIfIsConnectedToDB()
         {
             if (ConnectedSuccessfully)
             {
-                VerifyLoginData();
+                await VerifyLoginData();
             }
             else if (ErroredConnecting)
             {
@@ -183,7 +183,7 @@ namespace BinCompeteSoftUWP.Pages
         /// <summary>
         /// Check if everything is filled and check if credentials are correct.
         /// </summary>
-        private void VerifyLoginData()
+        private async Task VerifyLoginData()
         {
             SigningInTextBlock.Visibility = Visibility.Visible;
             SigningInProgressRing.IsActive = true;
@@ -195,7 +195,7 @@ namespace BinCompeteSoftUWP.Pages
             if(!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(password))
             {
                 // Verify if user exists in the database.
-                User loggedUser = Data.Instance.GetUserDataFromDB(username, password);
+                User loggedUser = await Data.Instance.GetUserDataFromDBAsync(username, password);
 
                 // Check if any user was found.
                 if(loggedUser != null)
@@ -210,8 +210,8 @@ namespace BinCompeteSoftUWP.Pages
                         }
                         else
                         {
-                            SigningInTextBlock.Visibility = Visibility.Visible;
-                            SigningInProgressRing.IsActive = true;
+                            SigningInTextBlock.Visibility = Visibility.Collapsed;
+                            SigningInProgressRing.IsActive = false;
 
                             LoginUser(loggedUser);
                         }
@@ -220,15 +220,15 @@ namespace BinCompeteSoftUWP.Pages
                     {
                         ContentDialog errorDialog = new ContentDialog
                         {
-                            Title = "Diabled user",
+                            Title = "Disabled user",
                             Content = "User has it's account deactivated.\nPlease contact the administrator to reactivate your account.",
                             CloseButtonText = "Ok"
                         };
 
                         App.ShowContentDialog(errorDialog, null);
 
-                        SigningInTextBlock.Visibility = Visibility.Visible;
-                        SigningInProgressRing.IsActive = true;
+                        SigningInTextBlock.Visibility = Visibility.Collapsed;
+                        SigningInProgressRing.IsActive = false;
                     }
                 }
                 else
@@ -242,8 +242,8 @@ namespace BinCompeteSoftUWP.Pages
 
                     App.ShowContentDialog(errorDialog, null);
 
-                    SigningInTextBlock.Visibility = Visibility.Visible;
-                    SigningInProgressRing.IsActive = true;
+                    SigningInTextBlock.Visibility = Visibility.Collapsed;
+                    SigningInProgressRing.IsActive = false;
                 }
             }
             else
@@ -257,8 +257,8 @@ namespace BinCompeteSoftUWP.Pages
 
                 App.ShowContentDialog(errorDialog, null);
 
-                SigningInTextBlock.Visibility = Visibility.Visible;
-                SigningInProgressRing.IsActive = true;
+                SigningInTextBlock.Visibility = Visibility.Collapsed;
+                SigningInProgressRing.IsActive = false;
             }
         }
 

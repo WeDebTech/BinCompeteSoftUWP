@@ -11,10 +11,12 @@ namespace BinCompeteSoftUWP.Classes
     /// </summary>
     public class CategoryStatistics
     {
-        // Class variables.
-        private Category category;
-        private int timesUsed;
+        #region Class variables
+        public Category Category { get; set; }
+        public int TimesUsed { get; set; }
+        #endregion
 
+        #region Class constructors
         /// <summary>
         /// Category statistics constructor that takes all arguments.
         /// </summary>
@@ -22,26 +24,9 @@ namespace BinCompeteSoftUWP.Classes
         /// <param name="timesUsed">The number of times the category was used.</param>
         public CategoryStatistics(Category category, int timesUsed)
         {
-            this.category = category;
-            this.timesUsed = timesUsed;
+            this.Category = category;
+            this.TimesUsed = timesUsed;
         }
-
-        /// <summary>
-        /// Gets or sets the category of the statistic.
-        /// </summary>
-        public Category Category
-        {
-            get { return category; }
-            set { category = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the number of times the category was used.
-        /// </summary>
-        public int TimesUsed
-        {
-            get { return timesUsed; }
-            set { timesUsed = value; }
-        }
+        #endregion
     }
 }
