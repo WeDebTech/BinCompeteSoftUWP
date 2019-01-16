@@ -58,9 +58,17 @@ namespace BinCompeteSoftUWP.Pages
             PopulateStatisticsList();
         }
 
-        private void RefreshContestsButton_Click(object sender, RoutedEventArgs e)
+        private async void RefreshContestsButton_Click(object sender, RoutedEventArgs e)
         {
+            LoadingContestProgressRing.IsActive = true;
+            LoadingContestsTextBlock.Visibility = Visibility.Visible;
 
+            LoadingNotificationsProgressRing.IsActive = true;
+            LoadingNotificationsTextBlock.Visibility = Visibility.Visible;
+
+            await Data.Instance.RefreshContestsAsync();
+
+            PopulateContestsListAndGenerateNotificationsList();
         }
 
         private void ShowContestDetailsButton_Click(object sender, RoutedEventArgs e)
@@ -176,6 +184,7 @@ namespace BinCompeteSoftUWP.Pages
             DateTime CurrentDate = DateTime.Now.Date;
 
             ContestDetailsList.Clear();
+            NotificationsList.Clear();
 
             // Cycle through all contests, and if they're after today's date, show them.
             // Also show contests that have finished, but haven't had their results calculated of which

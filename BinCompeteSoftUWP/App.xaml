@@ -6,6 +6,24 @@
 
     <Application.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <Style x:Key="BinCompeteSoftLogo" TargetType="Image">
+                        <Setter Property="Source" Value="ms-appx:///Assets/BinCompeteSoftLogoDark.png" />
+                    </Style>
+                    <Style x:Key="WeDebLogo" TargetType="Image">
+                        <Setter Property="Source" Value="ms-appx:///Assets/WeDebLogoDark.png" />
+                    </Style>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <Style x:Key="BinCompeteSoftLogo" TargetType="Image">
+                        <Setter Property="Source" Value="ms-appx:///Assets/BinCompeteSoftLogoLight.png" />
+                    </Style>
+                    <Style x:Key="WeDebLogo" TargetType="Image">
+                        <Setter Property="Source" Value="ms-appx:///Assets/WeDebLogoLight.png" />
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
             <AcrylicBrush x:Key="NavigationViewDefaultPaneBackground"
                   BackgroundSource="Backdrop" TintColor="{ThemeResource SystemChromeMediumColor}" FallbackColor="{ThemeResource SystemChromeMediumColor}" TintOpacity=".5"/>
             <AcrylicBrush x:Key="NavigationViewTopPaneBackground"

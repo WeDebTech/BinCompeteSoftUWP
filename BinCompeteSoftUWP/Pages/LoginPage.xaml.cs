@@ -206,7 +206,36 @@ namespace BinCompeteSoftUWP.Pages
                         // Check if user is logging in for the first time or has had it's password reset.
                         if (loggedUser.FirstTimeLogin)
                         {
-                            // Reset password
+                            // Show reset password content dialog.
+                            ContentDialog resetPassDialog = new ResetPasswordContentDialog(true, loggedUser.Id);
+
+                            // Create callback to be called when ContentDialog closes.
+                            Action<ContentDialogResult> callback = async (result) =>
+                            {
+                                if (result == ContentDialogResult.Primary)
+                                {
+                                    SigningInTextBlock.Visibility = Visibility.Collapsed;
+                                    SigningInProgressRing.IsActive = false;
+
+                                    LoginUser(loggedUser);
+                                }
+                                else
+                                {
+                                    ContentDialog errorMsg = new ContentDialog
+                                    {
+                                        Title = "Canceled",
+                                        Content = "You must reset your password to continue.",
+                                        CloseButtonText = "OK"
+                                    };
+
+                                    App.ShowContentDialog(errorMsg, null);
+
+                                    SigningInTextBlock.Visibility = Visibility.Collapsed;
+                                    SigningInProgressRing.IsActive = false;
+                                }
+                            };
+
+                            App.ShowContentDialog(resetPassDialog, callback);
                         }
                         else
                         {
