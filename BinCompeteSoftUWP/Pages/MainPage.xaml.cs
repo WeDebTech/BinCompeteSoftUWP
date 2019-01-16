@@ -39,7 +39,7 @@ namespace BinCompeteSoftUWP.Pages
                 Content = "Add contest",
                 Icon = new SymbolIcon(Symbol.Add),
                 Tag = "add_contest"
-            }, typeof(AddContestPage)),
+            }, typeof(ContestPage)),
             (new NavigationViewItem
             {
                 Content = "List contests",

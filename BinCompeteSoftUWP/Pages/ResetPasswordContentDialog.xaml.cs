@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -61,34 +62,49 @@ namespace BinCompeteSoftUWP.Pages
                     // Check if both inputs are the same.
                     if (NewPassword == NewPasswordRetype)
                     {
-                        // Hash the password.
-                        string hashedPassword = DBSqlHelper.SHA512(NewPassword);
+                        // Check if password meets our security standards.
+                        Regex regex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+                        Match match = regex.Match(NewPassword);
 
-                        string query = "UPDATE user_table " +
-                            "SET pw = @password, first_time_login = 0 " +
-                            "WHERE id_user = @id_user";
-
-                        SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
-                        cmd.CommandText = query;
-
-                        SqlParameter sqlPassword = new SqlParameter("password", SqlDbType.NVarChar);
-                        sqlPassword.Value = hashedPassword;
-                        cmd.Parameters.Add(sqlPassword);
-
-                        SqlParameter sqlUserId = new SqlParameter("id_user", DbType.Int32);
-                        sqlUserId.Value = UserId;
-                        cmd.Parameters.Add(sqlUserId);
-
-                        cmd.ExecuteNonQuery();
-
-                        ContentDialog successDialog = new ContentDialog
+                        if (match.Success)
                         {
-                            Title = "Success",
-                            Content = "User details updated successfully!",
-                            CloseButtonText = "OK"
-                        };
+                            // Hash the password.
+                            string hashedPassword = DBSqlHelper.SHA512(NewPassword);
 
-                        App.ShowContentDialog(successDialog, null);
+                            string query = "UPDATE user_table " +
+                                "SET pw = @password, first_time_login = 0 " +
+                                "WHERE id_user = @id_user";
+
+                            SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
+                            cmd.CommandText = query;
+
+                            SqlParameter sqlPassword = new SqlParameter("password", SqlDbType.NVarChar);
+                            sqlPassword.Value = hashedPassword;
+                            cmd.Parameters.Add(sqlPassword);
+
+                            SqlParameter sqlUserId = new SqlParameter("id_user", DbType.Int32);
+                            sqlUserId.Value = UserId;
+                            cmd.Parameters.Add(sqlUserId);
+
+                            cmd.ExecuteNonQuery();
+
+                            ContentDialog successDialog = new ContentDialog
+                            {
+                                Title = "Success",
+                                Content = "User details updated successfully!",
+                                CloseButtonText = "OK"
+                            };
+
+                            App.ShowContentDialog(successDialog, null);
+                        }
+                        else
+                        {
+                            ResetTextBlock.Text = "The password must contain at least 1 lowercase, 1 uppercase, 1 numeric character, one special character, and be be 8 characters or longer!";
+                            NewPasswordTextBox.Password = "";
+                            NewPasswordRetypeTextBox.Password = "";
+
+                            args.Cancel = true;
+                        }
                     }
                     else
                     {
@@ -106,54 +122,70 @@ namespace BinCompeteSoftUWP.Pages
                         // Check if both inputs are the same.
                         if (NewPassword == NewPasswordRetype)
                         {
-                            // Check if the current password is correct.
-                            string hashedPassword = DBSqlHelper.SHA512(CurrentPassword);
+                            // Check if password meets our security standards.
+                            Regex regex = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+                            Match match = regex.Match(NewPassword);
 
-                            string query = "SELECT COUNT(*) FROM user_table " +
-                                "WHERE pw = @password";
-
-                            SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
-                            cmd.CommandText = query;
-
-                            SqlParameter sqlPassword = new SqlParameter("password", SqlDbType.NVarChar);
-                            sqlPassword.Value = hashedPassword;
-                            cmd.Parameters.Add(sqlPassword);
-
-                            int count = (int)cmd.ExecuteScalar();
-
-                            if (count >= 1)
+                            if (match.Success)
                             {
+                                // Check if the current password is correct.
+                                string hashedPassword = DBSqlHelper.SHA512(CurrentPassword);
 
-                                // Hash the password.
-                                hashedPassword = DBSqlHelper.SHA512(NewPassword);
+                                string query = "SELECT COUNT(*) FROM user_table " +
+                                    "WHERE pw = @password";
 
-                                query = "UPDATE user_table " +
-                                    "SET pw = @password, first_time_login = 0 " +
-                                    "WHERE id_user = @id_user";
-
-                                cmd = DBSqlHelper.Connection.CreateCommand();
+                                SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
                                 cmd.CommandText = query;
 
-                                sqlPassword = new SqlParameter("password", SqlDbType.NVarChar);
+                                SqlParameter sqlPassword = new SqlParameter("password", SqlDbType.NVarChar);
                                 sqlPassword.Value = hashedPassword;
                                 cmd.Parameters.Add(sqlPassword);
 
-                                SqlParameter sqlUserId = new SqlParameter("id_user", DbType.Int32);
-                                sqlUserId.Value = Data.Instance.LoggedInUser.Id;
-                                cmd.Parameters.Add(sqlUserId);
+                                int count = (int)cmd.ExecuteScalar();
 
-                                cmd.ExecuteNonQuery();
-
-                                ContentDialog successDialog = new ContentDialog
+                                if (count >= 1)
                                 {
-                                    Title = "Success",
-                                    Content = "User details updated successfully!",
-                                    CloseButtonText = "OK"
-                                };
 
-                                App.ShowContentDialog(successDialog, null);
+                                    // Hash the password.
+                                    hashedPassword = DBSqlHelper.SHA512(NewPassword);
 
-                                this.Hide();
+                                    query = "UPDATE user_table " +
+                                        "SET pw = @password, first_time_login = 0 " +
+                                        "WHERE id_user = @id_user";
+
+                                    cmd = DBSqlHelper.Connection.CreateCommand();
+                                    cmd.CommandText = query;
+
+                                    sqlPassword = new SqlParameter("password", SqlDbType.NVarChar);
+                                    sqlPassword.Value = hashedPassword;
+                                    cmd.Parameters.Add(sqlPassword);
+
+                                    SqlParameter sqlUserId = new SqlParameter("id_user", DbType.Int32);
+                                    sqlUserId.Value = Data.Instance.LoggedInUser.Id;
+                                    cmd.Parameters.Add(sqlUserId);
+
+                                    cmd.ExecuteNonQuery();
+
+                                    ContentDialog successDialog = new ContentDialog
+                                    {
+                                        Title = "Success",
+                                        Content = "User details updated successfully!",
+                                        CloseButtonText = "OK"
+                                    };
+
+                                    App.ShowContentDialog(successDialog, null);
+
+                                    this.Hide();
+                                }
+                                else
+                                {
+                                    ResetTextBlock.Text = "The password must contain at least 1 lowercase, 1 uppercase, 1 numeric character, 1 special character, and be be 8 characters or longer!";
+                                    CurrentPasswordTextBox.Password = "";
+                                    NewPasswordTextBox.Password = "";
+                                    NewPasswordRetypeTextBox.Password = "";
+
+                                    args.Cancel = true;
+                                }
                             }
                             else
                             {

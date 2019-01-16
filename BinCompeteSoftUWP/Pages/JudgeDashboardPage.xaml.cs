@@ -73,7 +73,24 @@ namespace BinCompeteSoftUWP.Pages
 
         private void ShowContestDetailsButton_Click(object sender, RoutedEventArgs e)
         {
+            // Check if any item is selected in contest ListView.
+            if(ContestsListView.SelectedIndex != -1)
+            {
+                ContestDetails contestDetails = (ContestDetails)ContestsListView.SelectedItem;
 
+                this.Frame.Navigate(typeof(ContestPage), contestDetails);
+            }
+            else
+            {
+                ContentDialog errorMsg = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "You must select a contest to see it's details.",
+                    CloseButtonText = "OK"
+                };
+
+                App.ShowContentDialog(errorMsg, null);
+            }
         }
 
         private void PreviousYearButton_Click(object sender, RoutedEventArgs e)
@@ -106,6 +123,18 @@ namespace BinCompeteSoftUWP.Pages
                     ChangeStatisticsYear();
                 }
             }
+        }
+
+        private void NotificationsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Get selected notification id.
+            int notificationId = ((NotificationListItem)NotificationsListView.SelectedItem).Id;
+
+            // Get which contest that this notification corresponds to.
+            ContestDetails contestToSelect = ContestDetailsList.Single(x => x.Id == notificationId);
+
+            // Select the project.
+            ContestsListView.SelectedItem = contestToSelect;
         }
         #endregion
 

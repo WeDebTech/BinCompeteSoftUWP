@@ -20,11 +20,17 @@ namespace BinCompeteSoftUWP.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class AddContestPage : Page
+    public sealed partial class ContestPage : Page
     {
-        public AddContestPage()
+        public ContestPage()
         {
             this.InitializeComponent();
+
+            // Get current date.
+
+
+            // Set the minimum start date to today.
+            StartDateCalendarDatePicker.MinDate = DateTime.Now.Date;
         }
     }
 }

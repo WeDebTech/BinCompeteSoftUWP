@@ -271,6 +271,9 @@ namespace BinCompeteSoftUWP.Pages
 
                     App.ShowContentDialog(errorDialog, null);
 
+                    UsernameTextBox.Text = "";
+                    PasswordBox.Password = "";
+
                     SigningInTextBlock.Visibility = Visibility.Collapsed;
                     SigningInProgressRing.IsActive = false;
                 }

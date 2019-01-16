@@ -138,8 +138,8 @@
     <Compile Include="Converters\StringFormatConverter.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DBSqlHelper.cs" />
-    <Compile Include="Pages\AddContestPage.xaml.cs">
-      <DependentUpon>AddContestPage.xaml</DependentUpon>
+    <Compile Include="Pages\ContestPage.xaml.cs">
+      <DependentUpon>ContestPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ContestsListPage.xaml.cs">
       <DependentUpon>ContestsListPage.xaml</DependentUpon>
@@ -232,7 +232,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Pages\AddContestPage.xaml">
+    <Page Include="Pages\ContestPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
