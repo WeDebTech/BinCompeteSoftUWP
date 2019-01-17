@@ -136,6 +136,17 @@ namespace BinCompeteSoftUWP.Pages
             // Select the project.
             ContestsListView.SelectedItem = contestToSelect;
         }
+
+        private void Grid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            // Get which contest is associated with this grid.
+            if(ContestsListView.SelectedItems.Count == 1)
+            {
+                ContestDetails contestDetails = (ContestDetails)ContestsListView.SelectedItems[0];
+
+                this.Frame.Navigate(typeof(ContestPage), contestDetails);
+            }
+        }
         #endregion
 
         #region Class methods

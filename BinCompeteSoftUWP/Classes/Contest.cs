@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +16,9 @@ namespace BinCompeteSoftUWP.Classes
         #region Class variables
         public int Id { get; set; }
         public ContestDetails ContestDetails { get; set; }
-        public List<Project> Projects { get; set; }
-        public List<JudgeMember> JudgeMembers { get; set; }
-        public List<Criteria> Criterias { get; set; }
+        public ObservableCollection<Project> Projects { get; set; }
+        public ObservableCollection<JudgeMember> JudgeMembers { get; set; }
+        public ObservableCollection<Criteria> Criterias { get; set; }
         public double[,] CriteriaValues { get; set; }
         #endregion
 
@@ -31,7 +32,7 @@ namespace BinCompeteSoftUWP.Classes
         /// <param name="judgeMembers">The contest judge members.</param>
         /// <param name="criterias">The contest criterias.</param>
         /// <param name="criteriaValues">The contest criteria values for evaluation.</param>
-        public Contest(int id, ContestDetails contestDetails, List<Project> projects, List<JudgeMember> judgeMembers, List<Criteria> criterias, double[,] criteriaValues)
+        public Contest(int id, ContestDetails contestDetails, ObservableCollection<Project> projects, ObservableCollection<JudgeMember> judgeMembers, ObservableCollection<Criteria> criterias, double[,] criteriaValues)
         {
             Id = id;
             ContestDetails = contestDetails;
@@ -45,7 +46,7 @@ namespace BinCompeteSoftUWP.Classes
         /// Contest constructor that takes no arguments.
         /// Creates contest with id 0, no contest details, no projects, no judges, no criterias and empty criteria values matrix.
         /// </summary>
-        public Contest() : this(0, new ContestDetails(), new List<Project>(), new List<JudgeMember>(), new List<Criteria>(), new double[0, 0]) { }
+        public Contest() : this(0, new ContestDetails(), new ObservableCollection<Project>(), new ObservableCollection<JudgeMember>(), new ObservableCollection<Criteria>(), new double[0, 0]) { }
         #endregion
 
         #region Class methods

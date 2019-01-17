@@ -326,6 +326,24 @@ namespace BinCompeteSoftUWP.Pages
         {
             VerifyIfIsConnectedToDB();
         }
+
+        private void PasswordBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            // Check if the entered key is an enter.
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                VerifyIfIsConnectedToDB();
+            }
+        }
+
+        private void UsernameTextBox_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            // Check if the entered key is an enter.
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                VerifyIfIsConnectedToDB();
+            }
+        }
         #endregion
     }
 }

@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:BinCompeteSoftUWP.Pages"
+    xmlns:classes="using:BinCompeteSoftUWP.Classes"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -45,9 +46,9 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <TextBlock Text="Start date*" FontSize="20" Margin="5,5,5,5" />
-            <CalendarDatePicker x:Name="StartDateCalendarDatePicker" PlaceholderText="Pick a start date" Grid.Column="1" Margin="5,5,20,5" FontSize="20" />
+            <CalendarDatePicker x:Name="StartDateCalendarDatePicker" PlaceholderText="Pick a start date" Grid.Column="1" Margin="5,5,20,5" FontSize="20" DateChanged="StartDateCalendarDatePicker_DateChanged" />
             <TextBlock Text="Limit date*" FontSize="20" Margin="5,5,5,5" Grid.Column="2" />
-            <CalendarDatePicker x:Name="LimitDateCalendarDatePicker" PlaceholderText="Pick a limit date" Grid.Column="3" Margin="5,5,20,5" FontSize="20" />
+            <CalendarDatePicker x:Name="LimitDateCalendarDatePicker" PlaceholderText="Pick a limit date" Grid.Column="3" Margin="5,5,20,5" FontSize="20" DateChanged="LimitDateCalendarDatePicker_DateChanged" />
             <TextBlock Text="Voting limit date*" FontSize="20" Margin="5,5,5,5" Grid.Column="4" />
             <CalendarDatePicker x:Name="VotingLimitDateCalendarDatePicker" PlaceholderText="Pick a voting limit date" Grid.Column="5" Margin="5,5,20,5" FontSize="20" />
             <Button x:Name="AddDescriptionButton" Content="Description*" Grid.Column="7" FontSize="20" Margin="0,0,5,0" Padding="15,4,15,5" />
@@ -58,7 +59,40 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Button x:Name="AddJudgeButton" Content="Add judge*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="20" Margin="5,0,5,0" />
-            <ListView x:Name="JudgesListView" Grid.Row="1" Margin="5,5,5,5" />
+            <ListView x:Name="JudgesListView" Grid.Row="1" Margin="5,5,5,5">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="classes:JudgeMember">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind Path=Name}" FontSize="22" FontWeight="Bold" />
+                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" Grid.Column="1" />
+                            <TextBlock Text="{x:Bind Path=Email}" FontSize="18" Margin="0,0,0,5" Grid.Row="1" Grid.ColumnSpan="2" />
+                            <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="2" Grid.ColumnSpan="2" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Grid Grid.Row="1" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ProgressRing x:Name="LoadJudgesProgressRing" Margin="0,10,5,0" VerticalAlignment="Top" />
+                <TextBlock x:Name="LoadJudgesTextBlock" Text="Loading judges..." HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0" Grid.Column="1" VerticalAlignment="Top" Visibility="Collapsed" />
+            </Grid>
         </Grid>
         <Grid Grid.Row="2" Grid.Column="2">
             <Grid.RowDefinitions>
@@ -66,7 +100,44 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Button x:Name="AddProjectButton" Content="Add project" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="20" Margin="5,0,5,0" />
-            <ListView x:Name="ProjectsListView" Grid.Row="1" Margin="5,5,5,5" />
+            <ListView x:Name="ProjectsListView" Grid.Row="1" Margin="5,5,5,5">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="classes:Project">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="22" />
+                            <Button Content="&#xE70F;" FontFamily="Segoe MDL2 Assets" Grid.Column="1" Margin="0,0,5,0" />
+                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" Grid.Column="2" />
+                            <TextBlock Text="{x:Bind Path=Description}" FontSize="18" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="3" />
+                            <TextBlock Text="{x:Bind Path=Category.Name}" FontSize="16" Grid.Row="2" Grid.ColumnSpan="3" />
+                            <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="3" Grid.ColumnSpan="3" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Grid Grid.Row="1" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ProgressRing x:Name="LoadProjectsProgressRing" Margin="0,10,5,0" VerticalAlignment="Top" />
+                <TextBlock x:Name="LoadProjectsTextBlock" Text="Loading projects..." HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0" Grid.Column="1" VerticalAlignment="Top" Visibility="Collapsed" />
+            </Grid>
         </Grid>
         <Grid Grid.Row="2" Grid.Column="4">
             <Grid.RowDefinitions>
@@ -74,7 +145,40 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Button x:Name="AddCriteriaButton" Content="Add criteria*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="20" Margin="5,0,5,0" />
-            <ListView x:Name="CriteriaListView" Grid.Row="1" Margin="5,5,5,5" />
+            <ListView x:Name="CriteriaListView" Grid.Row="1" Margin="5,5,5,5">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="classes:Criteria">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="22" />
+                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" Grid.Column="1" />
+                            <TextBlock Text="{x:Bind Path=Description}" FontSize="18" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="3" />
+                            <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="2" Grid.ColumnSpan="3" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Grid Grid.Row="1" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ProgressRing x:Name="LoadCriteriasProgressRing" Margin="0,10,5,0" VerticalAlignment="Top" />
+                <TextBlock x:Name="LoadCriteriasTextBlock" Text="Loading criterias..." HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0" Grid.Column="1" VerticalAlignment="Top" Visibility="Collapsed" />
+            </Grid>
         </Grid>
         <controls:GridSplitter ResizeBehavior="BasedOnAlignment" ResizeDirection="Columns" Grid.Column="1" Grid.Row="2">
             <controls:GridSplitter.Element>

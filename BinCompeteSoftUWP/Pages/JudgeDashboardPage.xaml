@@ -100,7 +100,7 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="classes:ContestDetails">
-                        <Grid ToolTipService.ToolTip="{x:Bind Path=HasBeenCreatedByCurrentUser, Converter={StaticResource BoolToTooltip}}">
+                        <Grid ToolTipService.ToolTip="{x:Bind Path=HasBeenCreatedByCurrentUser, Converter={StaticResource BoolToTooltip}}" DoubleTapped="Grid_DoubleTapped">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />

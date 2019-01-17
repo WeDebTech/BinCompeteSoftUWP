@@ -29,13 +29,13 @@ namespace BinCompeteSoftUWP
         /*public Form currentForm { get; set; }
         public Form loginform { get; set; }*/
 
-        public List<JudgeMember> JudgeMembers { get; set; } = new List<JudgeMember>();
+        public ObservableCollection<JudgeMember> JudgeMembers { get; set; } = new ObservableCollection<JudgeMember>();
         public ObservableCollection<Contest> Contests { get; set; } = new ObservableCollection<Contest>();
-        public List<ContestDetails> ContestDetails { get; set; } = new List<ContestDetails>();
-        public List<Project> Projects { get; set; } = new List<Project>();
-        public List<Category> Categories { get; set; } = new List<Category>();
-        public List<Statistic> Statistics { get; set; } = new List<Statistic>();
-        public List<Criteria> Criterias { get; set; } = new List<Criteria>();
+        public ObservableCollection<ContestDetails> ContestDetails { get; set; } = new ObservableCollection<ContestDetails>();
+        public ObservableCollection<Project> Projects { get; set; } = new ObservableCollection<Project>();
+        public ObservableCollection<Category> Categories { get; set; } = new ObservableCollection<Category>();
+        public ObservableCollection<Statistic> Statistics { get; set; } = new ObservableCollection<Statistic>();
+        public ObservableCollection<Criteria> Criterias { get; set; } = new ObservableCollection<Criteria>();
 
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion
@@ -379,7 +379,7 @@ namespace BinCompeteSoftUWP
         /// </summary>
         /// <param name="id">The contest id to retrieve.</param>
         /// <returns>The contest object if it exists, null otherwise.</returns>
-        public Contest GetContest(int id)
+        public async Task<Contest> GetContest(int id)
         {
             // Varaiables declaration.
             Contest contest;
@@ -390,9 +390,9 @@ namespace BinCompeteSoftUWP
 
             string query;
 
-            List<Project> contestProjects = new List<Project>();
-            List<JudgeMember> contestJudges = new List<JudgeMember>();
-            List<Criteria> contestCriterias = new List<Criteria>();
+            ObservableCollection<Project> contestProjects = new ObservableCollection<Project>();
+            ObservableCollection<JudgeMember> contestJudges = new ObservableCollection<JudgeMember>();
+            ObservableCollection<Criteria> contestCriterias = new ObservableCollection<Criteria>();
 
             // Get the contest details from the database.
             query = "SELECT * " +
@@ -410,19 +410,19 @@ namespace BinCompeteSoftUWP
             sqlContestId.Value = id;
             cmd.Parameters.Add(sqlContestId);
 
-            using (DbDataReader reader = cmd.ExecuteReader())
+            using (DbDataReader reader = await cmd.ExecuteReaderAsync())
             {
                 // Check if the contest exists.
                 if (reader.HasRows)
                 {
-                    reader.Read();
+                    await reader.ReadAsync();
 
                     ContestDetails contestDetails = new ContestDetails(id, reader.GetString(1), reader.GetString(2), reader.GetDateTime(3), reader.GetDateTime(4), reader.GetDateTime(5), false, false, false);
 
                     // Get the criteria values and convert them from a JSON string to a double matrix.
                     string criteriaValues = reader.GetString(6);
 
-                    contest = new Contest(id, contestDetails, new List<Project>(), new List<JudgeMember>(), new List<Criteria>(), new double[0, 0]);
+                    contest = new Contest(id, contestDetails, new ObservableCollection<Project>(), new ObservableCollection<JudgeMember>(), new ObservableCollection<Criteria>(), new double[0, 0]);
 
                     contest.SetCriteriaValuesFromJSON(criteriaValues);
                 }
