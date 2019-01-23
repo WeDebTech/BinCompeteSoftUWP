@@ -26,31 +26,37 @@ namespace BinCompeteSoftUWP.Pages
     public sealed partial class MainPage : Page
     {
         #region Class variables
-        private readonly List<(NavigationViewItem NavigationViewItem, Type Page)> JudgeMenuItems = new List<(NavigationViewItem NavigationViewItem, Type Page)>
+        private readonly List<NavigationViewItem> JudgeMenuItems = new List<NavigationViewItem>
         {
-            (new NavigationViewItem
+            new NavigationViewItem
             {
                 Content = "Dashboard",
                 Icon = new SymbolIcon(Symbol.Home),
                 Tag = "dashboard"
-            }, typeof(JudgeDashboardPage)),
-            (new NavigationViewItem
+            },
+            new NavigationViewItem
             {
                 Content = "Add contest",
                 Icon = new SymbolIcon(Symbol.Add),
                 Tag = "add_contest"
-            }, typeof(ContestPage)),
-            (new NavigationViewItem
+            },
+            new NavigationViewItem
             {
                 Content = "List contests",
                 Icon = new SymbolIcon(Symbol.List),
                 Tag = "list_contests"
-            }, typeof(ContestsListPage))
+            }
         };
         private readonly List<(NavigationViewItem NavigationViewItem, Type Page)> AdministratorMenuItems = new List<(NavigationViewItem NavigationViewItem, Type Page)>
         { };
 
-        private List<(string Tag, Type Page)> _pages = new List<(string Tag, Type Page)>();
+        private List<(string Tag, Type Page)> _pages = new List<(string Tag, Type Page)>
+        {
+            ("dashboard", typeof(JudgeDashboardPage)),
+            ("add_contest", typeof(ContestPage)),
+            ("list_contests", typeof(ContestsListPage)),
+            ("voting", typeof(VotingPage))
+        };
         #endregion
 
         #region Class constructors
@@ -71,17 +77,15 @@ namespace BinCompeteSoftUWP.Pages
                 {
                     NavigationItem.NavigationViewItem.FontSize = 22;
                     NavigationViewPane.MenuItems.Add(NavigationItem.NavigationViewItem);
-                    _pages.Add((NavigationItem.NavigationViewItem.Tag.ToString(), NavigationItem.Page));
                 }
             }
             else
             {
                 // Add Navigation View Items for navigation.
-                foreach ((NavigationViewItem NavigationViewItem, Type Page) NavigationItem in JudgeMenuItems)
+                foreach (NavigationViewItem NavigationItem in JudgeMenuItems)
                 {
-                    NavigationItem.NavigationViewItem.FontSize = 22;
-                    NavigationViewPane.MenuItems.Add(NavigationItem.NavigationViewItem);
-                    _pages.Add((NavigationItem.NavigationViewItem.Tag.ToString(), NavigationItem.Page));
+                    NavigationItem.FontSize = 22;
+                    NavigationViewPane.MenuItems.Add(NavigationItem);
                 }
             }
 
@@ -158,7 +162,7 @@ namespace BinCompeteSoftUWP.Pages
 
                 NavigationViewPane.SelectedItem = NavigationViewPane.MenuItems
                     .OfType<NavigationViewItem>()
-                    .First(n => n.Tag.Equals(item.Tag));
+                    .FirstOrDefault(n => n.Tag.Equals(item.Tag));
 
                 NavigationViewPane.Header = ((NavigationViewItem)NavigationViewPane.SelectedItem)?.Content?.ToString();
             }

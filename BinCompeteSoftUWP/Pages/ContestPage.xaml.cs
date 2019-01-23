@@ -138,7 +138,7 @@ namespace BinCompeteSoftUWP.Pages
 
         private void ShowResultsButton_Click(object sender, RoutedEventArgs e)
         {
-
+            Frame.Navigate(typeof(VotingPage));
         }
 
         private void CreateContestButton_Click(object sender, RoutedEventArgs e)

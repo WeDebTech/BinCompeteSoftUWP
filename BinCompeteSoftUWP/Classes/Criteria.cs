@@ -11,11 +11,13 @@ namespace BinCompeteSoftUWP.Classes
     /// </summary>
     public class Criteria
     {
-        // Class variables.
-        private int id;
-        private string name;
-        private string description;
+        #region Class variables
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        #endregion
 
+        #region Class constructors
         /// <summary>
         /// Criteria constructor that takes all arguments.
         /// </summary>
@@ -24,9 +26,9 @@ namespace BinCompeteSoftUWP.Classes
         /// <param name="description">The criteria description.</param>
         public Criteria(int id, string name, string description)
         {
-            this.id = id;
-            this.name = name;
-            this.description = description;
+            this.Id = id;
+            this.Name = name;
+            this.Description = description;
         }
 
         /// <summary>
@@ -34,32 +36,13 @@ namespace BinCompeteSoftUWP.Classes
         /// Creates criteria with id = 0, name = "", description = "".
         /// </summary>
         public Criteria() : this(0, "", "") { }
+        #endregion
 
-        /// <summary>
-        /// Gets or sets the criteria id.
-        /// </summary>
-        public int Id
+        #region Class methods
+        public override string ToString()
         {
-            get { return id; }
-            set { id = value; }
+            return Name;
         }
-
-        /// <summary>
-        /// Gets or sets the criteria name.
-        /// </summary>
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the criteria description.
-        /// </summary>
-        public string Description
-        {
-            get { return description; }
-            set { description = value; }
-        }
+        #endregion
     }
 }
