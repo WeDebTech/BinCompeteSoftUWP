@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BinCompeteSoftUWP.Classes
 {
-    public static class AHP
+    public class AHP
     {
         /// <summary>
         /// Calculates the projects scores using the AHP method

@@ -8,7 +8,29 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-
+    <Grid Padding="10,10,10,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Text size:" FontSize="{Binding Path=FontSizeSmall, Source={StaticResource Settings}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+            <ComboBox x:Name="TextSizeComboBox" Grid.Column="1" FontSize="{Binding Path=FontSizeSmall, Source={StaticResource Settings}}" SelectionChanged="TextSizeComboBox_SelectionChanged" Margin="10,0,0,0" >
+                <ComboBoxItem Content="Smallest" FontSize="18" />
+                <ComboBoxItem Content="Small" FontSize="20" />
+                <ComboBoxItem Content="Normal" FontSize="24" />
+                <ComboBoxItem Content="Medium" FontSize="28" />
+                <ComboBoxItem Content="Large" FontSize="32" />
+            </ComboBox>
+        </Grid>
     </Grid>
 </Page>

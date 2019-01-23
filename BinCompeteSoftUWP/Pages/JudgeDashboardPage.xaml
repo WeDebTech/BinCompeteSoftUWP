@@ -37,8 +37,8 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="&#xE7E7;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,10,0" />
-                <TextBlock Text="Notifications" FontSize="24" Grid.Column="1" />
+                <TextBlock Text="&#xE7E7;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Margin="0,0,10,0" />
+                <TextBlock Text="Notifications" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Grid.Column="1" />
             </Grid>
             <Border BorderThickness="0,0,0,1" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" Margin="0,0,0,0" Grid.Row="1" Padding="0,5,0,0" />
             <Grid Grid.Row="2" Margin="0,10,0,0" HorizontalAlignment="Center">
@@ -58,8 +58,8 @@
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="classes:NotificationListItem">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{x:Bind Path=Title}" FontSize="22" FontWeight="Bold" />
-                            <TextBlock Text="{x:Bind Path=Content}" FontSize="18" TextWrapping="WrapWholeWords" Margin="0,0,0,5" />
+                            <TextBlock Text="{x:Bind Path=Title}" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" FontWeight="Bold" />
+                            <TextBlock Text="{x:Bind Path=Content}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" Margin="0,0,0,5" />
                             <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" />
                         </StackPanel>
                     </DataTemplate>
@@ -79,8 +79,8 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,10,0" />
-                <TextBlock Text="Contests Happening" FontSize="24" Grid.Column="1" />
+                <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Margin="0,0,10,0" />
+                <TextBlock Text="Contests Happening" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Grid.Column="1" />
             </Grid>
             <Button x:Name="RefreshContestsButton" Content="&#xE72C;" Click="RefreshContestsButton_Click" HorizontalAlignment="Right" VerticalAlignment="Top" FontFamily="Segoe MDL2 Assets" ToolTipService.ToolTip="Refresh contests list" />
             <Border BorderThickness="0,0,0,1" Margin="0,0,0,0" Grid.Row="1" Padding="0,5,0,0" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" />
@@ -112,17 +112,17 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="22" />
-                            <TextBlock Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets" Grid.Column="1" FontSize="22" Visibility="{x:Bind Path=HasBeenCreatedByCurrentUser, Converter={StaticResource BoolToVis}}" Margin="0,5,0,0" />
-                            <TextBlock Text="{x:Bind Path=Description}" FontSize="18" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="2" />
-                            <TextBlock Text="{x:Bind Path=LimitDate, Converter={StaticResource StringFormatConverter}, ConverterParameter='Limit date: {0: dd-MM-yyy}'}" FontSize="16" Grid.Row="2" Grid.ColumnSpan="2" />
-                            <TextBlock Text="{x:Bind Path=VotingDate, Converter={StaticResource StringFormatConverter}, ConverterParameter='Voting limit date: {0: dd-MM-yyy}'}" FontSize="16" Margin="0,0,0,5" Grid.Row="3" Grid.ColumnSpan="2" />
+                            <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" />
+                            <TextBlock Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets" Grid.Column="1" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Visibility="{x:Bind Path=HasBeenCreatedByCurrentUser, Converter={StaticResource BoolToVis}}" Margin="0,5,0,0" />
+                            <TextBlock Text="{x:Bind Path=Description}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="2" />
+                            <TextBlock Text="{x:Bind Path=LimitDate, Converter={StaticResource StringFormatConverter}, ConverterParameter='Limit date: {0: dd-MM-yyy}'}" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.Row="2" Grid.ColumnSpan="2" />
+                            <TextBlock Text="{x:Bind Path=VotingDate, Converter={StaticResource StringFormatConverter}, ConverterParameter='Voting limit date: {0: dd-MM-yyy}'}" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Margin="0,0,0,5" Grid.Row="3" Grid.ColumnSpan="2" />
                             <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="4" Grid.ColumnSpan="2" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button x:Name="ShowContestDetailsButton" Content="Show details" ToolTipService.ToolTip="Show contest details" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="ShowContestDetailsButton_Click" FontSize="20" Margin="0,10,0,0" />
+            <Button x:Name="ShowContestDetailsButton" Content="Show details" ToolTipService.ToolTip="Show contest details" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="ShowContestDetailsButton_Click" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,10,0,0" />
         </Grid>
 
         <Grid Grid.Column="4" Margin="0,0,0,0" BorderThickness="0,0,1,0" Padding="10,10,10,10">
@@ -136,8 +136,8 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="&#xE9D2;" FontFamily="Segoe MDL2 Assets" FontSize="24" Margin="0,0,10,0" />
-                <TextBlock Text="Statistics" FontSize="24" Grid.Column="1" />
+                <TextBlock Text="&#xE9D2;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Margin="0,0,10,0" />
+                <TextBlock Text="Statistics" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Grid.Column="1" />
             </Grid>
             <Border BorderThickness="0,0,0,1" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" Margin="0,0,0,0" Grid.Row="1" Padding="0,5,0,0" />
             <Grid Grid.Row="2">
@@ -154,11 +154,11 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="PreviousYearButton" HorizontalAlignment="Right" Content="&#xEC52;" FontFamily="Segoe MDL2 Assets" Click="PreviousYearButton_Click" />
-                    <TextBlock x:Name="YearTextBlock" Text="XXXX" Grid.Column="1" HorizontalAlignment="Center" FontSize="20" Margin="5,0,5,0" />
-                    <Button x:Name="NextYearButton" HorizontalAlignment="Left" Content="&#xEBE7;" FontFamily="Segoe MDL2 Assets" Grid.Column="2" Click="NextYearButton_Click" />
+                    <Button x:Name="PreviousYearButton" HorizontalAlignment="Right" Content="&#xEC52;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Click="PreviousYearButton_Click" />
+                    <TextBlock x:Name="YearTextBlock" Text="XXXX" Grid.Column="1" HorizontalAlignment="Center" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,0" />
+                    <Button x:Name="NextYearButton" HorizontalAlignment="Left" Content="&#xEBE7;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="2" Click="NextYearButton_Click" />
                 </Grid>
-                <charting:Chart x:Name="StatisticsPieChart" Grid.Row="1">
+                <charting:Chart x:Name="StatisticsPieChart" Grid.Row="1" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}">
                     <charting:PieSeries IndependentValuePath="Category.Name" DependentValuePath="TimesUsed" Margin="-10,-35,-10,-15" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                 </charting:Chart>
                 <Grid Grid.Row="2" Margin="0,50,0,0" HorizontalAlignment="Center">
@@ -170,8 +170,8 @@
                     <TextBlock x:Name="LoadingStatisticsTextBlock" Grid.Column="1" Text="Loading statistics..." FontSize="20" HorizontalAlignment="Stretch" TextAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed" />
                 </Grid>
                 <Border BorderThickness="0,0,0,1" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" Margin="0,0,0,0" Grid.Row="2" Padding="0,5,0,0" VerticalAlignment="Top" />
-                <TextBlock Text="Best projects" Grid.Row="2" HorizontalAlignment="Center" FontSize="20" VerticalAlignment="Center" Margin="0,0,0,0" />
-                <controls:DataGrid x:Name="BestProjectsDataGrid" Grid.Row="3" IsReadOnly="True" AreRowDetailsFrozen="True" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" GridLinesVisibility="All" FontSize="16" Margin="0,0,0,10">
+                <TextBlock Text="Best projects" Grid.Row="2" HorizontalAlignment="Center" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" VerticalAlignment="Center" Margin="0,0,0,0" />
+                <controls:DataGrid x:Name="BestProjectsDataGrid" Grid.Row="3" IsReadOnly="True" AreRowDetailsFrozen="True" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" GridLinesVisibility="All" Margin="0,0,0,10">
                     <controls:DataGrid.Columns>
                         <controls:DataGridTextColumn Header="Project Name" Binding="{Binding ProjectName}" />
                         <controls:DataGridTextColumn Header="Project Score" Binding="{Binding Score, Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:N3}'}" />
@@ -187,12 +187,12 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Total # of competitions: " FontSize="18" />
-                    <TextBlock x:Name="TotalCompetitionsTextBlock" Text="x" Grid.Column="1" FontSize="18" />
-                    <TextBlock Text="Total # of projects: " Grid.Row="1" FontSize="18" />
-                    <TextBlock x:Name="TotalProjectsTextBlock" Text="x" Grid.Column="1" Grid.Row="1" FontSize="18" />
-                    <TextBlock Text="Average # of projects per competition: " Grid.Row="2" FontSize="18" />
-                    <TextBlock x:Name="AverageProjectsCompetitionTextBlock" Text="x" Grid.Column="1" Grid.Row="2" FontSize="18" />
+                    <TextBlock Text="Total # of competitions: " FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" />
+                    <TextBlock x:Name="TotalCompetitionsTextBlock" Text="x" Grid.Column="1" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" />
+                    <TextBlock Text="Total # of projects: " Grid.Row="1" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" />
+                    <TextBlock x:Name="TotalProjectsTextBlock" Text="x" Grid.Column="1" Grid.Row="1" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" />
+                    <TextBlock Text="Average # of projects per competition: " Grid.Row="2" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" />
+                    <TextBlock x:Name="AverageProjectsCompetitionTextBlock" Text="x" Grid.Column="1" Grid.Row="2" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" />
                 </Grid>
             </Grid>
         </Grid>

@@ -69,6 +69,7 @@ namespace BinCompeteSoftUWP.Pages
                 // Add Navigation View Items for navigation.
                 foreach ((NavigationViewItem NavigationViewItem, Type Page) NavigationItem in AdministratorMenuItems)
                 {
+                    NavigationItem.NavigationViewItem.FontSize = 22;
                     NavigationViewPane.MenuItems.Add(NavigationItem.NavigationViewItem);
                     _pages.Add((NavigationItem.NavigationViewItem.Tag.ToString(), NavigationItem.Page));
                 }
@@ -78,6 +79,7 @@ namespace BinCompeteSoftUWP.Pages
                 // Add Navigation View Items for navigation.
                 foreach ((NavigationViewItem NavigationViewItem, Type Page) NavigationItem in JudgeMenuItems)
                 {
+                    NavigationItem.NavigationViewItem.FontSize = 22;
                     NavigationViewPane.MenuItems.Add(NavigationItem.NavigationViewItem);
                     _pages.Add((NavigationItem.NavigationViewItem.Tag.ToString(), NavigationItem.Page));
                 }

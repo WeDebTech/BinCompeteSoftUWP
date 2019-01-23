@@ -13,7 +13,23 @@ namespace BinCompeteSoftUWP.Classes
     {
         #region Class variables
         public int Id { get; set; }
-        public string Name { get; set; }
+        private string _name;
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _name = value;
+                    TruncatedName = _name.Split(' ')[0];
+                }
+            }
+        }
+        public string TruncatedName { get; set; }
         public string Email { get; set; }
         public string Username { get; set; }
         public bool Administrator { get; set; }
@@ -36,6 +52,7 @@ namespace BinCompeteSoftUWP.Classes
         {
             this.Id = id;
             this.Name = name;
+            this.TruncatedName = name.Split(' ')[0];
             this.Email = email;
             this.Username = username;
             this.Administrator = administrator;

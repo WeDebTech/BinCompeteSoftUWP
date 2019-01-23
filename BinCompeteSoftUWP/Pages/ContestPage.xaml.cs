@@ -98,6 +98,58 @@ namespace BinCompeteSoftUWP.Pages
             ProjectsListView.ItemsSource = ContestToEdit.Projects;
             CriteriaListView.ItemsSource = ContestToEdit.Criterias;
         }
+
+        private void AddJudgeButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddProjectButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddCriteriaButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CancelContestButton_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog contentDialog = new ContentDialog
+            {
+                Title = "Cancel?",
+                Content = "Do you really wish to cancel the creation of this contest?",
+                PrimaryButtonText = "Yes",
+                SecondaryButtonText = "No"
+            };
+
+            // Create callback to be called when ContentDialog closes.
+            Action<ContentDialogResult> callback = (result) =>
+            {
+                if (result == ContentDialogResult.Primary)
+                {
+                    Frame.GoBack();
+                }
+            };
+
+            App.ShowContentDialog(contentDialog, callback);
+        }
+
+        private void ShowResultsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CreateContestButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddDescriptionButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
         #endregion
 
         #region Class methods

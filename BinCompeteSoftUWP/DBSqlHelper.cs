@@ -77,18 +77,4 @@ namespace BinCompeteSoftUWP
         }
         #endregion
     }
-
-    /// <summary>
-    /// This class will store the settings loaded from config.xml.
-    /// </summary>
-    public class Settings
-    {
-        #region Class variables
-        public string Ip { get; set; }
-        public string DBName { get; set; }
-        public string Security { get; set; }
-        public string UserId { get; set; }
-        public string Password { get; set; }
-        #endregion
-    }
 }

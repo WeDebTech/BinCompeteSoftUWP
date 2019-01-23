@@ -1,4 +1,6 @@
 ﻿using BinCompeteSoftUWP.Classes;
+using DotNetMatrix;
+using Net.Kniaz.AHP;
 using System;
 using System.Data.SqlClient;
 using System.IO;
@@ -27,6 +29,87 @@ namespace BinCompeteSoftUWP.Pages
         public LoginPage()
         {
             this.InitializeComponent();
+
+            double[][] criteria = new double[][]
+            {
+                new double[] {1,5,0.33333333,1},
+                new double[] {0,1,0.2,0.5},
+                new double[] {0,0,1,3},
+                new double[] {0,0,0,1}
+            };
+
+            double[][] activitiesChoices = new double[][]
+            {
+                new double[] {1,4,3},
+                new double[] {0,1,2},
+                new double[] {0,0,1}
+            };
+
+            double[][] nightLifeChoices = new double[][]
+            {
+                new double[] {1,0.5,0.33333},
+                new double[] {0,1,0.5},
+                new double[] {0,0,1}
+            };
+
+            double[][] siteseeingSightings = new double[][]
+            {
+                new double[] {1,0.142857,0.2},
+                new double[] {0,1,2},
+                new double[] {0,0,1}
+            };
+
+            double[][] costChoices = new double[][]
+            {
+                new double[] {1,3,5},
+                new double[] {0,1,2},
+                new double[] {0,0,1}
+            };
+
+            // 4 criteria, 3 choices
+            AHPModel model = new AHPModel(4, 3);
+
+            model.AddCriteria(criteria);
+            model.AddCriterionRatedChoices(0, activitiesChoices);
+            model.AddCriterionRatedChoices(1, nightLifeChoices);
+            model.AddCriterionRatedChoices(2, siteseeingSightings);
+            model.AddCriterionRatedChoices(3, costChoices);
+
+            model.CalculateModel();
+
+            GeneralMatrix calcCriteria = model.CalculatedCriteria;
+            GeneralMatrix results = model.ModelResult;
+            GeneralMatrix choices = model.CalculatedChoices;
+
+            AHPModel testStor = new AHPModel(2, 3);
+
+            criteria = new double[][]
+            {
+                new double[] {1,5},
+                new double[] {0,1}
+            };
+
+            double[][] priceChoices = new double[][]
+            {
+                new double[] {1, 0.333333, 0.142857},
+                new double[] {0,1,0.333333},
+                new double[] {0,0,1}
+            };
+
+            double[][] environmentChoices = new double[][]
+            {
+                new double[] {1,3,5},
+                new double[] {0,1,5},
+                new double[] {0,0,1}
+            };
+
+            testStor.AddCriteria(criteria);
+            testStor.AddCriterionRatedChoices(0, priceChoices);
+            testStor.AddCriterionRatedChoices(1, environmentChoices);
+
+            testStor.CalculateModel();
+
+            GeneralMatrix result = model.CalculatedChoices;
         }
         #endregion
 

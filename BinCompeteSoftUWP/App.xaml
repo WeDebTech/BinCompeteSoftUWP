@@ -30,6 +30,7 @@
                   BackgroundSource="Backdrop" TintColor="{ThemeResource SystemChromeMediumColor}" FallbackColor="{ThemeResource SystemChromeMediumColor}" TintOpacity=".5"/>
             <AcrylicBrush x:Key="NavigationViewExpandedPaneBackground"
                   BackgroundSource="HostBackdrop" TintColor="{ThemeResource SystemChromeMediumColor}" FallbackColor="{ThemeResource SystemChromeMediumColor}" TintOpacity=".7"/>
+            <local:Settings x:Key="Settings" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -31,8 +31,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Contest name*" FontSize="20" Margin="5,5,5,5" />
-            <TextBox x:Name="ContestNameTextBox" PlaceholderText="Contest name" Grid.Column="1" FontSize="20" Margin="0,0,5,0" />
+            <TextBlock Text="Contest name*" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,5,5,5" />
+            <TextBox x:Name="ContestNameTextBox" PlaceholderText="Contest name" Grid.Column="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,0,5,0" />
         </Grid>
         <Grid Grid.Row="1" Grid.ColumnSpan="5" Margin="0,10,0,10">
             <Grid.ColumnDefinitions>
@@ -45,20 +45,20 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Start date*" FontSize="20" Margin="5,5,5,5" />
-            <CalendarDatePicker x:Name="StartDateCalendarDatePicker" PlaceholderText="Pick a start date" Grid.Column="1" Margin="5,5,20,5" FontSize="20" DateChanged="StartDateCalendarDatePicker_DateChanged" />
-            <TextBlock Text="Limit date*" FontSize="20" Margin="5,5,5,5" Grid.Column="2" />
-            <CalendarDatePicker x:Name="LimitDateCalendarDatePicker" PlaceholderText="Pick a limit date" Grid.Column="3" Margin="5,5,20,5" FontSize="20" DateChanged="LimitDateCalendarDatePicker_DateChanged" />
-            <TextBlock Text="Voting limit date*" FontSize="20" Margin="5,5,5,5" Grid.Column="4" />
-            <CalendarDatePicker x:Name="VotingLimitDateCalendarDatePicker" PlaceholderText="Pick a voting limit date" Grid.Column="5" Margin="5,5,20,5" FontSize="20" />
-            <Button x:Name="AddDescriptionButton" Content="Description*" Grid.Column="7" FontSize="20" Margin="0,0,5,0" Padding="15,4,15,5" />
+            <TextBlock Text="Start date*" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,5,5,5" />
+            <CalendarDatePicker x:Name="StartDateCalendarDatePicker" PlaceholderText="Pick a start date" Grid.Column="1" Margin="5,5,20,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" DateChanged="StartDateCalendarDatePicker_DateChanged" />
+            <TextBlock Text="Limit date*" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,5,5,5" Grid.Column="2" />
+            <CalendarDatePicker x:Name="LimitDateCalendarDatePicker" PlaceholderText="Pick a limit date" Grid.Column="3" Margin="5,5,20,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" DateChanged="LimitDateCalendarDatePicker_DateChanged" />
+            <TextBlock Text="Voting limit date*" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,5,5,5" Grid.Column="4" />
+            <CalendarDatePicker x:Name="VotingLimitDateCalendarDatePicker" PlaceholderText="Pick a voting limit date" Grid.Column="5" Margin="5,5,20,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
+            <Button x:Name="AddDescriptionButton" Content="Description*" Grid.Column="7" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,0,5,0" Padding="15,4,15,5" Click="AddDescriptionButton_Click" />
         </Grid>
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Button x:Name="AddJudgeButton" Content="Add judge*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="20" Margin="5,0,5,0" />
+            <Button x:Name="AddJudgeButton" Content="Add judge*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,0" Click="AddJudgeButton_Click" />
             <ListView x:Name="JudgesListView" Grid.Row="1" Margin="5,5,5,5">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
@@ -77,9 +77,9 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{x:Bind Path=Name}" FontSize="22" FontWeight="Bold" />
-                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" Grid.Column="1" />
-                            <TextBlock Text="{x:Bind Path=Email}" FontSize="18" Margin="0,0,0,5" Grid.Row="1" Grid.ColumnSpan="2" />
+                            <TextBlock Text="{x:Bind Path=Name}" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" FontWeight="Bold" />
+                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" />
+                            <TextBlock Text="{x:Bind Path=Email}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,0,0,5" Grid.Row="1" Grid.ColumnSpan="2" />
                             <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="2" Grid.ColumnSpan="2" />
                         </Grid>
                     </DataTemplate>
@@ -91,7 +91,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <ProgressRing x:Name="LoadJudgesProgressRing" Margin="0,10,5,0" VerticalAlignment="Top" />
-                <TextBlock x:Name="LoadJudgesTextBlock" Text="Loading judges..." HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0" Grid.Column="1" VerticalAlignment="Top" Visibility="Collapsed" />
+                <TextBlock x:Name="LoadJudgesTextBlock" Text="Loading judges..." HorizontalAlignment="Center" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,10,0,0" Grid.Column="1" VerticalAlignment="Top" Visibility="Collapsed" />
             </Grid>
         </Grid>
         <Grid Grid.Row="2" Grid.Column="2">
@@ -99,7 +99,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Button x:Name="AddProjectButton" Content="Add project" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="20" Margin="5,0,5,0" />
+            <Button x:Name="AddProjectButton" Content="Add project" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,0" Click="AddProjectButton_Click" />
             <ListView x:Name="ProjectsListView" Grid.Row="1" Margin="5,5,5,5">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
@@ -120,11 +120,11 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="22" />
-                            <Button Content="&#xE70F;" FontFamily="Segoe MDL2 Assets" Grid.Column="1" Margin="0,0,5,0" />
-                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" Grid.Column="2" />
-                            <TextBlock Text="{x:Bind Path=Description}" FontSize="18" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="3" />
-                            <TextBlock Text="{x:Bind Path=Category.Name}" FontSize="16" Grid.Row="2" Grid.ColumnSpan="3" />
+                            <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" />
+                            <Button Content="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" Margin="0,0,5,0" />
+                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="2" />
+                            <TextBlock Text="{x:Bind Path=Description}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="3" />
+                            <TextBlock Text="{x:Bind Path=Category.Name}" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.Row="2" Grid.ColumnSpan="3" />
                             <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="3" Grid.ColumnSpan="3" />
                         </Grid>
                     </DataTemplate>
@@ -136,7 +136,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <ProgressRing x:Name="LoadProjectsProgressRing" Margin="0,10,5,0" VerticalAlignment="Top" />
-                <TextBlock x:Name="LoadProjectsTextBlock" Text="Loading projects..." HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0" Grid.Column="1" VerticalAlignment="Top" Visibility="Collapsed" />
+                <TextBlock x:Name="LoadProjectsTextBlock" Text="Loading projects..." HorizontalAlignment="Center" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,10,0,0" Grid.Column="1" VerticalAlignment="Top" Visibility="Collapsed" />
             </Grid>
         </Grid>
         <Grid Grid.Row="2" Grid.Column="4">
@@ -144,7 +144,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Button x:Name="AddCriteriaButton" Content="Add criteria*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="20" Margin="5,0,5,0" />
+            <Button x:Name="AddCriteriaButton" Content="Add criteria*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,0" Click="AddCriteriaButton_Click" />
             <ListView x:Name="CriteriaListView" Grid.Row="1" Margin="5,5,5,5">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
@@ -164,8 +164,8 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="22" />
-                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" Grid.Column="1" />
-                            <TextBlock Text="{x:Bind Path=Description}" FontSize="18" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="3" />
+                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" />
+                            <TextBlock Text="{x:Bind Path=Description}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="3" />
                             <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="2" Grid.ColumnSpan="3" />
                         </Grid>
                     </DataTemplate>
@@ -177,7 +177,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <ProgressRing x:Name="LoadCriteriasProgressRing" Margin="0,10,5,0" VerticalAlignment="Top" />
-                <TextBlock x:Name="LoadCriteriasTextBlock" Text="Loading criterias..." HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0" Grid.Column="1" VerticalAlignment="Top" Visibility="Collapsed" />
+                <TextBlock x:Name="LoadCriteriasTextBlock" Text="Loading criterias..." HorizontalAlignment="Center" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,10,0,0" Grid.Column="1" VerticalAlignment="Top" Visibility="Collapsed" />
             </Grid>
         </Grid>
         <controls:GridSplitter ResizeBehavior="BasedOnAlignment" ResizeDirection="Columns" Grid.Column="1" Grid.Row="2">
@@ -191,16 +191,16 @@
             </controls:GridSplitter.Element>
         </controls:GridSplitter>
         <Border Grid.Row="3" Grid.ColumnSpan="5" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,2" Margin="0,5,0,0" />
-        <TextBlock Text="Fields marked with * are obligatory" FontSize="20" Grid.ColumnSpan="5" Grid.Row="4" HorizontalAlignment="Right" Margin="0,0,10,0" />
+        <TextBlock Text="Fields marked with * are obligatory" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.ColumnSpan="5" Grid.Row="4" HorizontalAlignment="Right" Margin="0,0,10,0" />
         <Grid Grid.Row="5" Grid.ColumnSpan="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="CancelContestButton" Content="Cancel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" FontSize="20" Padding="15,4,15,5" />
-            <Button x:Name="ShowResultsButton" Content="Show results" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" FontSize="20" Grid.Column="1" Padding="15,4,15,5" />
-            <Button x:Name="CreateContestButton" Content="Create contest" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" FontSize="20" Grid.Column="3" Padding="15,4,15,5" />
+            <Button x:Name="CancelContestButton" Content="Cancel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Padding="15,4,15,5" Click="CancelContestButton_Click" />
+            <Button x:Name="ShowResultsButton" Content="Show results" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" Padding="15,4,15,5" Click="ShowResultsButton_Click" />
+            <Button x:Name="CreateContestButton" Content="Create contest" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="3" Padding="15,4,15,5" Click="CreateContestButton_Click" />
         </Grid>
     </Grid>
 </Page>
