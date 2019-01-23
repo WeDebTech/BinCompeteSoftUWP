@@ -30,6 +30,9 @@ namespace BinCompeteSoftUWP.Pages
         private Contest ContestToEdit;
         private bool EditingContest = false;
         private bool ContestStarted, ContestEnded, ContestEndedVoting;
+        public ObservableCollection<JudgeMember> JudgesToAdd { get; set; } = new ObservableCollection<JudgeMember>();
+        public ObservableCollection<Project> ProjectsToAdd { get; set; } = new ObservableCollection<Project>();
+        public ObservableCollection<Criteria> CriteriasToAdd { get; set; } = new ObservableCollection<Criteria>();
 
         private string ContestDescription = "";
         #endregion
@@ -94,14 +97,20 @@ namespace BinCompeteSoftUWP.Pages
             LoadCriteriasProgressRing.IsActive = false;
             LoadCriteriasTextBlock.Visibility = Visibility.Collapsed;
 
-            JudgesListView.ItemsSource = ContestToEdit.JudgeMembers;
-            ProjectsListView.ItemsSource = ContestToEdit.Projects;
-            CriteriaListView.ItemsSource = ContestToEdit.Criterias;
+            JudgesToAdd = ContestToEdit.JudgeMembers;
+            ProjectsToAdd = ContestToEdit.Projects;
+            CriteriasToAdd = ContestToEdit.Criterias;
+
+            JudgesListView.ItemsSource = JudgesToAdd;
+            ProjectsListView.ItemsSource = ProjectsToAdd;
+            CriteriaListView.ItemsSource = CriteriasToAdd;
         }
 
         private void AddJudgeButton_Click(object sender, RoutedEventArgs e)
         {
+            AddJudgeContentDialog addJudgeContentDialog = new AddJudgeContentDialog(this);
 
+            App.ShowContentDialog(addJudgeContentDialog, null);
         }
 
         private void AddProjectButton_Click(object sender, RoutedEventArgs e)
@@ -149,6 +158,15 @@ namespace BinCompeteSoftUWP.Pages
         private void AddDescriptionButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void RemoveJudgeButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Get which item was clicked.
+            var item = ((FrameworkElement)sender).DataContext;
+
+            // Remove judge from the list.
+            JudgesToAdd.Remove((JudgeMember)item);
         }
         #endregion
 
@@ -233,6 +251,11 @@ namespace BinCompeteSoftUWP.Pages
             LimitDateCalendarDatePicker.Date = ContestToEdit.ContestDetails.LimitDate.Date;
             VotingLimitDateCalendarDatePicker.Date = ContestToEdit.ContestDetails.VotingDate.Date;
             ContestDescription = ContestToEdit.ContestDetails.Description;
+        }
+
+        public void AddJudge(JudgeMember judgeMember)
+        {
+            JudgesToAdd.Add(judgeMember);
         }
         #endregion
     }

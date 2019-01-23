@@ -1,0 +1,25 @@
+﻿<ContentDialog
+    x:Class="BinCompeteSoftUWP.Pages.AddJudgeContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BinCompeteSoftUWP.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Add a judge"
+    PrimaryButtonText="Add"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Text="Select a judge" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
+        <ComboBox x:Name="JudgesComboBox" HorizontalAlignment="Stretch" Grid.Row="1" Margin="0,5,0,0" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
+        <TextBlock x:Name="ErrorTextBlock" Text="You must select a judge to add it to the contest" Grid.Row="2" FontSize="{Binding FontSizeSmaller, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" Visibility="Collapsed" />
+    </Grid>
+</ContentDialog>
