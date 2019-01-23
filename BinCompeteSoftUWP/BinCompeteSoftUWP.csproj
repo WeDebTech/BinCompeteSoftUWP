@@ -153,6 +153,9 @@
     <Compile Include="GeneralMatrix\LUDecomposition.cs" />
     <Compile Include="GeneralMatrix\QRDecomposition.cs" />
     <Compile Include="GeneralMatrix\SingularValueDecomposition.cs" />
+    <Compile Include="Pages\AddCriteriaContentDialog.xaml.cs">
+      <DependentUpon>AddCriteriaContentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\AddJudgeContentDialog.xaml.cs">
       <DependentUpon>AddJudgeContentDialog.xaml</DependentUpon>
     </Compile>
@@ -255,6 +258,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Pages\AddCriteriaContentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\AddJudgeContentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

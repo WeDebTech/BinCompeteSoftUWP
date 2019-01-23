@@ -120,7 +120,9 @@ namespace BinCompeteSoftUWP.Pages
 
         private void AddCriteriaButton_Click(object sender, RoutedEventArgs e)
         {
+            AddCriteriaContentDialog addCriteriaContentDialog = new AddCriteriaContentDialog(this);
 
+            App.ShowContentDialog(addCriteriaContentDialog, null);
         }
 
         private void CancelContestButton_Click(object sender, RoutedEventArgs e)
@@ -167,6 +169,15 @@ namespace BinCompeteSoftUWP.Pages
 
             // Remove judge from the list.
             JudgesToAdd.Remove((JudgeMember)item);
+        }
+
+        private void RemoveCriteriaButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Get which item was clicked.
+            var item = ((FrameworkElement)sender).DataContext;
+
+            // Remove judge from the list.
+            CriteriasToAdd.Remove((Criteria)item);
         }
         #endregion
 
@@ -253,9 +264,22 @@ namespace BinCompeteSoftUWP.Pages
             ContestDescription = ContestToEdit.ContestDetails.Description;
         }
 
+        /// <summary>
+        /// Add a judge to the contest.
+        /// </summary>
+        /// <param name="judgeMember">The judge to add</param>
         public void AddJudge(JudgeMember judgeMember)
         {
             JudgesToAdd.Add(judgeMember);
+        }
+
+        /// <summary>
+        /// Add a criteria to the contest.
+        /// </summary>
+        /// <param name="criteria">The criteria to add</param>
+        public void AddCriteria(Criteria criteria)
+        {
+            CriteriasToAdd.Add(criteria);
         }
         #endregion
     }

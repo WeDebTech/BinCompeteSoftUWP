@@ -164,7 +164,7 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="22" />
-                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" />
+                            <Button x:Name="RemoveCriteriaButton" Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" Click="RemoveCriteriaButton_Click" />
                             <TextBlock Text="{x:Bind Path=Description}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="3" />
                             <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="2" Grid.ColumnSpan="3" />
                         </Grid>
