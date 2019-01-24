@@ -120,8 +120,8 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" />
-                            <Button Content="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" Margin="0,0,5,0" />
-                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="2" />
+                            <Button x:Name="EditProjectButton" Content="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" Margin="0,0,5,0" Click="EditProjectButton_Click" />
+                            <Button x:Name="RemoveProjectButton" Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="2" Click="RemoveProjectButton_Click" />
                             <TextBlock Text="{x:Bind Path=Description}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="3" />
                             <TextBlock Text="{x:Bind Path=Category.Name}" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.Row="2" Grid.ColumnSpan="3" />
                             <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="3" Grid.ColumnSpan="3" />

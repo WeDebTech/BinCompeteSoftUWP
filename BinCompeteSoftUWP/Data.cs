@@ -544,7 +544,7 @@ namespace BinCompeteSoftUWP
             }
 
             // Refresh the criteria list.
-            this.RefreshCriteriasAsync();
+            await this.RefreshCriteriasAsync();
 
             // Cycle through all criteria and get the full details.
             foreach (Criteria contestCriteria in contestCriterias)

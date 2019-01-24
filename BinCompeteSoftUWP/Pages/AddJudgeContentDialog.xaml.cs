@@ -45,7 +45,7 @@ namespace BinCompeteSoftUWP.Pages
         {
             judgeMembers = Data.Instance.JudgeMembers;
 
-            ObservableCollection<JudgeMember> judgeMembersAdded = contestPage.JudgesToAdd;
+            ObservableCollection<JudgeMember> judgeMembersAdded = contestPage.Judges;
 
             // Remove judges that are added from the judges that can be added.
             judgeMembers = new ObservableCollection<JudgeMember>(judgeMembers.Where(judge => !judgeMembersAdded.Any(judgeToRemove => judgeToRemove.Id == judge.Id)).ToList());

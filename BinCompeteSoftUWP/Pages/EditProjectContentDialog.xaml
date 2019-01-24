@@ -42,9 +42,9 @@
             <TextBlock Text="Project name" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
             <TextBox x:Name="ProjectNameTextBox" Grid.Column="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,0,5" />
             <TextBlock Text="Project category" Grid.Row="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
-            <ComboBox x:Name="ProjectCategoryComboBox" Grid.Row="1" Grid.Column="1" Margin="5,0,0,5" HorizontalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" SelectionChanged="ProjectCategoryComboBox_SelectionChanged" />
+            <ComboBox x:Name="ProjectCategoryComboBox" Grid.Row="1" Grid.Column="1" Margin="5,0,0,5" HorizontalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
             <TextBlock Text="Project description" Grid.Row="2" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
-            <TextBox x:Name="ProjectDescriptionTextBox" Grid.Column="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Row="2" Margin="5,0,0,5" Width="200" Height="100" TextWrapping="Wrap" />
+            <TextBox x:Name="ProjectDescriptionTextBox" Grid.Column="1" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.Row="2" Margin="5,0,0,5" Width="200" Height="100" TextWrapping="Wrap" PlaceholderText="Write your project description here." />
         </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>

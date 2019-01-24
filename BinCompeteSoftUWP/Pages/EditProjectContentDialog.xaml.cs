@@ -45,8 +45,6 @@ namespace BinCompeteSoftUWP.Pages
             this.contestPage = contestPage;
 
             this.InitializeComponent();
-
-            PromotersListView.ItemsSource = promoters;
         }
         #endregion
 
@@ -72,10 +70,18 @@ namespace BinCompeteSoftUWP.Pages
 
                 project.Name = ProjectNameTextBox.Text;
                 project.Description = ProjectDescriptionTextBox.Text;
+                project.Category = (Category)ProjectCategoryComboBox.SelectedItem;
 
                 project.Promoters = promoters;
 
-                contestPage.AddProject(project);
+                if (!editingProject)
+                {
+                    contestPage.AddProject(project);
+                }
+                else
+                {
+                    contestPage.EditProject(project);
+                }
             }
             else
             {
@@ -86,11 +92,6 @@ namespace BinCompeteSoftUWP.Pages
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-        }
-
-        private void ProjectCategoryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            project.Category = (Category)ProjectCategoryComboBox.SelectedItem;
         }
 
         private void RemovePromoterButton_Click(object sender, RoutedEventArgs e)
@@ -108,7 +109,7 @@ namespace BinCompeteSoftUWP.Pages
             // DateOfBirth must be before today's date.
             if(!string.IsNullOrWhiteSpace(PromoterNameTextBox.Text) && (PromoterDateOfBirthCalendarDatePicker.Date != null) && PromoterDateOfBirthCalendarDatePicker.Date < DateTime.Now.Date)
             {
-                PromoterErrorTextBlock.Visibility = Visibility.Visible;
+                PromoterErrorTextBlock.Visibility = Visibility.Collapsed;
 
                 DateTimeOffset tempDate = (DateTimeOffset)PromoterDateOfBirthCalendarDatePicker.Date;
                 Promoter promoter = new Promoter(-1, PromoterNameTextBox.Text, tempDate.DateTime.Date);
@@ -121,7 +122,7 @@ namespace BinCompeteSoftUWP.Pages
             }
             else
             {
-                PromoterErrorTextBlock.Visibility = Visibility.Collapsed;
+                PromoterErrorTextBlock.Visibility = Visibility.Visible;
             }
         }
 
@@ -138,6 +139,8 @@ namespace BinCompeteSoftUWP.Pages
             {
                 FillProjectDetails();
             }
+
+            PromotersListView.ItemsSource = promoters;
         }
         #endregion
     }

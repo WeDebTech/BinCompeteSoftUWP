@@ -30,9 +30,16 @@ namespace BinCompeteSoftUWP.Pages
         private Contest ContestToEdit;
         private bool EditingContest = false;
         private bool ContestStarted, ContestEnded, ContestEndedVoting;
+        public ObservableCollection<JudgeMember> Judges { get; set; } = new ObservableCollection<JudgeMember>();
+        public ObservableCollection<Project> Projects { get; set; } = new ObservableCollection<Project>();
+        public ObservableCollection<Criteria> Criterias { get; set; } = new ObservableCollection<Criteria>();
         public ObservableCollection<JudgeMember> JudgesToAdd { get; set; } = new ObservableCollection<JudgeMember>();
         public ObservableCollection<Project> ProjectsToAdd { get; set; } = new ObservableCollection<Project>();
         public ObservableCollection<Criteria> CriteriasToAdd { get; set; } = new ObservableCollection<Criteria>();
+        public ObservableCollection<Project> ProjectsToEdit { get; set; } = new ObservableCollection<Project>();
+        public ObservableCollection<JudgeMember> JudgesToRemove { get; set; } = new ObservableCollection<JudgeMember>();
+        public ObservableCollection<Project> ProjectsToRemove { get; set; } = new ObservableCollection<Project>();
+        public ObservableCollection<Criteria> CriteriasToRemove { get; set; } = new ObservableCollection<Criteria>();
 
         private string ContestDescription = "";
         #endregion
@@ -86,6 +93,7 @@ namespace BinCompeteSoftUWP.Pages
             else
             {
                 ContestToEdit = new Contest(-1, ContestToLoad, new ObservableCollection<Project>(), new ObservableCollection<JudgeMember>(), new ObservableCollection<Criteria>(), new double[0, 0]);
+                ContestToEdit.ContestDetails = new ContestDetails();
             }
 
             LoadJudgesProgressRing.IsActive = false;
@@ -97,13 +105,13 @@ namespace BinCompeteSoftUWP.Pages
             LoadCriteriasProgressRing.IsActive = false;
             LoadCriteriasTextBlock.Visibility = Visibility.Collapsed;
 
-            JudgesToAdd = ContestToEdit.JudgeMembers;
-            ProjectsToAdd = ContestToEdit.Projects;
-            CriteriasToAdd = ContestToEdit.Criterias;
+            Judges = ContestToEdit.JudgeMembers;
+            Projects = ContestToEdit.Projects;
+            Criterias = ContestToEdit.Criterias;
 
-            JudgesListView.ItemsSource = JudgesToAdd;
-            ProjectsListView.ItemsSource = ProjectsToAdd;
-            CriteriaListView.ItemsSource = CriteriasToAdd;
+            JudgesListView.ItemsSource = Judges;
+            ProjectsListView.ItemsSource = Projects;
+            CriteriaListView.ItemsSource = Criterias;
         }
 
         private void AddJudgeButton_Click(object sender, RoutedEventArgs e)
@@ -156,12 +164,14 @@ namespace BinCompeteSoftUWP.Pages
 
         private void CreateContestButton_Click(object sender, RoutedEventArgs e)
         {
-
+            InsertContestToDB();
         }
 
         private void AddDescriptionButton_Click(object sender, RoutedEventArgs e)
         {
+            EditContestDescriptionContentDialog editContestDescriptionContentDialog = new EditContestDescriptionContentDialog(this, ContestToEdit.ContestDetails.Description);
 
+            App.ShowContentDialog(editContestDescriptionContentDialog, null);
         }
 
         private void RemoveJudgeButton_Click(object sender, RoutedEventArgs e)
@@ -170,7 +180,8 @@ namespace BinCompeteSoftUWP.Pages
             var item = ((FrameworkElement)sender).DataContext;
 
             // Remove judge from the list.
-            JudgesToAdd.Remove((JudgeMember)item);
+            Judges.Remove((JudgeMember)item);
+            JudgesToRemove.Add((JudgeMember)item);
         }
 
         private void RemoveCriteriaButton_Click(object sender, RoutedEventArgs e)
@@ -179,7 +190,28 @@ namespace BinCompeteSoftUWP.Pages
             var item = ((FrameworkElement)sender).DataContext;
 
             // Remove judge from the list.
-            CriteriasToAdd.Remove((Criteria)item);
+            Criterias.Remove((Criteria)item);
+            CriteriasToRemove.Add((Criteria)item);
+        }
+
+        private void RemoveProjectButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Get which item was clicked.
+            var item = ((FrameworkElement)sender).DataContext;
+
+            // Remove judge from the list.
+            Projects.Remove((Project)item);
+            ProjectsToRemove.Add((Project)item);
+        }
+
+        private void EditProjectButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Get which item was clicked.
+            var item = ((FrameworkElement)sender).DataContext;
+
+            EditProjectContentDialog editProjectContentDialog = new EditProjectContentDialog(this, (Project)item);
+
+            App.ShowContentDialog(editProjectContentDialog, null);
         }
         #endregion
 
@@ -272,6 +304,7 @@ namespace BinCompeteSoftUWP.Pages
         /// <param name="judgeMember">The judge to add</param>
         public void AddJudge(JudgeMember judgeMember)
         {
+            Judges.Add(judgeMember);
             JudgesToAdd.Add(judgeMember);
         }
 
@@ -281,6 +314,7 @@ namespace BinCompeteSoftUWP.Pages
         /// <param name="criteria">The criteria to add</param>
         public void AddCriteria(Criteria criteria)
         {
+            Criterias.Add(criteria);
             CriteriasToAdd.Add(criteria);
         }
 
@@ -290,7 +324,36 @@ namespace BinCompeteSoftUWP.Pages
         /// <param name="project">The project to add</param>
         public void AddProject(Project project)
         {
+            Projects.Add(project);
             ProjectsToAdd.Add(project);
+        }
+
+        /// <summary>
+        /// Edits an existing project in the contest.
+        /// </summary>
+        public void EditProject(Project project)
+        {
+            int index = Projects.IndexOf(project);
+            if(index != -1)
+            {
+                Projects[index] = project;
+                ProjectsToEdit.Add(project);
+            }
+
+            ProjectsListView.ItemsSource = Projects;
+        }
+
+        /// <summary>
+        /// Edits the contest description.
+        /// </summary>
+        public void EditDescription(string description)
+        {
+            ContestToEdit.ContestDetails.Description = description;
+        }
+
+        private async void InsertContestToDB()
+        {
+
         }
         #endregion
     }
