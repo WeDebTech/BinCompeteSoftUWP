@@ -140,6 +140,7 @@
     <Compile Include="Classes\NotificationListItem.cs" />
     <Compile Include="Classes\Project.cs" />
     <Compile Include="Classes\ProjectContestEvaluation.cs" />
+    <Compile Include="Classes\Promoter.cs" />
     <Compile Include="Classes\Statistic.cs" />
     <Compile Include="Classes\User.cs" />
     <Compile Include="Converters\BooleanToTooltipConverter.cs" />
@@ -164,6 +165,9 @@
     </Compile>
     <Compile Include="Pages\ContestsListPage.xaml.cs">
       <DependentUpon>ContestsListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EditProjectContentDialog.xaml.cs">
+      <DependentUpon>EditProjectContentDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\JudgeDashboardPage.xaml.cs">
       <DependentUpon>JudgeDashboardPage.xaml</DependentUpon>
@@ -271,6 +275,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\ContestsListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EditProjectContentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

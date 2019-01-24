@@ -115,8 +115,8 @@
                             <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" />
                             <TextBlock Text="&#xE8D7;" FontFamily="Segoe MDL2 Assets" Grid.Column="1" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Visibility="{x:Bind Path=HasBeenCreatedByCurrentUser, Converter={StaticResource BoolToVis}}" Margin="0,5,0,0" />
                             <TextBlock Text="{x:Bind Path=Description}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="2" />
-                            <TextBlock Text="{x:Bind Path=LimitDate, Converter={StaticResource StringFormatConverter}, ConverterParameter='Limit date: {0: dd-MM-yyy}'}" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.Row="2" Grid.ColumnSpan="2" />
-                            <TextBlock Text="{x:Bind Path=VotingDate, Converter={StaticResource StringFormatConverter}, ConverterParameter='Voting limit date: {0: dd-MM-yyy}'}" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Margin="0,0,0,5" Grid.Row="3" Grid.ColumnSpan="2" />
+                            <TextBlock Text="{x:Bind Path=LimitDate, Converter={StaticResource StringFormatConverter}, ConverterParameter='Limit date: {0: dd-MM-yyyy}'}" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.Row="2" Grid.ColumnSpan="2" />
+                            <TextBlock Text="{x:Bind Path=VotingDate, Converter={StaticResource StringFormatConverter}, ConverterParameter='Voting limit date: {0: dd-MM-yyyy}'}" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Margin="0,0,0,5" Grid.Row="3" Grid.ColumnSpan="2" />
                             <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="4" Grid.ColumnSpan="2" />
                         </Grid>
                     </DataTemplate>

@@ -79,7 +79,6 @@
                             </Grid.RowDefinitions>
                             <TextBlock Text="{x:Bind Path=Name}" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" FontWeight="Bold" />
                             <Button x:Name="RemoveJudgeButton" Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" Click="RemoveJudgeButton_Click" Tag="{Binding}" />
-                            <TextBlock Text="{x:Bind Path=Email}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,0,0,5" Grid.Row="1" Grid.ColumnSpan="2" />
                             <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="2" Grid.ColumnSpan="2" />
                         </Grid>
                     </DataTemplate>

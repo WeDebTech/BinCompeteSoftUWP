@@ -66,8 +66,8 @@ namespace BinCompeteSoftUWP
                 string hashedPassword = DBSqlHelper.SHA512(password);
 
                 // Select user if username and password are correct OR first_time_login is set.
-                string query = "SELECT id_user, fullname, email, username, administrator, first_time_login, valid FROM user_table " +
-                    "WHERE (username = @username OR email = @username) AND (pw = @password OR first_time_login = 1)";
+                string query = "SELECT id_user, fullname, username, administrator, first_time_login, valid FROM user_table " +
+                    "WHERE (username = @username) AND (pw = @password OR first_time_login = 1)";
 
                 cmd = DBSqlHelper.Connection.CreateCommand();
                 cmd.CommandText = query;
@@ -89,7 +89,7 @@ namespace BinCompeteSoftUWP
                         // Construct user information from database.
                         await reader.ReadAsync();
 
-                        User loggedUser = new User(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetBoolean(4), reader.GetBoolean(5), reader.GetBoolean(6));
+                        User loggedUser = new User(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetBoolean(3), reader.GetBoolean(4), reader.GetBoolean(5));
 
                         return loggedUser;
                     }
@@ -121,7 +121,7 @@ namespace BinCompeteSoftUWP
         public async Task<bool> RefreshJudgesAsync()
         {
             // Load the judges from the Database
-            string query = "SELECT id_user, fullname, email FROM user_table WHERE valid = 1";
+            string query = "SELECT id_user, fullname FROM user_table WHERE valid = 1";
 
             SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
             cmd.CommandText = query;
@@ -137,7 +137,7 @@ namespace BinCompeteSoftUWP
                     while (await reader.ReadAsync())
                     {
                         // Construct user information from database
-                        JudgeMember judge = new JudgeMember((int)reader[0], reader[1].ToString(), reader[2].ToString());
+                        JudgeMember judge = new JudgeMember((int)reader[0], reader[1].ToString());
 
                         // Check if judge is not the current user
                         if (judge.Id != LoggedInUser.Id)
@@ -433,7 +433,7 @@ namespace BinCompeteSoftUWP
             }
 
             // Get the contest project list.
-            query = "SELECT id_project, project_name, descript, promoter_name, promoter_age, id_category, project_year FROM project_table WHERE id_contest = @id_contest ORDER BY id_project";
+            query = "SELECT id_project, project_name, descript, id_category, project_year FROM project_table WHERE id_contest = @id_contest ORDER BY id_project";
 
             cmd = DBSqlHelper.Connection.CreateCommand();
             cmd.CommandText = query;
@@ -450,7 +450,7 @@ namespace BinCompeteSoftUWP
                     // Read every project, and store it in a list.
                     while (reader.Read())
                     {
-                        Project project = new Project(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), reader.GetString(3), reader.GetInt32(4), new Category(reader.GetInt32(5), ""), reader.GetInt32(6));
+                        Project project = new Project(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), new Category(reader.GetInt32(4), ""), reader.GetInt32(5));
 
                         contestProjects.Add(project);
                     }
@@ -494,7 +494,7 @@ namespace BinCompeteSoftUWP
                         // Check if it's not the president.
                         if (!reader.GetBoolean(1))
                         {
-                            JudgeMember judge = new JudgeMember(reader.GetInt32(0), "", "");
+                            JudgeMember judge = new JudgeMember(reader.GetInt32(0), "");
 
                             contestJudges.Add(judge);
                         }
@@ -512,7 +512,6 @@ namespace BinCompeteSoftUWP
                     {
                         // Assign the judge details to the contest judge.
                         contestJudge.Name = judge.Name;
-                        contestJudge.Email = judge.Email;
                     }
                 }
             }

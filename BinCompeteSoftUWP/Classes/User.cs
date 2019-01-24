@@ -30,7 +30,6 @@ namespace BinCompeteSoftUWP.Classes
             }
         }
         public string TruncatedName { get; set; }
-        public string Email { get; set; }
         public string Username { get; set; }
         public bool Administrator { get; set; }
         public bool FirstTimeLogin { get; set; }
@@ -43,17 +42,15 @@ namespace BinCompeteSoftUWP.Classes
         /// </summary>
         /// <param name="id">The user id.</param>
         /// <param name="name">The user name.</param>
-        /// <param name="email">The user email.</param>
         /// <param name="username">The user username.</param>
         /// <param name="administrator">The user administrator status.</param>
         /// <param name="firstTimeLogin">The user first time login status.</param>
         /// <param name="valid">The user valid status.</param>
-        public User(int id, string name, string email, string username, bool administrator, bool firstTimeLogin, bool valid)
+        public User(int id, string name, string username, bool administrator, bool firstTimeLogin, bool valid)
         {
             this.Id = id;
             this.Name = name;
             this.TruncatedName = name.Split(' ')[0];
-            this.Email = email;
             this.Username = username;
             this.Administrator = administrator;
             this.FirstTimeLogin = firstTimeLogin;

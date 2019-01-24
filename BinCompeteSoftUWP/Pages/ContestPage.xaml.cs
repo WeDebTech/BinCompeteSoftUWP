@@ -115,7 +115,9 @@ namespace BinCompeteSoftUWP.Pages
 
         private void AddProjectButton_Click(object sender, RoutedEventArgs e)
         {
+            EditProjectContentDialog editProjectContentDialog = new EditProjectContentDialog(this, null);
 
+            App.ShowContentDialog(editProjectContentDialog, null);
         }
 
         private void AddCriteriaButton_Click(object sender, RoutedEventArgs e)
@@ -280,6 +282,15 @@ namespace BinCompeteSoftUWP.Pages
         public void AddCriteria(Criteria criteria)
         {
             CriteriasToAdd.Add(criteria);
+        }
+
+        /// <summary>
+        /// Add a project to the contest.
+        /// </summary>
+        /// <param name="project">The project to add</param>
+        public void AddProject(Project project)
+        {
+            ProjectsToAdd.Add(project);
         }
         #endregion
     }

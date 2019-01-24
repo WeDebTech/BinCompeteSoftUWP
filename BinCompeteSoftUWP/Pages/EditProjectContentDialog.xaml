@@ -1,0 +1,96 @@
+﻿<ContentDialog
+    x:Class="BinCompeteSoftUWP.Pages.EditProjectContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BinCompeteSoftUWP.Pages"
+    xmlns:classes="using:BinCompeteSoftUWP.Classes"
+    xmlns:conv="using:BinCompeteSoftUWP.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Edit project"
+    PrimaryButtonText="Confirm"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick" Loading="ContentDialog_Loading">
+    <ContentDialog.Resources>
+        <conv:StringFormatConverter x:Name="StringFormatConverter" />
+    </ContentDialog.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Project name" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
+            <TextBox x:Name="ProjectNameTextBox" Grid.Column="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,0,5" />
+            <TextBlock Text="Project category" Grid.Row="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
+            <ComboBox x:Name="ProjectCategoryComboBox" Grid.Row="1" Grid.Column="1" Margin="5,0,0,5" HorizontalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" SelectionChanged="ProjectCategoryComboBox_SelectionChanged" />
+            <TextBlock Text="Project description" Grid.Row="2" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
+            <TextBox x:Name="ProjectDescriptionTextBox" Grid.Column="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Row="2" Margin="5,0,0,5" Width="200" Height="100" TextWrapping="Wrap" />
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Promoter name" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,0,0" />
+            <TextBox x:Name="PromoterNameTextBox" Grid.Column="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,5" Width="200" />
+            <TextBlock Text="Promoter age" Grid.Row="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,0,0" />
+            <CalendarDatePicker x:Name="PromoterDateOfBirthCalendarDatePicker" Grid.Row="1" Grid.Column="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,0,5,5" />
+            <Button x:Name="AddPromoterButton" Content="Add promoter" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Margin="5,0,5,0" Click="AddPromoterButton_Click" />
+        </Grid>
+        <Grid Grid.Column="2" Width="300">
+            <ListView x:Name="PromotersListView">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="classes:Promoter">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind Path=Name}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" FontWeight="Bold" />
+                            <TextBlock Text="{x:Bind Path=DateOfBirth, Converter={StaticResource StringFormatConverter}, ConverterParameter='Born: {0: dd-MM-yyyy}'}" FontSize="{Binding FontSizeSmaller, Source={StaticResource Settings}}" Grid.Row="1" Grid.ColumnSpan="2" />
+                            <Button x:Name="RemovePromoterButton" Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" Click="RemovePromoterButton_Click" Tag="{Binding}" />
+                            <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="2" Grid.ColumnSpan="2" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+        <TextBlock x:Name="ProjectErrorTextBlock" Text="You must fill all fields to add this contest!" Grid.Row="1" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Visibility="Collapsed" />
+        <TextBlock x:Name="PromoterErrorTextBlock" Text="You must fill all fields to add this promoter!" Grid.Row="1" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.Column="1" Visibility="Collapsed" />
+    </Grid>
+</ContentDialog>
