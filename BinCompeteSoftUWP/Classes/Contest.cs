@@ -19,7 +19,6 @@ namespace BinCompeteSoftUWP.Classes
         public ObservableCollection<Project> Projects { get; set; }
         public ObservableCollection<JudgeMember> JudgeMembers { get; set; }
         public ObservableCollection<Criteria> Criterias { get; set; }
-        public double[,] CriteriaValues { get; set; }
         #endregion
 
         #region Class constructors
@@ -31,42 +30,20 @@ namespace BinCompeteSoftUWP.Classes
         /// <param name="projects">The contest projects.</param>
         /// <param name="judgeMembers">The contest judge members.</param>
         /// <param name="criterias">The contest criterias.</param>
-        /// <param name="criteriaValues">The contest criteria values for evaluation.</param>
-        public Contest(int id, ContestDetails contestDetails, ObservableCollection<Project> projects, ObservableCollection<JudgeMember> judgeMembers, ObservableCollection<Criteria> criterias, double[,] criteriaValues)
+        public Contest(int id, ContestDetails contestDetails, ObservableCollection<Project> projects, ObservableCollection<JudgeMember> judgeMembers, ObservableCollection<Criteria> criterias)
         {
             Id = id;
             ContestDetails = contestDetails;
             Projects = projects;
             JudgeMembers = judgeMembers;
             Criterias = criterias;
-            CriteriaValues = criteriaValues;
         }
 
         /// <summary>
         /// Contest constructor that takes no arguments.
         /// Creates contest with id 0, no contest details, no projects, no judges, no criterias and empty criteria values matrix.
         /// </summary>
-        public Contest() : this(0, new ContestDetails(), new ObservableCollection<Project>(), new ObservableCollection<JudgeMember>(), new ObservableCollection<Criteria>(), new double[0, 0]) { }
-        #endregion
-
-        #region Class methods
-        /// <summary>
-        /// Method to set the criteria values matrix with a json string.
-        /// </summary>
-        /// <param name="jsonCriteriaValues">The json string containing the criteria values.</param>
-        public void SetCriteriaValuesFromJSON(string jsonCriteriaValues)
-        {
-            this.CriteriaValues = JsonConvert.DeserializeObject<double[,]>(jsonCriteriaValues);
-        }
-
-        /// <summary>
-        /// Method to construct a JSON string from the criteria values.
-        /// </summary>
-        /// <returns>The criteria values in a JSON string.</returns>
-        public string GetCriteriaValuesJSON()
-        {
-            return JsonConvert.SerializeObject(CriteriaValues);
-        }
+        public Contest() : this(0, new ContestDetails(), new ObservableCollection<Project>(), new ObservableCollection<JudgeMember>(), new ObservableCollection<Criteria>()) { }
         #endregion
     }
 }

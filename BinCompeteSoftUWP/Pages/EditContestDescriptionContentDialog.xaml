@@ -17,7 +17,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBox x:Name="ProjectDescriptionTextBox" Width="400" Height="200" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" PlaceholderText="Write your contest description here." />
+        <TextBox x:Name="ProjectDescriptionTextBox" Width="400" Height="200" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" PlaceholderText="Write your contest description here." TextWrapping="Wrap" />
         <TextBlock x:Name="ProjectDescriptionErrorText" Text="You must enter a description for the contest!" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.Row="1" Visibility="Collapsed" />
     </Grid>
 </ContentDialog>

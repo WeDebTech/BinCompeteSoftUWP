@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -92,7 +94,7 @@ namespace BinCompeteSoftUWP.Pages
             }
             else
             {
-                ContestToEdit = new Contest(-1, ContestToLoad, new ObservableCollection<Project>(), new ObservableCollection<JudgeMember>(), new ObservableCollection<Criteria>(), new double[0, 0]);
+                ContestToEdit = new Contest(-1, ContestToLoad, new ObservableCollection<Project>(), new ObservableCollection<JudgeMember>(), new ObservableCollection<Criteria>());
                 ContestToEdit.ContestDetails = new ContestDetails();
             }
 
@@ -162,9 +164,136 @@ namespace BinCompeteSoftUWP.Pages
             Frame.Navigate(typeof(VotingPage));
         }
 
-        private void CreateContestButton_Click(object sender, RoutedEventArgs e)
+        private async void CreateContestButton_Click(object sender, RoutedEventArgs e)
         {
-            InsertContestToDB();
+            bool errored = false;
+            string errorList = "";
+
+            // Check if everything has been filled out.
+            if (string.IsNullOrWhiteSpace(ContestNameTextBox.Text))
+            {
+                errored = true;
+                errorList += "Contest name\n";
+            }
+            if (StartDateCalendarDatePicker.Date == null || StartDateCalendarDatePicker.Date < DateTime.Now.Date)
+            {
+                errored = true;
+                errorList += "Contest start date\n";
+            }
+            if (LimitDateCalendarDatePicker.Date== null || LimitDateCalendarDatePicker.Date < DateTime.Now.Date || LimitDateCalendarDatePicker.Date < StartDateCalendarDatePicker.Date)
+            {
+                errored = true;
+                errorList += "Contest limit date\n";
+            }
+            if (VotingLimitDateCalendarDatePicker.Date == null || VotingLimitDateCalendarDatePicker.Date < DateTime.Now.Date || VotingLimitDateCalendarDatePicker.Date < LimitDateCalendarDatePicker.Date || VotingLimitDateCalendarDatePicker.Date < StartDateCalendarDatePicker.Date)
+            {
+                errored = true;
+                errorList += "Contest voting limit date\n";
+            }
+            if (string.IsNullOrWhiteSpace(ContestToEdit.ContestDetails.Description))
+            {
+                errored = true;
+                errorList += "Contest description\n";
+            }
+            if(Judges.Count <= 0)
+            {
+                errored = true;
+                errorList += "Contest judges\n";
+            }
+            if(Criterias.Count <= 0)
+            {
+                errored = true;
+                errorList += "Contest criterias\n";
+            }
+            if (errored)
+            {
+                ContentDialog errorMsg = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "You must fill the missing fields to create this contest:\n" + errorList,
+                    PrimaryButtonText = "OK"
+                };
+
+                App.ShowContentDialog(errorMsg, null);
+            }
+            else
+            {
+                // Update the contest with the provided details.
+                ContestToEdit.ContestDetails.Name = ContestNameTextBox.Text;
+                ContestToEdit.ContestDetails.StartDate = ((DateTimeOffset)StartDateCalendarDatePicker.Date).DateTime.Date;
+                ContestToEdit.ContestDetails.LimitDate = ((DateTimeOffset)LimitDateCalendarDatePicker.Date).DateTime.Date;
+                ContestToEdit.ContestDetails.VotingDate = ((DateTimeOffset)VotingLimitDateCalendarDatePicker.Date).DateTime.Date;
+                ContestToEdit.JudgeMembers = Judges;
+                ContestToEdit.Projects = Projects;
+                ContestToEdit.Criterias = Criterias;
+
+                OverlayRectangle.Visibility = Visibility.Visible;
+                InsertContestProgressRing.IsActive = true;
+                InsertContestTextBlock.Visibility = Visibility.Visible;
+
+                if (EditingContest)
+                {
+                    if(await UpdateContestInDb())
+                    {
+                        ContentDialog contentMsg = new ContentDialog
+                        {
+                            Title = "Success",
+                            Content = "Updated contest successfully.",
+                            PrimaryButtonText = "OK"
+                        };
+
+                        App.ShowContentDialog(contentMsg, null);
+
+                        this.Frame.Navigate(typeof(JudgeDashboardPage));
+                    }
+                    else
+                    {
+                        OverlayRectangle.Visibility = Visibility.Collapsed;
+                        InsertContestProgressRing.IsActive = false;
+                        InsertContestTextBlock.Visibility = Visibility.Collapsed;
+
+                        ContentDialog errorMsg = new ContentDialog
+                        {
+                            Title = "Error",
+                            Content = "Error updating the contest, try again later.",
+                            PrimaryButtonText = "OK"
+                        };
+
+                        App.ShowContentDialog(errorMsg, null);
+                    }
+                }
+                else
+                {
+                    if(await InsertContestToDB())
+                    {
+                        ContentDialog contentMsg = new ContentDialog
+                        {
+                            Title = "Success",
+                            Content = "Created contest successfully.",
+                            PrimaryButtonText = "OK"
+                        };
+
+                        App.ShowContentDialog(contentMsg, null);
+
+                        this.Frame.Navigate(typeof(JudgeDashboardPage));
+                    }
+                    else
+                    {
+                        OverlayRectangle.Visibility = Visibility.Collapsed;
+                        InsertContestProgressRing.IsActive = false;
+                        InsertContestTextBlock.Visibility = Visibility.Collapsed;
+
+                        ContentDialog errorMsg = new ContentDialog
+                        {
+                            Title = "Error",
+                            Content = "Error creating the contest, try again later.",
+                            PrimaryButtonText = "OK"
+                        };
+
+                        App.ShowContentDialog(errorMsg, null);
+                    }
+                }
+            }
         }
 
         private void AddDescriptionButton_Click(object sender, RoutedEventArgs e)
@@ -181,6 +310,7 @@ namespace BinCompeteSoftUWP.Pages
 
             // Remove judge from the list.
             Judges.Remove((JudgeMember)item);
+            JudgesToAdd.Remove((JudgeMember)item);
             JudgesToRemove.Add((JudgeMember)item);
         }
 
@@ -191,6 +321,7 @@ namespace BinCompeteSoftUWP.Pages
 
             // Remove judge from the list.
             Criterias.Remove((Criteria)item);
+            CriteriasToAdd.Remove((Criteria)item);
             CriteriasToRemove.Add((Criteria)item);
         }
 
@@ -201,6 +332,7 @@ namespace BinCompeteSoftUWP.Pages
 
             // Remove judge from the list.
             Projects.Remove((Project)item);
+            ProjectsToAdd.Remove((Project)item);
             ProjectsToRemove.Add((Project)item);
         }
 
@@ -351,9 +483,337 @@ namespace BinCompeteSoftUWP.Pages
             ContestToEdit.ContestDetails.Description = description;
         }
 
-        private async void InsertContestToDB()
+        private async Task<bool> UpdateContestInDb()
         {
+            try
+            {
+                string query = "UPDATE contest_table SET contest_name = @contest_name, descript = @descript, start_date = @start_date, limit_date = @limit_date, voting_limit_date = @voting_limit_date " +
+                    "WHERE id_contest = @id_contest";
 
+                SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
+                cmd.CommandText = query;
+
+                cmd.Parameters.Add(new SqlParameter("@id_contest", ContestToEdit.Id));
+
+                cmd.Parameters.Add(new SqlParameter("@contest_name", ContestToEdit.ContestDetails.Name));
+
+                cmd.Parameters.Add(new SqlParameter("@descript", ContestToEdit.ContestDetails.Description));
+
+                cmd.Parameters.Add(new SqlParameter("@start_date", ContestToEdit.ContestDetails.StartDate));
+
+                cmd.Parameters.Add(new SqlParameter("@limit_date", ContestToEdit.ContestDetails.LimitDate));
+
+                cmd.Parameters.Add(new SqlParameter("@voting_limit_date", ContestToEdit.ContestDetails.VotingDate));
+
+                // Execute query.
+                await cmd.ExecuteNonQueryAsync();
+
+                // Add all projects.
+                foreach (Project project in ProjectsToAdd)
+                {
+                    query = "INSERT INTO project_table (id_contest, id_category, descript, project_year) " +
+                        "VALUES (@id_contest, @id_category, @descript, @project_year); " +
+                        "SELECT CAST(scope_identity() as int)";
+
+                    cmd = DBSqlHelper.Connection.CreateCommand();
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.Add(new SqlParameter("@id_contest", ContestToEdit.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@id_category", project.Category.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@descript", project.Description));
+
+                    cmd.Parameters.Add(new SqlParameter("@project_year", project.Year));
+
+                    // Execute query.
+                    int insertProjectId = (int)await cmd.ExecuteScalarAsync();
+
+                    // Add all promoters.
+                    foreach (Promoter promoter in project.Promoters)
+                    {
+                        query = "INSERT INTO promoter_table (id_project, name, date_of_birth) " +
+                            "VALUES (@id_project, @name, @date_of_birth)";
+
+                        cmd = DBSqlHelper.Connection.CreateCommand();
+                        cmd.CommandText = query;
+
+                        cmd.Parameters.Add(new SqlParameter("@id_project", insertProjectId));
+
+                        cmd.Parameters.Add(new SqlParameter("@name", promoter.Name));
+
+                        cmd.Parameters.Add(new SqlParameter("@date_of_birth", promoter.DateOfBirth));
+
+                        // Execute query.
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+
+                // Remove removed projects.
+                foreach(Project project in ProjectsToRemove)
+                {
+                    query = "DELETE FROM project_table WHERE id_project = @id_project";
+
+                    cmd = DBSqlHelper.Connection.CreateCommand();
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.Add(new SqlParameter("@id_project", project.Id));
+
+                    await cmd.ExecuteNonQueryAsync();
+
+                    foreach(Promoter promoter in project.Promoters)
+                    {
+                        query = "DELETE FROM promoter_table WHERE id_promoter = @id_promoter";
+
+                        cmd = DBSqlHelper.Connection.CreateCommand();
+                        cmd.CommandText = query;
+
+                        cmd.Parameters.Add(new SqlParameter("@id_promoter", promoter.Id));
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+
+                // Edit edited projects.
+                foreach (Project project in ProjectsToEdit)
+                {
+                    query = "UPDATE project_table SET id_contest = @id_contest, id_category = @id_category, name = @name, descript = @descript, project_year = @project_year WHERE id_project = @id_project";
+
+                    cmd = DBSqlHelper.Connection.CreateCommand();
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.Add(new SqlParameter("@id_project", project.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@id_contest", ContestToEdit.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@id_category", project.Category.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@name", project.Name));
+
+                    cmd.Parameters.Add(new SqlParameter("@descript", project.Description));
+
+                    cmd.Parameters.Add(new SqlParameter("@project_year", project.Year));
+
+                    await cmd.ExecuteNonQueryAsync();
+
+                    foreach (Promoter promoter in project.Promoters)
+                    {
+                        query = "DELETE FROM promoter_table WHERE id_promoter = @id_promoter";
+
+                        cmd = DBSqlHelper.Connection.CreateCommand();
+                        cmd.CommandText = query;
+
+                        cmd.Parameters.Add(new SqlParameter("@id_promoter", promoter.Id));
+
+                        await cmd.ExecuteNonQueryAsync();
+
+                        query = "INSERT INTO promoter_table (id_project, name, date_of_birth) " +
+                            "VALUES (@id_project, @name, @date_of_birth)";
+
+                        cmd = DBSqlHelper.Connection.CreateCommand();
+                        cmd.CommandText = query;
+
+                        cmd.Parameters.Add(new SqlParameter("@id_project", project.Id));
+
+                        cmd.Parameters.Add(new SqlParameter("@name", promoter.Name));
+
+                        cmd.Parameters.Add(new SqlParameter("@date_of_birth", promoter.DateOfBirth));
+
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+
+                // Add the remaining judges.
+                foreach (JudgeMember judgeMember in JudgesToAdd)
+                {
+                    query = "INSERT INTO contest_juri_table (id_contest, id_user, has_voted, president) " +
+                    "VALUES (@id_contest, @id_user, 0, 0)";
+
+                    cmd = DBSqlHelper.Connection.CreateCommand();
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.Add(new SqlParameter("@id_contest", ContestToEdit.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@id_user", judgeMember.Id));
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+                // Remove the removed judges.
+                foreach(JudgeMember judgeMember in JudgesToRemove)
+                {
+                    query = "DELETE FROM contest_juri_table WHERE id_contest = @id_contest AND id_user = @id_user";
+
+                    cmd = DBSqlHelper.Connection.CreateCommand();
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.Add(new SqlParameter("@id_contest", ContestToEdit.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@id_user", judgeMember.Id));
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+                // Add all the criterias to the database.
+                foreach (Criteria criteria in CriteriasToAdd)
+                {
+                    query = "INSERT INTO contest_criteria_table (id_criteria, id_contest) " +
+                        "VALUES (@id_criteria, @id_contest)";
+
+                    cmd = DBSqlHelper.Connection.CreateCommand();
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.Add(new SqlParameter("@id_criteria", criteria.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@id_contest", ContestToEdit.Id));
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+                // Remove removed criterias.
+                foreach (Criteria criteria in CriteriasToRemove)
+                {
+                    query = "DELETE FROM contest_criteria_table " +
+                        "WHERE id_criteria = @id_criteria AND id_contest = @id_contest";
+
+                    cmd = DBSqlHelper.Connection.CreateCommand();
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.Add(new SqlParameter("@id_criteria", criteria.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@id_contest", ContestToEdit.Id));
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+                await Data.Instance.RefreshContestsAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        private async Task<bool> InsertContestToDB()
+        {
+            try
+            {
+                string query = "INSERT INTO contest_table (contest_name, descript, start_date, limit_date, voting_limit_date) " +
+                    "VALUES (@contest_name, @descript, @start_date, @limit_date, @voting_limit_date); " +
+                    "SELECT CAST(scope_identity() as int)";
+
+                SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
+                cmd.CommandText = query;
+
+                cmd.Parameters.Add(new SqlParameter("@contest_name", ContestToEdit.ContestDetails.Name));
+
+                cmd.Parameters.Add(new SqlParameter("@descript", ContestToEdit.ContestDetails.Description));
+
+                cmd.Parameters.Add(new SqlParameter("@start_date", ContestToEdit.ContestDetails.StartDate));
+
+                cmd.Parameters.Add(new SqlParameter("@limit_date", ContestToEdit.ContestDetails.LimitDate));
+
+                cmd.Parameters.Add(new SqlParameter("@voting_limit_date", ContestToEdit.ContestDetails.VotingDate));
+
+                // Execute query.
+                int insertedId = (int)await cmd.ExecuteScalarAsync();
+
+                // Add all projects.
+                foreach(Project project in ProjectsToAdd)
+                {
+                    query = "INSERT INTO project_table (id_contest, id_category, descript, project_year) " +
+                        "VALUES (@id_contest, @id_category, @descript, @project_year); " +
+                        "SELECT CAST(scope_identity() as int)";
+
+                    cmd = DBSqlHelper.Connection.CreateCommand();
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.Add(new SqlParameter("@id_contest", insertedId));
+
+                    cmd.Parameters.Add(new SqlParameter("@id_category", project.Category.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@descript", project.Description));
+
+                    cmd.Parameters.Add(new SqlParameter("@project_year", project.Year));
+
+                    // Execute query.
+                    int insertProjectId = (int)await cmd.ExecuteScalarAsync();
+
+                    // Add all promoters.
+                    foreach (Promoter promoter in project.Promoters)
+                    {
+                        query = "INSERT INTO promoter_table (id_project, name, date_of_birth) " +
+                            "VALUES (@id_project, @name, @date_of_birth)";
+
+                        cmd = DBSqlHelper.Connection.CreateCommand();
+                        cmd.CommandText = query;
+
+                        cmd.Parameters.Add(new SqlParameter("@id_project", insertProjectId));
+
+                        cmd.Parameters.Add(new SqlParameter("@name", promoter.Name));
+
+                        cmd.Parameters.Add(new SqlParameter("@date_of_birth", promoter.DateOfBirth));
+
+                        // Execute query.
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+
+                // Add main judge to the database.
+                query = "INSERT INTO contest_juri_table (id_contest, id_user, has_voted, president) " +
+                    "VALUES (@id_contest, @id_user, 0, 1)";
+
+                cmd = DBSqlHelper.Connection.CreateCommand();
+                cmd.CommandText = query;
+
+                cmd.Parameters.Add(new SqlParameter("@id_contest", insertedId));
+
+                cmd.Parameters.Add(new SqlParameter("@id_user", Data.Instance.LoggedInUser.Id));
+
+                await cmd.ExecuteNonQueryAsync();
+
+                // Add the remaining judges.
+                foreach (JudgeMember judgeMember in JudgesToAdd)
+                {
+                    query = "INSERT INTO contest_juri_table (id_contest, id_user, has_voted, president) " +
+                    "VALUES (@id_contest, @id_user, 0, 0)";
+
+                    cmd = DBSqlHelper.Connection.CreateCommand();
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.Add(new SqlParameter("@id_contest", insertedId));
+
+                    cmd.Parameters.Add(new SqlParameter("@id_user", judgeMember.Id));
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+                // Add all the criterias to the database.
+                foreach(Criteria criteria in CriteriasToAdd)
+                {
+                    query = "INSERT INTO contest_criteria_table (id_criteria, id_contest) " +
+                        "VALUES (@id_criteria, @id_contest)";
+
+                    cmd = DBSqlHelper.Connection.CreateCommand();
+                    cmd.CommandText = query;
+
+                    cmd.Parameters.Add(new SqlParameter("@id_criteria", criteria.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@id_contest", insertedId));
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+                await Data.Instance.RefreshContestsAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
         #endregion
     }

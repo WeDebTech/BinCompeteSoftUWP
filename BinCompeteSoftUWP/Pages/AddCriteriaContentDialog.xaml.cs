@@ -45,7 +45,7 @@ namespace BinCompeteSoftUWP.Pages
         {
             criterias = Data.Instance.Criterias;
 
-            ObservableCollection<Criteria> criteriasAdded = contestPage.CriteriasToAdd;
+            ObservableCollection<Criteria> criteriasAdded = contestPage.Criterias;
 
             // Remove judges that are added from the judges that can be added.
             criterias = new ObservableCollection<Criteria>(criterias.Where(criteria => !criteriasAdded.Any(criteriaToRemove => criteriaToRemove.Id == criteria.Id)).ToList());

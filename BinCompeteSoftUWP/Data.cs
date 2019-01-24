@@ -345,7 +345,7 @@ namespace BinCompeteSoftUWP
         public async Task<bool> RefreshCriteriasAsync()
         {
             // Load the criterias from the Database
-            string query = "SELECT id_criteria, criteria_name, descript FROM criteria_data_table";
+            string query = "SELECT id_criteria, name, description FROM criteria_table";
 
             SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
             cmd.CommandText = query;
@@ -419,12 +419,7 @@ namespace BinCompeteSoftUWP
 
                     ContestDetails contestDetails = new ContestDetails(id, reader.GetString(1), reader.GetString(2), reader.GetDateTime(3), reader.GetDateTime(4), reader.GetDateTime(5), false, false, false);
 
-                    // Get the criteria values and convert them from a JSON string to a double matrix.
-                    string criteriaValues = reader.GetString(6);
-
-                    contest = new Contest(id, contestDetails, new ObservableCollection<Project>(), new ObservableCollection<JudgeMember>(), new ObservableCollection<Criteria>(), new double[0, 0]);
-
-                    contest.SetCriteriaValuesFromJSON(criteriaValues);
+                    contest = new Contest(id, contestDetails, new ObservableCollection<Project>(), new ObservableCollection<JudgeMember>(), new ObservableCollection<Criteria>());
                 }
                 else
                 {
@@ -433,7 +428,7 @@ namespace BinCompeteSoftUWP
             }
 
             // Get the contest project list.
-            query = "SELECT id_project, project_name, descript, id_category, project_year FROM project_table WHERE id_contest = @id_contest ORDER BY id_project";
+            query = "SELECT id_project, name, descript, id_category, project_year FROM project_table WHERE id_contest = @id_contest ORDER BY id_project";
 
             cmd = DBSqlHelper.Connection.CreateCommand();
             cmd.CommandText = query;
@@ -442,15 +437,15 @@ namespace BinCompeteSoftUWP
             sqlContestId.Value = id;
             cmd.Parameters.Add(sqlContestId);
 
-            using (DbDataReader reader = cmd.ExecuteReader())
+            using (DbDataReader reader = await cmd.ExecuteReaderAsync())
             {
                 // Check if there's any projects in the contest.
                 if (reader.HasRows)
                 {
                     // Read every project, and store it in a list.
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
-                        Project project = new Project(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), new Category(reader.GetInt32(4), ""), reader.GetInt32(5));
+                        Project project = new Project(reader.GetInt32(0), reader.GetString(1), reader.GetString(2), new Category(reader.GetInt32(3), ""), reader.GetInt32(4));
 
                         contestProjects.Add(project);
                     }
@@ -469,6 +464,31 @@ namespace BinCompeteSoftUWP
                         project.Category = category;
                     }
                 }
+
+                // Query the database to get the project promoters.
+                query = "SELECT id_promoter, name, date_of_birth FROM promoter_table WHERE id_project = @id_project";
+
+                cmd = DBSqlHelper.Connection.CreateCommand();
+                cmd.CommandText = query;
+
+                cmd.Parameters.Add(new SqlParameter("@id_project", project.Id));
+
+                project.Promoters = new ObservableCollection<Promoter>();
+
+                using (DbDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    // Check if there's any projects in the contest.
+                    if (reader.HasRows)
+                    {
+                        // Read every project, and store it in a list.
+                        while (await reader.ReadAsync())
+                        {
+                            Promoter promoter = new Promoter(reader.GetInt32(0), reader.GetString(1), reader.GetDateTime(2));
+
+                            project.Promoters.Add(promoter);
+                        }
+                    }
+                }
             }
 
             contest.Projects = contestProjects;
@@ -483,13 +503,13 @@ namespace BinCompeteSoftUWP
             sqlContestId.Value = id;
             cmd.Parameters.Add(sqlContestId);
 
-            using (DbDataReader reader = cmd.ExecuteReader())
+            using (DbDataReader reader = await cmd.ExecuteReaderAsync())
             {
                 // Check if there's any judges in the contest.
                 if (reader.HasRows)
                 {
                     // Read every judge, and store it in a list.
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         // Check if it's not the president.
                         if (!reader.GetBoolean(1))
