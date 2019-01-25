@@ -78,7 +78,15 @@ namespace BinCompeteSoftUWP.Pages
             {
                 ContestDetails contestDetails = (ContestDetails)ContestsListView.SelectedItem;
 
-                this.Frame.Navigate(typeof(ContestPage), contestDetails);
+                // Check if the contest has been created by the current user.
+                if (Data.Instance.GetIfContestIsCreatedByCurrentUser(contestDetails.Id))
+                {
+                    this.Frame.Navigate(typeof(ContestPage), contestDetails);
+                }
+                else
+                {
+                    this.Frame.Navigate(typeof(VotingPage), contestDetails);
+                }
             }
             else
             {
@@ -144,7 +152,15 @@ namespace BinCompeteSoftUWP.Pages
             {
                 ContestDetails contestDetails = (ContestDetails)ContestsListView.SelectedItems[0];
 
-                this.Frame.Navigate(typeof(ContestPage), contestDetails);
+                // Check if the contest has been created by the current user.
+                if (Data.Instance.GetIfContestIsCreatedByCurrentUser(contestDetails.Id))
+                {
+                    this.Frame.Navigate(typeof(ContestPage), contestDetails);
+                }
+                else
+                {
+                    this.Frame.Navigate(typeof(VotingPage), contestDetails);
+                }
             }
         }
         #endregion
@@ -300,15 +316,6 @@ namespace BinCompeteSoftUWP.Pages
             // Update the lists.
             ContestsListView.ItemsSource = ContestDetailsList;
             NotificationsListView.ItemsSource = NotificationsList;
-        }
-
-        /// <summary>
-        /// Opens the correct contest page according to wether the current user is it's creator or not.
-        /// </summary>
-        /// <param name="selectedContest">The contest to open.</param>
-        private void ShowContest(ContestDetails selectedContest)
-        {
-            // TODO
         }
 
         /// <summary>

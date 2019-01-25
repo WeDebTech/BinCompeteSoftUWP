@@ -511,8 +511,8 @@ namespace BinCompeteSoftUWP.Pages
                 // Add all projects.
                 foreach (Project project in ProjectsToAdd)
                 {
-                    query = "INSERT INTO project_table (id_contest, id_category, descript, project_year) " +
-                        "VALUES (@id_contest, @id_category, @descript, @project_year); " +
+                    query = "INSERT INTO project_table (id_contest, id_category, name descript, project_year) " +
+                        "VALUES (@id_contest, @id_category, @name, @descript, @project_year); " +
                         "SELECT CAST(scope_identity() as int)";
 
                     cmd = DBSqlHelper.Connection.CreateCommand();
@@ -521,6 +521,8 @@ namespace BinCompeteSoftUWP.Pages
                     cmd.Parameters.Add(new SqlParameter("@id_contest", ContestToEdit.Id));
 
                     cmd.Parameters.Add(new SqlParameter("@id_category", project.Category.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@name", project.Name));
 
                     cmd.Parameters.Add(new SqlParameter("@descript", project.Description));
 
