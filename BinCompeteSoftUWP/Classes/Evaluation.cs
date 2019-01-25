@@ -95,120 +95,29 @@ namespace BinCompeteSoftUWP.Classes
     public class ContestEvaluation
     {
         #region Class variables
-        private List<JudgeEvaluation> judgeEvaluations;
-        #endregion
-
-        #region Class constructors
-        /// <summary>
-        /// ContestEvaluation constructor that takes all arguments.
-        /// </summary>
-        /// <param name="judgeEvaluations">The list of judge evaluations.</param>
-        public ContestEvaluation(List<JudgeEvaluation> judgeEvaluations)
-        {
-            this.judgeEvaluations = judgeEvaluations;
-        }
-
-        /// <summary>
-        /// ContestEvaluation constructor that takes no arguments.
-        /// Initializes a ContestEvaluation object with an empty list of judge evaluations.
-        /// </summary>
-        public ContestEvaluation() : this(new List<JudgeEvaluation>()) { }
-        #endregion
-
-        #region Class Getters and Setterrs
-        /// <summary>
-        /// Gets or sets the list of judge evaluations.
-        /// </summary>
-        public List<JudgeEvaluation> JudgeEvaluations
-        {
-            get { return judgeEvaluations; }
-            set { judgeEvaluations = value; }
-        }
+        public List<JudgeEvaluation> JudgeEvaluations { get; set; }
         #endregion
     }
 
-    /// <summary>
-    /// This class holds the evaluation for a criteria.
-    /// </summary>
     public class JudgeEvaluation
     {
-        #region Class variables
-        private List<Evaluation> criteriaEvaluation;
-        #endregion
+        public int JudgeId { get; set; }
+        public List<CriteriaEvaluation> CriteriaEvaluations { get; set; } = new List<CriteriaEvaluation>();
+        public List<ProjectEvaluation> ProjectEvaluations { get; set; } = new List<ProjectEvaluation>();
+    }
 
-        #region Class contructors
-        /// <summary>
-        /// JudgeEvaluation constructor that takes all arguments.
-        /// </summary>
-        /// <param name="criteriaEvaluation">The list of criteria evaluations.</param>
-        public JudgeEvaluation(List<Evaluation> criteriaEvaluation)
-        {
-            this.criteriaEvaluation = criteriaEvaluation;
-        }
-
-        /// <summary>
-        /// JudgeEvaluation constructor that takes no arguments.
-        /// Initializes a JudgeEvaluation object with an empty list of criteria evaluations.
-        /// </summary>
-        public JudgeEvaluation() : this(new List<Evaluation>()) { }
-        #endregion
-
-        #region Class Getters and Setters
-        /// <summary>
-        /// Gets or sets the list of criteria evaluations.
-        /// </summary>
-        public List<Evaluation> CriteriaEvaluation
-        {
-            get { return criteriaEvaluation; }
-            set { criteriaEvaluation = value; }
-        }
-        #endregion
+    public class CriteriaEvaluation
+    {
+        public Criteria Criteria1 { get; set; }
+        public Criteria Criteria2 { get; set; }
+        public int Value { get; set; }
     }
 
     public class ProjectEvaluation
     {
-        #region Class variables
-        private Project project;
-        private double evaluation;
-        #endregion
-
-        #region Class constructors
-        /// <summary>
-        /// FinalEvaluation constructor that takes all arguments.
-        /// </summary>
-        /// <param name="project">The project this evaluation corresponds to.</param>
-        /// <param name="evaluation">The project evaluation.</param>
-        public ProjectEvaluation(Project project, double evaluation)
-        {
-            this.project = project;
-            this.evaluation = evaluation;
-        }
-
-        /// <summary>
-        /// ProjectEvaluation constructor that takes no arguments.
-        /// Initializes a ProjectEvaluation object with empty project and evaluation 0.
-        /// </summary>
-        public ProjectEvaluation() : this(new Project(), 0f) { }
-        #endregion
-
-        #region Class Getters and Setters
-        /// <summary>
-        /// Gets or sets the project this evaluation applies to.
-        /// </summary>
-        public Project Project
-        {
-            get { return project; }
-            set { project = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the project evaluation.
-        /// </summary>
-        public double Evaluation
-        {
-            get { return evaluation; }
-            set { evaluation = value; }
-        }
-        #endregion
+        public Criteria Criteria { get; set; }
+        public Project Project1 { get; set; }
+        public Project Project2 { get; set; }
+        public int Value { get; set; }
     }
 }

@@ -32,8 +32,8 @@ namespace BinCompeteSoftUWP.Pages
         private ContestDetails ContestToLoad;
         private Contest ContestToEdit;
         private ObservableCollection<ObservableCollection<string>> criteriaValues = new ObservableCollection<ObservableCollection<string>>();
-        private List<CriteriaList> criteriaList = new List<CriteriaList>();
-        private List<CriteriaProjectsList> criteriaProjectsList = new List<CriteriaProjectsList>();
+        private List<CriteriaEvaluation> criteriaList = new List<CriteriaEvaluation>();
+        private List<ProjectEvaluation> criteriaProjectsList = new List<ProjectEvaluation>();
         
         #endregion
 
@@ -73,7 +73,7 @@ namespace BinCompeteSoftUWP.Pages
                 {
                     for (int j = i + 1; j < ContestToEdit.Criterias.Count; j++)
                     {
-                        criteriaList.Add(new CriteriaList {
+                        criteriaList.Add(new CriteriaEvaluation {
                             Criteria1 = ContestToEdit.Criterias[i],
                             Criteria2 = ContestToEdit.Criterias[j],
                             Value = 1
@@ -85,7 +85,7 @@ namespace BinCompeteSoftUWP.Pages
                     {
                         for(int k = j + 1; k < ContestToEdit.Projects.Count; k++)
                         {
-                            criteriaProjectsList.Add(new CriteriaProjectsList
+                            criteriaProjectsList.Add(new ProjectEvaluation
                             {
                                 Criteria = ContestToEdit.Criterias[i],
                                 Project1 = ContestToEdit.Projects[j],
@@ -115,7 +115,7 @@ namespace BinCompeteSoftUWP.Pages
                 SqlCommand cmd;
 
                 // Cycle through all criterias.
-                foreach (CriteriaList criteria in criteriaList)
+                foreach (CriteriaEvaluation criteria in criteriaList)
                 { 
                     cmd = DBSqlHelper.Connection.CreateCommand();
                     cmd.CommandText = query;
@@ -137,7 +137,7 @@ namespace BinCompeteSoftUWP.Pages
                     "VALUES (@id_user, @id_contest, @id_criteria, @id_project1, @id_project2, @value)";
 
                 // Cycle through all projects.
-                foreach(CriteriaProjectsList criteriaProjects in criteriaProjectsList)
+                foreach(ProjectEvaluation criteriaProjects in criteriaProjectsList)
                 {
                     cmd = DBSqlHelper.Connection.CreateCommand();
                     cmd.CommandText = query;
@@ -192,7 +192,7 @@ namespace BinCompeteSoftUWP.Pages
         {
             Criteria selectedCriteria = (Criteria)e.AddedItems[0];
 
-            List<CriteriaProjectsList> projectsList = criteriaProjectsList.FindAll(criteria => criteria.Criteria.Id == selectedCriteria.Id);
+            List<ProjectEvaluation> projectsList = criteriaProjectsList.FindAll(criteria => criteria.Criteria.Id == selectedCriteria.Id);
 
             ProjectsListView.ItemsSource = projectsList;
         }
@@ -273,20 +273,5 @@ namespace BinCompeteSoftUWP.Pages
             }
         }
         #endregion
-    }
-
-    class CriteriaList
-    {
-        public Criteria Criteria1 { get; set; }
-        public Criteria Criteria2 { get; set; }
-        public int Value { get; set; }
-    }
-
-    class CriteriaProjectsList
-    {
-        public Criteria Criteria { get; set; }
-        public Project Project1 { get; set; }
-        public Project Project2 { get; set; }
-        public int Value { get; set; }
     }
 }

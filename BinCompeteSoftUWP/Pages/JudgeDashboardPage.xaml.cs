@@ -264,8 +264,11 @@ namespace BinCompeteSoftUWP.Pages
                 // Check if contest has already ended it's voting date, or if it's created by the current user.
                 if (contestDetails.VotingDate > CurrentDate || (contestDetails.HasBeenCreatedByCurrentUser && !contestDetails.HasResultsCalculated))
                 {
-                    // Add contest to DataGridView.
-                    ContestDetailsList.Add(contestDetails);
+                    if (!contestDetails.HasVoted)
+                    {
+                        // Add contest to DataGridView.
+                        ContestDetailsList.Add(contestDetails);
+                    }
                 }
 
                 // Check if contest is after the limit date and hasn't been voted yet,

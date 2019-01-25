@@ -161,7 +161,9 @@ namespace BinCompeteSoftUWP.Pages
 
         private void ShowResultsButton_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(VotingPage));
+            ContestResultsContentDialog contestResultsContentDialog = new ContestResultsContentDialog(ContestToEdit);
+
+            App.ShowContentDialog(contestResultsContentDialog, null);
         }
 
         private async void CreateContestButton_Click(object sender, RoutedEventArgs e)
@@ -399,6 +401,7 @@ namespace BinCompeteSoftUWP.Pages
                 AddJudgeButton.IsEnabled = false;
                 AddProjectButton.IsEnabled = false;
                 AddCriteriaButton.IsEnabled = false;
+                CreateContestButton.IsEnabled = false;
             }
             if (ContestEndedVoting)
             {
@@ -725,8 +728,8 @@ namespace BinCompeteSoftUWP.Pages
                 // Add all projects.
                 foreach(Project project in ProjectsToAdd)
                 {
-                    query = "INSERT INTO project_table (id_contest, id_category, descript, project_year) " +
-                        "VALUES (@id_contest, @id_category, @descript, @project_year); " +
+                    query = "INSERT INTO project_table (id_contest, id_category, name, descript, project_year) " +
+                        "VALUES (@id_contest, @id_category, @name, @descript, @project_year); " +
                         "SELECT CAST(scope_identity() as int)";
 
                     cmd = DBSqlHelper.Connection.CreateCommand();
@@ -735,6 +738,8 @@ namespace BinCompeteSoftUWP.Pages
                     cmd.Parameters.Add(new SqlParameter("@id_contest", insertedId));
 
                     cmd.Parameters.Add(new SqlParameter("@id_category", project.Category.Id));
+
+                    cmd.Parameters.Add(new SqlParameter("@name", project.Name));
 
                     cmd.Parameters.Add(new SqlParameter("@descript", project.Description));
 

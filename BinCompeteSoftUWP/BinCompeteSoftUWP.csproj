@@ -128,7 +128,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classes\AHP.cs" />
     <Compile Include="Classes\BestProjects.cs" />
     <Compile Include="Classes\Category.cs" />
     <Compile Include="Classes\CategoryStatistics.cs" />
@@ -162,6 +161,9 @@
     </Compile>
     <Compile Include="Pages\ContestPage.xaml.cs">
       <DependentUpon>ContestPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ContestResultsContentDialog.xaml.cs">
+      <DependentUpon>ContestResultsContentDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ContestsListPage.xaml.cs">
       <DependentUpon>ContestsListPage.xaml</DependentUpon>
@@ -274,6 +276,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\ContestPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ContestResultsContentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
