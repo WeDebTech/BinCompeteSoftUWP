@@ -9,9 +9,8 @@
     xmlns:conv="using:BinCompeteSoftUWP.Converters"
     mc:Ignorable="d"
     Title="Contest Results"
-    PrimaryButtonText="Calculate Results"
-    SecondaryButtonText="Export"
-    CloseButtonText="Close"
+    PrimaryButtonText="Export"
+    SecondaryButtonText="Close"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
     <ContentDialog.Resources>

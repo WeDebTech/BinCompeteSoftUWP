@@ -8,8 +8,10 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Xml;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -42,6 +44,8 @@ namespace BinCompeteSoftUWP.Pages
             if (!CheckIfResultsAreCalculatedAndGetThem())
             {
                 CalculateContestResults();
+
+                InsertResultsIntoDB();
             }
 
             ResultsDataGrid.ItemsSource = contestResults;
@@ -381,127 +385,126 @@ namespace BinCompeteSoftUWP.Pages
         /// </summary>
         private void InsertResultsIntoDB()
         {
-            /*string query = "INSERT INTO final_result_table VALUES (@id_contest, @id_project, @final_evaluation)";
+            string query = "INSERT INTO final_result_table VALUES (@id_contest, @id_project, @final_evaluation)";
 
             SqlCommand cmd;
 
-            SqlParameter sqlContestId, sqlProjectId, sqlFinalEvaluation;
-
-            int count = 0;
-
             // Cycle through all projects and add their final evaluation to the database.
-            foreach (ProjectResults projectResult in projectResults)
+            foreach (ProjectResult projectResult in contestResults)
             {
-                cmd = DBSqlHelper._instance.Connection.CreateCommand();
+                cmd = DBSqlHelper.Connection.CreateCommand();
                 cmd.CommandText = query;
+                
+                cmd.Parameters.Add(new SqlParameter("@id_contest", contest.Id));
 
-                sqlContestId = new SqlParameter("@id_contest", SqlDbType.Int);
-                sqlContestId.Value = contest.Id;
-                cmd.Parameters.Add(sqlContestId);
+                cmd.Parameters.Add(new SqlParameter("@id_project", projectResult.Project.Id));
 
-                sqlProjectId = new SqlParameter("@id_project", SqlDbType.Int);
-                sqlProjectId.Value = projectResult.Project.Id;
-                cmd.Parameters.Add(sqlProjectId);
-
-                sqlFinalEvaluation = new SqlParameter("@final_evaluation", SqlDbType.Decimal);
-                sqlFinalEvaluation.Value = projectResult.Result;
-                cmd.Parameters.Add(sqlFinalEvaluation);
+                cmd.Parameters.Add(new SqlParameter("@final_evaluation", projectResult.Result));
 
                 // Execute the query.
                 cmd.ExecuteNonQuery();
-
-                count++;
-            }*/
+            }
         }
 
         /// <summary>
         /// This method will write the results to and XML file.
         /// </summary>
-        private void WriteResultsToXML()
+        private async void WriteResultsToXML()
         {
-            /*int count = 1;
+            int count = 1;
 
             // Strip contest name of dots.
             string fileName = contest.ContestDetails.Name.Replace(".", String.Empty);
 
-            // Create directory to store results if it doesn't exist.
-            Directory.CreateDirectory("Results");
+            // Ask the user where they want to save the file.
+            var savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
 
-            using (XmlWriter writer = XmlWriter.Create(Directory.GetCurrentDirectory() + "\\Results\\" + fileName + "_results.xml"))
+            // Dropdown of which file types the user can save as.
+            savePicker.FileTypeChoices.Add("XML File", new List<string>() { ".xml" });
+
+            // Default file name if the user does not type one in or selecte a file to replace.
+            savePicker.SuggestedFileName = fileName;
+
+            Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
+
+            if(file != null)
             {
-                writer.WriteStartDocument();
-                writer.WriteStartElement("Results");
-
-                // Write the contest details.
-                writer.WriteStartElement("Contest");
-                writer.WriteElementString("Id", contest.Id.ToString());
-                writer.WriteElementString("StartDate", contest.ContestDetails.StartDate.ToString());
-                writer.WriteElementString("LimitDate", contest.ContestDetails.LimitDate.ToString());
-                writer.WriteElementString("VotingDate", contest.ContestDetails.VotingDate.ToString());
-                writer.WriteEndElement();
-
-                // Write the criterias details.
-                writer.WriteStartElement("Criterias");
-
-                foreach (Criteria criteria in contest.Criterias)
+                // Write to the file.
+                using (XmlWriter writer = XmlWriter.Create(file.Path))
                 {
-                    writer.WriteStartElement("Criteria");
-                    writer.WriteElementString("Id", criteria.Id.ToString());
-                    writer.WriteElementString("Name", criteria.Name);
-                    writer.WriteElementString("Description", criteria.Description);
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("Results");
+
+                    // Write the contest details.
+                    writer.WriteStartElement("Contest");
+                    writer.WriteElementString("Id", contest.Id.ToString());
+                    writer.WriteElementString("StartDate", contest.ContestDetails.StartDate.ToString());
+                    writer.WriteElementString("LimitDate", contest.ContestDetails.LimitDate.ToString());
+                    writer.WriteElementString("VotingDate", contest.ContestDetails.VotingDate.ToString());
                     writer.WriteEndElement();
-                }
 
-                writer.WriteEndElement();
+                    // Write the criterias details.
+                    writer.WriteStartElement("Criterias");
 
-                // Write the criteria values array.
-                writer.WriteStartElement("CriteriaValues");
-                writer.WriteElementString("Size", contest.CriteriaValues.Length.ToString());
-
-                for (int i = 0; i < contest.CriteriaValues.GetLength(0); i++)
-                {
-                    for (int j = 0; j < contest.CriteriaValues.GetLength(0); j++)
+                    foreach (Criteria criteria in contest.Criterias)
                     {
-                        writer.WriteElementString("Value", contest.CriteriaValues[i, j].ToString());
+                        writer.WriteStartElement("Criteria");
+                        writer.WriteElementString("Id", criteria.Id.ToString());
+                        writer.WriteElementString("Name", criteria.Name);
+                        writer.WriteElementString("Description", criteria.Description);
+                        writer.WriteEndElement();
                     }
-                }
-
-                writer.WriteEndElement();
-
-                // Write the projects details.
-                writer.WriteStartElement("Projects");
-
-                foreach (ProjectResults projectResult in projectResults)
-                {
-                    writer.WriteStartElement("Project");
-
-                    writer.WriteElementString("Id", projectResult.Project.Id.ToString());
-                    writer.WriteElementString("Name", projectResult.Project.Name);
-                    writer.WriteElementString("Description", projectResult.Project.Description);
-                    writer.WriteElementString("Score", projectResult.Result.ToString());
-                    writer.WriteElementString("Position", count.ToString());
 
                     writer.WriteEndElement();
 
-                    count++;
+                    // Write the projects details.
+                    writer.WriteStartElement("Projects");
+
+                    foreach (ProjectResult projectResult in contestResults)
+                    {
+                        writer.WriteStartElement("Project");
+
+                        writer.WriteElementString("Id", projectResult.Project.Id.ToString());
+                        writer.WriteElementString("Name", projectResult.Project.Name);
+                        writer.WriteElementString("Description", projectResult.Project.Description);
+                        writer.WriteElementString("Score", projectResult.Result.ToString());
+                        writer.WriteElementString("Position", count.ToString());
+
+                        writer.WriteEndElement();
+
+                        count++;
+                    }
+
+                    writer.WriteEndElement();
+
+                    writer.WriteEndElement();
+                    writer.WriteEndDocument();
                 }
 
-                writer.WriteEndElement();
-
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
+                ContentDialog contentDialog = new ContentDialog
+                {
+                    Title = "Success",
+                    Content = "File successfully exported."
+                };
             }
+            else
+            {
+                ContentDialog errorMsg = new ContentDialog
+                {
+                    Title = "Canceled",
+                    Content = "Action canceled by the user."
+                };
 
-            MessageBox.Show(null, "Results exported successfully", "Success");
-
-            this.Close();*/
+                App.ShowContentDialog(errorMsg, null);
+            }
         }
         #endregion
 
         #region Class event handlers
-        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
-
+            WriteResultsToXML();
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
