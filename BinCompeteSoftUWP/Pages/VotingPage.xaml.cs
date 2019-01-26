@@ -229,13 +229,13 @@ namespace BinCompeteSoftUWP.Pages
                 ContentDialog contentMsg = new ContentDialog
                 {
                     Title = "Success",
-                    Content = "Updated contest successfully.",
+                    Content = "Voted for contest successfully.",
                     PrimaryButtonText = "OK"
                 };
 
                 App.ShowContentDialog(contentMsg, null);
 
-                this.Frame.Navigate(typeof(JudgeDashboardPage));
+                Frame.GoBack();
             }
             else
             {
@@ -246,7 +246,7 @@ namespace BinCompeteSoftUWP.Pages
                 ContentDialog errorMsg = new ContentDialog
                 {
                     Title = "Error",
-                    Content = "Error updating the contest, try again later.",
+                    Content = "Error voting for the contest, try again later.",
                     PrimaryButtonText = "OK"
                 };
 

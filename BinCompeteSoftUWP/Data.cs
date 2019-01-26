@@ -1,4 +1,5 @@
 ﻿using BinCompeteSoftUWP.Classes;
+using BinCompeteSoftUWP.Pages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 namespace BinCompeteSoftUWP
@@ -20,14 +22,22 @@ namespace BinCompeteSoftUWP
     public class Data : INotifyPropertyChanged
     {
         #region Class variables
+        public enum FontSizeSetting
+        {
+            Smallest,
+            Small,
+            Normal,
+            Medium,
+            Large
+        };
+
         public static Data Instance { get; }
 
         private Data() { }
 
         public User LoggedInUser { get; set; }
 
-        /*public Form currentForm { get; set; }
-        public Form loginform { get; set; }*/
+        public FontSizeSetting FontSizeSettings;
 
         public ObservableCollection<JudgeMember> JudgeMembers { get; set; } = new ObservableCollection<JudgeMember>();
         public ObservableCollection<Contest> Contests { get; set; } = new ObservableCollection<Contest>();
@@ -48,6 +58,46 @@ namespace BinCompeteSoftUWP
         #endregion
 
         #region Class methods
+        /// <summary>
+        /// Change the font size app wide.
+        /// </summary>
+        public void ChangeFontSize()
+        {
+            switch (FontSizeSettings)
+            {
+                case FontSizeSetting.Smallest:
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmaller = 14;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmall = 16;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeNormal = 18;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeTitle = 22;
+                    break;
+                case FontSizeSetting.Small:
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmaller = 18;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmall = 20;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeNormal = 22;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeTitle = 26;
+                    break;
+                case FontSizeSetting.Normal:
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmaller = 22;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmall = 24;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeNormal = 26;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeTitle = 30;
+                    break;
+                case FontSizeSetting.Medium:
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmaller = 24;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmall = 26;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeNormal = 28;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeTitle = 32;
+                    break;
+                case FontSizeSetting.Large:
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmaller = 26;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmall = 28;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeNormal = 30;
+                    ((Settings)Application.Current.Resources["Settings"]).FontSizeTitle = 34;
+                    break;
+            }
+        }
+
         /// <summary>
         /// Gets the user from the database with the inserted data.
         /// </summary>
@@ -675,25 +725,21 @@ namespace BinCompeteSoftUWP
         /// </summary>
         public void LogoutUser()
         {
-            // Show MessageBox asking user for confirmation.
-            /*DialogResult dialogResult = MessageBox.Show("Do you really want to logout?", "Prompt", MessageBoxButtons.YesNo);
+            // Clear all variables.
+            LoggedInUser = null;
+            JudgeMembers = new ObservableCollection<JudgeMember>();
+            Contests = new ObservableCollection<Contest>();
+            ContestDetails = new ObservableCollection<ContestDetails>();
+            Projects = new ObservableCollection<Project>();
+            Categories = new ObservableCollection<Category>();
+            Statistics = new ObservableCollection<Statistic>();
 
-            if (dialogResult == DialogResult.Yes)
-            {
-                // Clear all variables.
-                loggedInUser = null;
-                judgeMembers = new List<JudgeMember>();
-                contests = new List<Contest>();
-                contestDetails = new List<ContestDetails>();
-                projects = new List<Project>();
-                categories = new List<Category>();
-                statistics = new List<Statistic>();
+            // Close current form and go back to the login form.
+            Frame frame = Window.Current.Content as Frame;
 
-                // Close current form and go back to the login form.
-                loginform.Show();
-                loginform.MdiParent.Text = "Login";
-                currentForm.Close();
-            }*/
+            frame.BackStack.Clear();
+
+            frame.Navigate(typeof(LoginPage));
         }
 
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")

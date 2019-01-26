@@ -18,7 +18,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <controls:DataGrid x:Name="ContestsDataGrid" IsReadOnly="True" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" AreRowDetailsFrozen="True" GridLinesVisibility="All">
+        <controls:DataGrid x:Name="ContestsDataGrid" IsReadOnly="True" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" AreRowDetailsFrozen="True" GridLinesVisibility="All" DoubleTapped="ContestsDataGrid_DoubleTapped">
             <controls:DataGrid.Columns>
                 <controls:DataGridTextColumn Header="Project name" Binding="{Binding Name}" />
                 <controls:DataGridTextColumn Header="Project description" Binding="{Binding Description}" />

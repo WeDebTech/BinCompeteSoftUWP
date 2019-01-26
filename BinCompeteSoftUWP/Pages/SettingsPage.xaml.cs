@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -22,50 +24,80 @@ namespace BinCompeteSoftUWP.Pages
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
+        #region Class constructors
         public SettingsPage()
         {
             this.InitializeComponent();
-        }
 
+            string userName = Data.Instance.LoggedInUser.Name;
+
+            // This will get the initials of a name.
+            string[] separatedName = userName.Split(" ");
+            string userInitials = separatedName[0][0].ToString() + separatedName[separatedName.Length - 1][0].ToString();
+
+            UserPersonPicture.DisplayName = userName;
+            UserPersonPicture.Initials = userInitials;
+
+            UserNameTextBlock.Text = userName;
+            UserNickTextBlock.Text = "@" + Data.Instance.LoggedInUser.Username;
+
+            TextSizeComboBox.SelectedIndex = (int)Data.Instance.FontSizeSettings;
+        }
+        #endregion
+
+        #region Class event handlers
         private void TextSizeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Check which item was selected.
             var comboBoxItem = e.AddedItems[0] as ComboBoxItem;
             if (comboBoxItem == null) return;
             var content = comboBoxItem.Content as string;
+
             switch (content)
             {
                 case "Smallest":
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmaller = 14;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmall = 16;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeNormal = 18;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeTitle = 22;
+                    Data.Instance.FontSizeSettings = Data.FontSizeSetting.Smallest;
                     break;
                 case "Small":
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmaller = 18;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmall = 20;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeNormal = 22;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeTitle = 26;
+                    Data.Instance.FontSizeSettings = Data.FontSizeSetting.Small;
                     break;
                 case "Normal":
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmaller = 22;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmall = 24;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeNormal = 26;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeTitle = 30;
+                    Data.Instance.FontSizeSettings = Data.FontSizeSetting.Normal;
                     break;
                 case "Medium":
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmaller = 24;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmall = 26;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeNormal = 28;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeTitle = 32;
+                    Data.Instance.FontSizeSettings = Data.FontSizeSetting.Medium;
                     break;
                 case "Large":
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmaller = 26;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeSmall = 28;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeNormal = 30;
-                    ((Settings)Application.Current.Resources["Settings"]).FontSizeTitle = 34;
+                    Data.Instance.FontSizeSettings = Data.FontSizeSetting.Large;
                     break;
             }
+
+            ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            localSettings.Values["FontSize"] = (int)Data.Instance.FontSizeSettings;
+
+            Data.Instance.ChangeFontSize();
         }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog logoutDialog = new ContentDialog
+            {
+                Title = "Logout",
+                Content = "Do you really want to logout?",
+                PrimaryButtonText = "Logout",
+                CloseButtonText = "Cancel"
+            };
+
+            Action<ContentDialogResult> callback = (result) =>
+            {
+                if (result == ContentDialogResult.Primary)
+                {
+                    Data.Instance.LogoutUser();
+                }
+            };
+
+            App.ShowContentDialog(logoutDialog, callback);
+        }
+        #endregion
     }
 }

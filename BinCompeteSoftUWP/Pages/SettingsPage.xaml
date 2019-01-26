@@ -10,21 +10,34 @@
 
     <Grid Padding="10,10,10,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="2">
+        <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Text size:" FontSize="{Binding Path=FontSizeSmall, Source={StaticResource Settings}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-            <ComboBox x:Name="TextSizeComboBox" Grid.Column="1" FontSize="{Binding Path=FontSizeSmall, Source={StaticResource Settings}}" SelectionChanged="TextSizeComboBox_SelectionChanged" Margin="10,0,0,0" >
+            <PersonPicture x:Name="UserPersonPicture" Margin="0,0,10,10" Grid.RowSpan="3" />
+            <TextBlock x:Name="UserNameTextBlock" Text="Username" Grid.Column="1" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" />
+            <TextBlock x:Name="UserNickTextBlock" Grid.Row="1" Grid.Column="1" Text="Usernick" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Margin="0,0,0,5" />
+            <Button x:Name="LogoutButton" Content="Logout" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" Grid.Row="2" Click="LogoutButton_Click" />
+            <Border BorderThickness="0,0,0,1" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" Margin="0,0,0,10" Grid.Row="3" Padding="0,5,0,0" Grid.ColumnSpan="3" />
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Text size:" FontSize="{Binding Path=FontSizeNormal, Source={StaticResource Settings}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+            <ComboBox x:Name="TextSizeComboBox" Grid.Column="1" FontSize="{Binding Path=FontSizeNormal, Source={StaticResource Settings}}" SelectionChanged="TextSizeComboBox_SelectionChanged" Margin="10,0,0,10" Width="200" >
                 <ComboBoxItem Content="Smallest" FontSize="18" />
                 <ComboBoxItem Content="Small" FontSize="20" />
                 <ComboBoxItem Content="Normal" FontSize="24" />

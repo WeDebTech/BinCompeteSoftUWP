@@ -70,6 +70,36 @@ namespace BinCompeteSoftUWP.Pages
             }
         }
 
+        private void ContestsDataGrid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            // Check if any item is selected in contest ListView.
+            if (ContestsDataGrid.SelectedIndex != -1)
+            {
+                ContestDetails contestDetails = (ContestDetails)ContestsDataGrid.SelectedItem;
+
+                // Check if the contest has been created by the current user.
+                if (Data.Instance.GetIfContestIsCreatedByCurrentUser(contestDetails.Id))
+                {
+                    this.Frame.Navigate(typeof(ContestPage), contestDetails);
+                }
+                else
+                {
+                    this.Frame.Navigate(typeof(VotingPage), contestDetails);
+                }
+            }
+            else
+            {
+                ContentDialog errorMsg = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "You must select a contest to see it's details.",
+                    CloseButtonText = "OK"
+                };
+
+                App.ShowContentDialog(errorMsg, null);
+            }
+        }
+
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             RefreshData();
