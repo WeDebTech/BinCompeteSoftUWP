@@ -98,6 +98,14 @@ namespace BinCompeteSoftUWP.Pages
 
             App.ShowContentDialog(logoutDialog, callback);
         }
+
+        private void ChangePasswordButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Show reset password content dialog.
+            ContentDialog resetPassDialog = new ResetPasswordContentDialog(false, Data.Instance.LoggedInUser.Id);
+
+            App.ShowContentDialog(resetPassDialog, null);
+        }
         #endregion
     }
 }

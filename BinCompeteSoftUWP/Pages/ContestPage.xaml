@@ -46,20 +46,20 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Start date*" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,5,5,5" />
+                <TextBlock Text="Start date*" ToolTipService.ToolTip="Date at which the contest will begin" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,5,5,5" />
                 <CalendarDatePicker x:Name="StartDateCalendarDatePicker" PlaceholderText="Pick a start date" Grid.Column="1" Margin="5,5,20,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" DateChanged="StartDateCalendarDatePicker_DateChanged" />
-                <TextBlock Text="Limit date*" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,5,5,5" Grid.Column="2" />
+                <TextBlock Text="Limit date*" ToolTipService.ToolTip="Date at which the contest can no longer be edited" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,5,5,5" Grid.Column="2" />
                 <CalendarDatePicker x:Name="LimitDateCalendarDatePicker" PlaceholderText="Pick a limit date" Grid.Column="3" Margin="5,5,20,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" DateChanged="LimitDateCalendarDatePicker_DateChanged" />
-                <TextBlock Text="Voting limit date*" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,5,5,5" Grid.Column="4" />
+                <TextBlock Text="Voting limit date*" ToolTipService.ToolTip="Date at which the judges cannot vote anymore for this contest" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,5,5,5" Grid.Column="4" />
                 <CalendarDatePicker x:Name="VotingLimitDateCalendarDatePicker" PlaceholderText="Pick a voting limit date" Grid.Column="5" Margin="5,5,20,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
-                <Button x:Name="AddDescriptionButton" Content="Description*" Grid.Column="7" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,0,5,0" Padding="15,4,15,5" Click="AddDescriptionButton_Click" />
+                <Button x:Name="AddDescriptionButton" Content="Description*" ToolTipService.ToolTip="The contest description" Grid.Column="7" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,0,5,0" Padding="15,4,15,5" Click="AddDescriptionButton_Click" />
             </Grid>
             <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Button x:Name="AddJudgeButton" Content="Add judge*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,0" Click="AddJudgeButton_Click" />
+                <Button x:Name="AddJudgeButton" Content="Add judge*" ToolTipService.ToolTip="Add a judge to vote for this contest" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,0" Click="AddJudgeButton_Click" />
                 <ListView x:Name="JudgesListView" Grid.Row="1" Margin="5,5,5,5">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
@@ -99,7 +99,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Button x:Name="AddProjectButton" Content="Add project" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,0" Click="AddProjectButton_Click" />
+                <Button x:Name="AddProjectButton" Content="Add project" ToolTipService.ToolTip="Add a project to be evaluated in this project" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,0" Click="AddProjectButton_Click" />
                 <ListView x:Name="ProjectsListView" Grid.Row="1" Margin="5,5,5,5">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
@@ -144,7 +144,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Button x:Name="AddCriteriaButton" Content="Add criteria*" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,0" Click="AddCriteriaButton_Click" />
+                <Button x:Name="AddCriteriaButton" Content="Add criteria*" ToolTipService.ToolTip="Add a criteria to evaluate in this contest" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,0" Click="AddCriteriaButton_Click" />
                 <ListView x:Name="CriteriaListView" Grid.Row="1" Margin="5,5,5,5">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">

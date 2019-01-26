@@ -154,9 +154,9 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="PreviousYearButton" HorizontalAlignment="Right" Content="&#xEC52;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Click="PreviousYearButton_Click" />
+                    <Button x:Name="PreviousYearButton" HorizontalAlignment="Right" Content="&#xEC52;" ToolTipService.ToolTip="Previous statistic year" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Click="PreviousYearButton_Click" />
                     <TextBlock x:Name="YearTextBlock" Text="XXXX" Grid.Column="1" HorizontalAlignment="Center" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,0" />
-                    <Button x:Name="NextYearButton" HorizontalAlignment="Left" Content="&#xEBE7;" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="2" Click="NextYearButton_Click" />
+                    <Button x:Name="NextYearButton" HorizontalAlignment="Left" Content="&#xEBE7;" ToolTipService.ToolTip="Next statistic year" FontFamily="Segoe MDL2 Assets" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="2" Click="NextYearButton_Click" />
                 </Grid>
                 <charting:Chart x:Name="StatisticsPieChart" Grid.Row="1" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}">
                     <charting:PieSeries IndependentValuePath="Category.Name" DependentValuePath="TimesUsed" Margin="-10,-35,-10,-15" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />

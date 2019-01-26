@@ -233,12 +233,14 @@ namespace BinCompeteSoftUWP.Pages
 
                                     App.ShowContentDialog(errorMsg, null);
 
-                                    SigningInTextBlock.Visibility = Visibility.Collapsed;
-                                    SigningInProgressRing.IsActive = false;
+                                    
                                 }
                             };
 
                             App.ShowContentDialog(resetPassDialog, callback);
+
+                            SigningInTextBlock.Visibility = Visibility.Collapsed;
+                            SigningInProgressRing.IsActive = false;
                         }
                         else
                         {

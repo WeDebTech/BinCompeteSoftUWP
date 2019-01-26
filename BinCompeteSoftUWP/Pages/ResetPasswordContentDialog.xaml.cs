@@ -179,7 +179,7 @@ namespace BinCompeteSoftUWP.Pages
                                 }
                                 else
                                 {
-                                    ResetTextBlock.Text = "The password must contain at least 1 lowercase, 1 uppercase, 1 numeric character, 1 special character, and be be 8 characters or longer!";
+                                    ResetTextBlock.Text = "Current password is incorrect";
                                     CurrentPasswordTextBox.Password = "";
                                     NewPasswordTextBox.Password = "";
                                     NewPasswordRetypeTextBox.Password = "";
@@ -189,7 +189,7 @@ namespace BinCompeteSoftUWP.Pages
                             }
                             else
                             {
-                                ResetTextBlock.Text = "Current password is incorrect!";
+                                ResetTextBlock.Text = "The password must contain at least 1 lowercase, 1 uppercase, 1 numeric character, 1 special character, and be be 8 characters or longer!";
                                 CurrentPasswordTextBox.Password = "";
                                 NewPasswordTextBox.Password = "";
                                 NewPasswordRetypeTextBox.Password = "";
@@ -212,6 +212,14 @@ namespace BinCompeteSoftUWP.Pages
 
         private void ContentDialog_CloseButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
+            ContentDialog errorMsg = new ContentDialog
+            {
+                Title = "Canceled",
+                Content = "Your password has not been changed.",
+                CloseButtonText = "OK"
+            };
+
+            App.ShowContentDialog(errorMsg, null);
         }
     }
 }
