@@ -8,10 +8,13 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using System.Xml;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.Storage.Provider;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -90,6 +93,8 @@ namespace BinCompeteSoftUWP.Pages
                     }
 
                 }
+
+                contestResults = new ObservableCollection<ProjectResult>(contestResults.OrderByDescending(contest => contest.Result).ToList());
 
                 // Check if there's anything returned.
                 if (contestResults.Count <= 0)
@@ -430,70 +435,104 @@ namespace BinCompeteSoftUWP.Pages
 
             if(file != null)
             {
-                // Write to the file.
-                using (XmlWriter writer = XmlWriter.Create(file.Path))
+                // Prevent updates to the remote version of the file until we finish making changes to it.
+                CachedFileManager.DeferUpdates(file);
+
+                StringBuilder builder = new StringBuilder();
+                using (StringWriter stringWriter = new StringWriter(builder))
                 {
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("Results");
-
-                    // Write the contest details.
-                    writer.WriteStartElement("Contest");
-                    writer.WriteElementString("Id", contest.Id.ToString());
-                    writer.WriteElementString("StartDate", contest.ContestDetails.StartDate.ToString());
-                    writer.WriteElementString("LimitDate", contest.ContestDetails.LimitDate.ToString());
-                    writer.WriteElementString("VotingDate", contest.ContestDetails.VotingDate.ToString());
-                    writer.WriteEndElement();
-
-                    // Write the criterias details.
-                    writer.WriteStartElement("Criterias");
-
-                    foreach (Criteria criteria in contest.Criterias)
+                    // Write to the file.
+                    using (XmlWriter writer = XmlWriter.Create(stringWriter))
                     {
-                        writer.WriteStartElement("Criteria");
-                        writer.WriteElementString("Id", criteria.Id.ToString());
-                        writer.WriteElementString("Name", criteria.Name);
-                        writer.WriteElementString("Description", criteria.Description);
+                        writer.WriteStartDocument();
+                        writer.WriteStartElement("Results");
+
+                        // Write the contest details.
+                        writer.WriteStartElement("Contest");
+                        writer.WriteElementString("Id", contest.Id.ToString());
+                        writer.WriteElementString("Name", contest.ContestDetails.Name);
+                        writer.WriteElementString("StartDate", contest.ContestDetails.StartDate.ToString());
+                        writer.WriteElementString("LimitDate", contest.ContestDetails.LimitDate.ToString());
+                        writer.WriteElementString("VotingDate", contest.ContestDetails.VotingDate.ToString());
                         writer.WriteEndElement();
-                    }
 
-                    writer.WriteEndElement();
+                        // Write the criterias details.
+                        writer.WriteStartElement("Criterias");
 
-                    // Write the projects details.
-                    writer.WriteStartElement("Projects");
-
-                    foreach (ProjectResult projectResult in contestResults)
-                    {
-                        writer.WriteStartElement("Project");
-
-                        writer.WriteElementString("Id", projectResult.Project.Id.ToString());
-                        writer.WriteElementString("Name", projectResult.Project.Name);
-                        writer.WriteElementString("Description", projectResult.Project.Description);
-                        writer.WriteElementString("Score", projectResult.Result.ToString());
-                        writer.WriteElementString("Position", count.ToString());
+                        foreach (Criteria criteria in contest.Criterias)
+                        {
+                            writer.WriteStartElement("Criteria");
+                            writer.WriteElementString("Id", criteria.Id.ToString());
+                            writer.WriteElementString("Name", criteria.Name);
+                            writer.WriteElementString("Description", criteria.Description);
+                            writer.WriteEndElement();
+                        }
 
                         writer.WriteEndElement();
 
-                        count++;
+                        // Write the projects details.
+                        writer.WriteStartElement("Projects");
+
+                        foreach (ProjectResult projectResult in contestResults)
+                        {
+                            writer.WriteStartElement("Project");
+
+                            writer.WriteElementString("Id", projectResult.Project.Id.ToString());
+                            writer.WriteElementString("Name", projectResult.Project.Name);
+                            writer.WriteElementString("Description", projectResult.Project.Description);
+                            writer.WriteElementString("Score", projectResult.Result.ToString());
+                            writer.WriteElementString("Position", count.ToString());
+
+                            writer.WriteEndElement();
+
+                            count++;
+                        }
+
+                        writer.WriteEndElement();
+
+                        writer.WriteEndElement();
+                        writer.WriteEndDocument();
                     }
-
-                    writer.WriteEndElement();
-
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
                 }
 
-                ContentDialog contentDialog = new ContentDialog
+                string stream = builder.ToString();
+
+                // Save file.
+                await FileIO.WriteTextAsync(file, stream);
+
+                // Let Windows know that we're finished changing the file.
+                FileUpdateStatus status = await CachedFileManager.CompleteUpdatesAsync(file);
+                
+                if(status == FileUpdateStatus.Complete)
                 {
-                    Title = "Success",
-                    Content = "File successfully exported."
-                };
+                    ContentDialog contentDialog = new ContentDialog
+                    {
+                        Title = "Success",
+                        Content = "Results successfully exported.",
+                        CloseButtonText = "OK"
+                    };
+
+                    App.ShowContentDialog(contentDialog, null);
+                }
+                else
+                {
+                    ContentDialog errorDialog = new ContentDialog
+                    {
+                        Title = "Error",
+                        Content = "Unable to export results.",
+                        CloseButtonText = "OK"
+                    };
+
+                    App.ShowContentDialog(errorDialog, null);
+                }
             }
             else
             {
                 ContentDialog errorMsg = new ContentDialog
                 {
                     Title = "Canceled",
-                    Content = "Action canceled by the user."
+                    Content = "Action canceled by the user.",
+                    CloseButtonText = "OK"
                 };
 
                 App.ShowContentDialog(errorMsg, null);
@@ -502,7 +541,7 @@ namespace BinCompeteSoftUWP.Pages
         #endregion
 
         #region Class event handlers
-        private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
             WriteResultsToXML();
         }

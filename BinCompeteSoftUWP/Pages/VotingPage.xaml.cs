@@ -85,6 +85,23 @@ namespace BinCompeteSoftUWP.Pages
 
                 App.ShowContentDialog(errorMsg, callback);
             }
+            else if (Data.Instance.GetContestVoteStatus(ContestToLoad.Id))
+            {
+                ContentDialog errorMsg = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "You have already voted for this contest.",
+                    PrimaryButtonText = "OK"
+                };
+
+                // Create callback to be called when ContentDialog closes.
+                Action<ContentDialogResult> callback = (result) =>
+                {
+                    Frame.GoBack();
+                };
+
+                App.ShowContentDialog(errorMsg, callback);
+            }
             else
             {
                 ContestToEdit = await Data.Instance.GetContest(ContestToLoad.Id);
