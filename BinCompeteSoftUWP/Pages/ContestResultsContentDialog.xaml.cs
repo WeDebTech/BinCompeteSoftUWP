@@ -96,6 +96,42 @@ namespace BinCompeteSoftUWP.Pages
 
                 contestResults = new ObservableCollection<ProjectResult>(contestResults.OrderByDescending(contest => contest.Result).ToList());
 
+                // Check if any projects have the same results.
+                for(int i = 0; i < contestResults.Count - 1; i++)
+                {
+                    if(contestResults[i].Result == contestResults[i + 1].Result)
+                    {
+                        // Get the youngest promoter.
+                        Promoter youngestPromoterProject1 = new Promoter();
+                        foreach(Promoter promoter in contestResults[i].Project.Promoters)
+                        {
+                            if(promoter.DateOfBirth < youngestPromoterProject1.DateOfBirth)
+                            {
+                                youngestPromoterProject1 = promoter;
+                            }
+                        }
+
+                        Promoter youngestPromoterProject2 = new Promoter();
+                        foreach (Promoter promoter in contestResults[i + 1].Project.Promoters)
+                        {
+                            if (promoter.DateOfBirth < youngestPromoterProject2.DateOfBirth)
+                            {
+                                youngestPromoterProject2 = promoter;
+                            }
+                        }
+
+                        // Check which has the youngest promoter.
+                        // If the second one isn't younger than the first one, nothing changes.
+                        if(DateTime.Compare(youngestPromoterProject1.DateOfBirth, youngestPromoterProject2.DateOfBirth) < 0)
+                        {
+                            Project tempProject = contestResults[i].Project;
+
+                            contestResults[i].Project = contestResults[i + 1].Project;
+                            contestResults[i + 1].Project = tempProject;
+                        }
+                    }
+                }
+
                 // Check if there's anything returned.
                 if (contestResults.Count <= 0)
                 {
@@ -239,6 +275,42 @@ namespace BinCompeteSoftUWP.Pages
 
             // Order the projects by their results.
             contestResults = new ObservableCollection<ProjectResult>(contestResults.OrderByDescending(contestResult => contestResult.Result).ToList());
+
+            // Check if any projects have the same results.
+            for (int i = 0; i < contestResults.Count - 1; i++)
+            {
+                if (contestResults[i].Result == contestResults[i + 1].Result)
+                {
+                    // Get the youngest promoter.
+                    Promoter youngestPromoterProject1 = new Promoter();
+                    foreach (Promoter promoter in contestResults[i].Project.Promoters)
+                    {
+                        if (promoter.DateOfBirth < youngestPromoterProject1.DateOfBirth)
+                        {
+                            youngestPromoterProject1 = promoter;
+                        }
+                    }
+
+                    Promoter youngestPromoterProject2 = new Promoter();
+                    foreach (Promoter promoter in contestResults[i + 1].Project.Promoters)
+                    {
+                        if (promoter.DateOfBirth < youngestPromoterProject2.DateOfBirth)
+                        {
+                            youngestPromoterProject2 = promoter;
+                        }
+                    }
+
+                    // Check which has the youngest promoter.
+                    // If the second one isn't younger than the first one, nothing changes.
+                    if (youngestPromoterProject1.DateOfBirth > youngestPromoterProject2.DateOfBirth)
+                    {
+                        Project tempProject = contestResults[i].Project;
+
+                        contestResults[i].Project = contestResults[i + 1].Project;
+                        contestResults[i + 1].Project = tempProject;
+                    }
+                }
+            }
         }
 
         /// <summary>
