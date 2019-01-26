@@ -56,13 +56,34 @@ namespace BinCompeteSoftUWP.Pages
                 ContentDialog errorMsg = new ContentDialog
                 {
                     Title = "Error",
+                    Content = "The voting period has finished for this contest.",
+                    PrimaryButtonText = "OK"
+                };
+
+                // Create callback to be called when ContentDialog closes.
+                Action<ContentDialogResult> callback = (result) =>
+                {
+                    Frame.GoBack();
+                };
+
+                App.ShowContentDialog(errorMsg, callback);
+            }
+            else if (ContestToLoad.LimitDate > DateTime.Now.Date)
+            {
+                ContentDialog errorMsg = new ContentDialog
+                {
+                    Title = "Error",
                     Content = "Voting hasn't started yet for this contest.\nPlease come back when the voting period begins.",
                     PrimaryButtonText = "OK"
                 };
 
-                App.ShowContentDialog(errorMsg, null);
+                // Create callback to be called when ContentDialog closes.
+                Action<ContentDialogResult> callback = (result) =>
+                {
+                    Frame.GoBack();
+                };
 
-                this.Frame.GoBack();
+                App.ShowContentDialog(errorMsg, callback);
             }
             else
             {

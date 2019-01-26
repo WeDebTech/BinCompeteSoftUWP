@@ -388,8 +388,6 @@ namespace BinCompeteSoftUWP.Pages
         /// </summary>
         private void DisableContestFields()
         {
-            ShowResultsButton.IsEnabled = false;
-
             if (ContestStarted)
             {
                 StartDateCalendarDatePicker.IsEnabled = false;
@@ -514,7 +512,7 @@ namespace BinCompeteSoftUWP.Pages
                 // Add all projects.
                 foreach (Project project in ProjectsToAdd)
                 {
-                    query = "INSERT INTO project_table (id_contest, id_category, name descript, project_year) " +
+                    query = "INSERT INTO project_table (id_contest, id_category, name, descript, project_year) " +
                         "VALUES (@id_contest, @id_category, @name, @descript, @project_year); " +
                         "SELECT CAST(scope_identity() as int)";
 

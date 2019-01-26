@@ -382,7 +382,7 @@ namespace BinCompeteSoftUWP.Pages
         private async Task RefreshBestProjects(int year)
         {
             // Get the best projects from the database.
-            string query = "SELECT TOP 5 proj.project_name, eval.final_evaluation " +
+            string query = "SELECT TOP 5 proj.name, eval.final_evaluation " +
                 "FROM project_table proj " +
                 "INNER JOIN final_result_table eval " +
                 "ON proj.id_project = eval.id_project " +
@@ -421,7 +421,7 @@ namespace BinCompeteSoftUWP.Pages
                 // Update the TextBlocks with the selected year's statistics.
                 TotalCompetitionsTextBlock.Text = Data.Instance.Statistics[SelectedYear].TotalCompetitions.ToString();
                 TotalProjectsTextBlock.Text = Data.Instance.Statistics[SelectedYear].TotalProjects.ToString();
-                AverageProjectsCompetitionTextBlock.Text = Data.Instance.Statistics[SelectedYear].ProjectPerCompetitionAvg.ToString();
+                AverageProjectsCompetitionTextBlock.Text = (Data.Instance.Statistics[SelectedYear].TotalProjects / Data.Instance.Statistics[SelectedYear].TotalCompetitions).ToString();
             }
         }
 

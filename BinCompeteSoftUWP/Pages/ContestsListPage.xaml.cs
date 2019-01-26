@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BinCompeteSoftUWP.Classes;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +23,72 @@ namespace BinCompeteSoftUWP.Pages
     /// </summary>
     public sealed partial class ContestsListPage : Page
     {
+        #region Class variables
+
+        #endregion
+
+        #region Class constructors
         public ContestsListPage()
         {
             this.InitializeComponent();
         }
+        #endregion
+
+        #region Class event handlers
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void DetailsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if any item is selected in contest ListView.
+            if (ContestsDataGrid.SelectedIndex != -1)
+            {
+                ContestDetails contestDetails = (ContestDetails)ContestsDataGrid.SelectedItem;
+
+                // Check if the contest has been created by the current user.
+                if (Data.Instance.GetIfContestIsCreatedByCurrentUser(contestDetails.Id))
+                {
+                    this.Frame.Navigate(typeof(ContestPage), contestDetails);
+                }
+                else
+                {
+                    this.Frame.Navigate(typeof(VotingPage), contestDetails);
+                }
+            }
+            else
+            {
+                ContentDialog errorMsg = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "You must select a contest to see it's details.",
+                    CloseButtonText = "OK"
+                };
+
+                App.ShowContentDialog(errorMsg, null);
+            }
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshData();
+        }
+        #endregion
+
+        #region Class methods
+        private async void RefreshData()
+        {
+            LoadingContestsProgressRing.IsActive = true;
+            LoadingContestsTextBlock.Visibility = Visibility.Visible;
+
+            await Data.Instance.RefreshContestsAsync();
+
+            ContestsDataGrid.ItemsSource = Data.Instance.ContestDetails.OrderByDescending(contest => contest.LimitDate).ToList();
+
+            LoadingContestsProgressRing.IsActive = false;
+            LoadingContestsTextBlock.Visibility = Visibility.Collapsed;
+        }
+        #endregion
     }
 }

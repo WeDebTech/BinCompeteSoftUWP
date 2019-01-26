@@ -199,7 +199,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button x:Name="CancelContestButton" Content="Cancel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Padding="15,4,15,5" Click="CancelContestButton_Click" />
-                <Button x:Name="ShowResultsButton" Content="Show results" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" Padding="15,4,15,5" Click="ShowResultsButton_Click" />
+                <Button x:Name="ShowResultsButton" Content="Show results" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="1" Padding="15,4,15,5" Click="ShowResultsButton_Click" IsEnabled="False" />
                 <Button x:Name="CreateContestButton" Content="Create contest" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Column="3" Padding="15,4,15,5" Click="CreateContestButton_Click" />
             </Grid>
         </Grid>

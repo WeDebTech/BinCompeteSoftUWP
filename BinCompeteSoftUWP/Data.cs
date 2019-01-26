@@ -607,7 +607,7 @@ namespace BinCompeteSoftUWP
 
                     while (await reader.ReadAsync())
                     {
-                        Statistic statistic = new Statistic((int)reader[0], decimal.ToDouble((decimal)reader[1]), (int)reader[2], (int)reader[3], new ObservableCollection<CategoryStatistics>(), new ObservableCollection<BestProjects>());
+                        Statistic statistic = new Statistic((int)reader[0], (int)reader[1], (int)reader[2], new ObservableCollection<CategoryStatistics>(), new ObservableCollection<BestProjects>());
                         Statistics.Add(statistic);
                     }
                 }
