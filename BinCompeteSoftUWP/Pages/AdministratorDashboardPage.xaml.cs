@@ -58,7 +58,15 @@ namespace BinCompeteSoftUWP.Pages
 
         private void AddCriteriaButton_Click(object sender, RoutedEventArgs e)
         {
+            EditCriteriaContentDialog editCriteriaContentDialog = new EditCriteriaContentDialog(null);
 
+            // Create callback to be called when ContentDialog closes.
+            Action<ContentDialogResult> callback = async (result) =>
+            {
+                await RefreshCriterias();
+            };
+
+            App.ShowContentDialog(editCriteriaContentDialog, callback);
         }
 
         private async void RefreshCriteriasButton_Click(object sender, RoutedEventArgs e)
@@ -128,7 +136,22 @@ namespace BinCompeteSoftUWP.Pages
 
         private void CriteriaGrid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
+            // Get which contest is associated with this grid.
+            if (CriteriasListView.SelectedItems.Count == 1)
+            {
+                Criteria criteria = (Criteria)CriteriasListView.SelectedItems[0];
 
+
+                EditCriteriaContentDialog editCriteriaContentDialog = new EditCriteriaContentDialog(criteria);
+
+                // Create callback to be called when ContentDialog closes.
+                Action<ContentDialogResult> callback = async (result) =>
+                {
+                    await RefreshCriterias();
+                };
+
+                App.ShowContentDialog(editCriteriaContentDialog, callback);
+            }
         }
 
         private void ShowUserDetailsButton_Click(object sender, RoutedEventArgs e)
@@ -152,7 +175,22 @@ namespace BinCompeteSoftUWP.Pages
 
         private void ShowCriteriaDetailsButton_Click(object sender, RoutedEventArgs e)
         {
+            // Get which contest is associated with this grid.
+            if (CriteriasListView.SelectedItems.Count == 1)
+            {
+                Criteria criteria = (Criteria)CriteriasListView.SelectedItems[0];
 
+
+                EditCriteriaContentDialog editCriteriaContentDialog = new EditCriteriaContentDialog(criteria);
+
+                // Create callback to be called when ContentDialog closes.
+                Action<ContentDialogResult> callback = async (result) =>
+                {
+                    await RefreshCriterias();
+                };
+
+                App.ShowContentDialog(editCriteriaContentDialog, callback);
+            }
         }
         #endregion
 

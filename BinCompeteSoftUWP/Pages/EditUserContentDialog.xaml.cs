@@ -151,6 +151,8 @@ namespace BinCompeteSoftUWP.Pages
                     else
                     {
                         ErrorInsertTextBlock.Visibility = Visibility.Visible;
+
+                        args.Cancel = true;
                     }
                 }
                 else
@@ -169,6 +171,8 @@ namespace BinCompeteSoftUWP.Pages
                     else
                     {
                         ErrorInsertTextBlock.Visibility = Visibility.Visible;
+
+                        args.Cancel = true;
                     }
                 }
             }

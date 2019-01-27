@@ -171,6 +171,9 @@
     <Compile Include="Pages\ContestsListPage.xaml.cs">
       <DependentUpon>ContestsListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\EditCriteriaContentDialog.xaml.cs">
+      <DependentUpon>EditCriteriaContentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\EditProjectContentDialog.xaml.cs">
       <DependentUpon>EditProjectContentDialog.xaml</DependentUpon>
     </Compile>
@@ -294,6 +297,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\ContestsListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EditCriteriaContentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
