@@ -40,11 +40,11 @@ namespace BinCompeteSoftUWP.Pages
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             // Load data to fill the lists.
-            await LoadUsers();
+            await RefreshUsers();
 
-            await LoadContests();
+            await RefreshContests();
 
-            await LoadCriterias();
+            await RefreshCriterias();
 
             await Data.Instance.RefreshJudgesAsync();
 
@@ -53,7 +53,7 @@ namespace BinCompeteSoftUWP.Pages
 
         private async void RefreshContestsButton_Click(object sender, RoutedEventArgs e)
         {
-            await LoadContests();
+            await RefreshContests();
         }
 
         private void AddCriteriaButton_Click(object sender, RoutedEventArgs e)
@@ -63,17 +63,25 @@ namespace BinCompeteSoftUWP.Pages
 
         private async void RefreshCriteriasButton_Click(object sender, RoutedEventArgs e)
         {
-            await LoadCriterias();
+            await RefreshCriterias();
         }
 
         private void AddUserButton_Click(object sender, RoutedEventArgs e)
         {
+            EditUserContentDialog editUserContentDialog = new EditUserContentDialog(null);
 
+            // Create callback to be called when ContentDialog closes.
+            Action<ContentDialogResult> callback = async (result) =>
+            {
+                await RefreshUsers();
+            };
+
+            App.ShowContentDialog(editUserContentDialog, callback);
         }
 
         private async void RefreshUsersButton_Click(object sender, RoutedEventArgs e)
         {
-            await LoadUsers();
+            await RefreshUsers();
         }
 
         private void ShowContestDetailsButton_Click(object sender, RoutedEventArgs e)
@@ -101,10 +109,48 @@ namespace BinCompeteSoftUWP.Pages
 
         private void UserGrid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
+            // Get which contest is associated with this grid.
+            if (UsersListView.SelectedItems.Count == 1)
+            {
+                User user = (User)UsersListView.SelectedItems[0];
 
+                EditUserContentDialog editUserContentDialog = new EditUserContentDialog(user);
+
+                // Create callback to be called when ContentDialog closes.
+                Action<ContentDialogResult> callback = async (result) =>
+                {
+                    await RefreshUsers();
+                };
+
+                App.ShowContentDialog(editUserContentDialog, callback);
+            }
         }
 
         private void CriteriaGrid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+
+        }
+
+        private void ShowUserDetailsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Get which contest is associated with this grid.
+            if (UsersListView.SelectedItems.Count == 1)
+            {
+                User user = (User)ContestsListView.SelectedItems[0];
+
+                EditUserContentDialog editUserContentDialog = new EditUserContentDialog(user);
+
+                // Create callback to be called when ContentDialog closes.
+                Action<ContentDialogResult> callback = async (result) =>
+                {
+                    await RefreshUsers();
+                };
+
+                App.ShowContentDialog(editUserContentDialog, callback);
+            }
+        }
+
+        private void ShowCriteriaDetailsButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
@@ -114,7 +160,7 @@ namespace BinCompeteSoftUWP.Pages
         /// <summary>
         /// Loads all the users.
         /// </summary>
-        private async Task LoadUsers()
+        private async Task RefreshUsers()
         {
             UsersListView.ItemsSource = null;
 
@@ -132,7 +178,7 @@ namespace BinCompeteSoftUWP.Pages
         /// <summary>
         /// Loads all the contests.
         /// </summary>
-        private async Task LoadContests()
+        private async Task RefreshContests()
         {
             ContestsListView.ItemsSource = null;
 
@@ -150,7 +196,7 @@ namespace BinCompeteSoftUWP.Pages
         /// <summary>
         /// Loads all the criterias.
         /// </summary>
-        private async Task LoadCriterias()
+        private async Task RefreshCriterias()
         {
             CriteriasListView.ItemsSource = null;
 
@@ -165,10 +211,5 @@ namespace BinCompeteSoftUWP.Pages
             CriteriasListView.ItemsSource = Data.Instance.Criterias;
         }
         #endregion
-
-        private void ShowUserDetailsButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

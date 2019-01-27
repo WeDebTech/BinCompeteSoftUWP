@@ -177,6 +177,9 @@
     <Compile Include="Pages\EditContestDescriptionContentDialog.xaml.cs">
       <DependentUpon>EditContestDescriptionContentDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\EditUserContentDialog.xaml.cs">
+      <DependentUpon>EditUserContentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\JudgeDashboardPage.xaml.cs">
       <DependentUpon>JudgeDashboardPage.xaml</DependentUpon>
     </Compile>
@@ -299,6 +302,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\EditContestDescriptionContentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EditUserContentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

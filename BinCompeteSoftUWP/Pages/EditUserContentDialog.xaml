@@ -1,0 +1,42 @@
+﻿<ContentDialog
+    x:Class="BinCompeteSoftUWP.Pages.EditUserContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BinCompeteSoftUWP.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="User"
+    PrimaryButtonText="Confirm"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="User nick: " FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
+        <TextBlock Text="User name: " FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Row="1" />
+        <TextBlock Text="Password reset: " FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Row="2" />
+        <TextBlock Text="Valid user: " FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Row="3" />
+        <TextBlock Text="Administrator: " FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Row="4" />
+        <TextBox x:Name="UserNickTextBox" Grid.Column="1" Width="200" Margin="10,0,0,5" />
+        <TextBox x:Name="UserNameTextBox" Grid.Column="1" Width="200" Margin="10,0,0,5" Grid.Row="1" />
+        <CheckBox x:Name="UserPasswordResetCheckBox" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" FlowDirection="RightToLeft" IsChecked="True" />
+        <CheckBox x:Name="UserValidCheckBox" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right" FlowDirection="RightToLeft" IsChecked="True" />
+        <CheckBox x:Name="UserAdminCheckBox" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right" FlowDirection="RightToLeft" />
+        <TextBlock x:Name="ErrorTextBlock" Text="You must fill all fields to update this user!" Grid.Row="5" Grid.ColumnSpan="2" FontSize="{Binding FontSizeSmaller, Source={StaticResource Settings}}" Visibility="Collapsed" />
+        <TextBlock x:Name="ErrorInsertTextBlock" Text="Error updating user!" Grid.Row="5" Grid.ColumnSpan="2" FontSize="{Binding FontSizeSmaller, Source={StaticResource Settings}}" Visibility="Collapsed" />
+    </Grid>
+</ContentDialog>
