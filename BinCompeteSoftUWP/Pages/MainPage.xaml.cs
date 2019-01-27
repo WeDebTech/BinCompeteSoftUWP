@@ -47,11 +47,20 @@ namespace BinCompeteSoftUWP.Pages
                 Tag = "list_contests"
             }
         };
-        private readonly List<(NavigationViewItem NavigationViewItem, Type Page)> AdministratorMenuItems = new List<(NavigationViewItem NavigationViewItem, Type Page)>
-        { };
+
+        private readonly List<NavigationViewItem> AdministratorMenuItems = new List<NavigationViewItem>
+        {
+            new NavigationViewItem
+            {
+                Content = "Dashboard",
+                Icon = new SymbolIcon(Symbol.Home),
+                Tag = "dashboard_admin"
+            }
+        };
 
         private List<(string Tag, Type Page)> _pages = new List<(string Tag, Type Page)>
         {
+            ("dashboard_admin", typeof(AdministratorDashboardPage)),
             ("dashboard", typeof(JudgeDashboardPage)),
             ("add_contest", typeof(ContestPage)),
             ("list_contests", typeof(ContestsListPage)),
@@ -73,10 +82,10 @@ namespace BinCompeteSoftUWP.Pages
             if (Data.Instance.LoggedInUser.Administrator)
             {
                 // Add Navigation View Items for navigation.
-                foreach ((NavigationViewItem NavigationViewItem, Type Page) NavigationItem in AdministratorMenuItems)
+                foreach (NavigationViewItem NavigationItem in AdministratorMenuItems)
                 {
-                    NavigationItem.NavigationViewItem.FontSize = 22;
-                    NavigationViewPane.MenuItems.Add(NavigationItem.NavigationViewItem);
+                    NavigationItem.FontSize = 22;
+                    NavigationViewPane.MenuItems.Add(NavigationItem);
                 }
             }
             else
@@ -91,10 +100,17 @@ namespace BinCompeteSoftUWP.Pages
 
             // NavigationViewPane doesn't load any page by default, so load home page.
             NavigationViewPane.SelectedItem = NavigationViewPane.MenuItems[0];
-            
+
             // Because we use ItemInvoked to navigate, we need to call Navigate
             // here to load the home page.
-            NavigationViewPane_Navigate("dashboard", new EntranceNavigationTransitionInfo());
+            if (Data.Instance.LoggedInUser.Administrator)
+            {
+                NavigationViewPane_Navigate("dashboard_admin", new EntranceNavigationTransitionInfo());
+            }
+            else
+            {
+                NavigationViewPane_Navigate("dashboard", new EntranceNavigationTransitionInfo());
+            }
 
             // Add keyboard accelerators for backwards navigation.
             var goBack = new KeyboardAccelerator { Key = VirtualKey.GoBack };

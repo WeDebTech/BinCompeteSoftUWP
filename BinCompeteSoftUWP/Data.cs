@@ -39,6 +39,7 @@ namespace BinCompeteSoftUWP
 
         public FontSizeSetting FontSizeSettings;
 
+        public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
         public ObservableCollection<JudgeMember> JudgeMembers { get; set; } = new ObservableCollection<JudgeMember>();
         public ObservableCollection<Contest> Contests { get; set; } = new ObservableCollection<Contest>();
         public ObservableCollection<ContestDetails> ContestDetails { get; set; } = new ObservableCollection<ContestDetails>();
@@ -207,6 +208,44 @@ namespace BinCompeteSoftUWP
         }
 
         /// <summary>
+        /// This method retrieves the most up-to-date list of users from the database.
+        /// </summary>
+        /// <returns>True if success, false otherwise.</returns>
+        public async Task<bool> RefreshUsersAsync()
+        {
+            // Load the judges from the Database
+            string query = "SELECT id_user, username, fullname, administrator, first_time_login, valid FROM user_table";
+
+            SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
+            cmd.CommandText = query;
+
+            // Execute query
+            using (DbDataReader reader = await cmd.ExecuteReaderAsync())
+            {
+                // Check if user exists
+                if (reader.HasRows)
+                {
+                    Users.Clear();
+
+                    while (await reader.ReadAsync())
+                    {
+                        // Construct user information from database
+                        User user = new User((int)reader[0], reader[1].ToString(), reader[2].ToString(), (bool)reader[3], (bool)reader[4], (bool)reader[5]);
+
+                        // Add it to the list
+                        Users.Add(user);
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
         /// This method retrieves the most up-to-date list of categories from the database.
         /// </summary>
         /// <returns>True if success, false otherwise.</returns>
@@ -269,6 +308,42 @@ namespace BinCompeteSoftUWP
                 {
                     ContestDetails.Clear();
                     
+                    while (await reader.ReadAsync())
+                    {
+                        ContestDetails contest = new ContestDetails((int)reader[0], reader[1].ToString(), reader[2].ToString(), (DateTime)reader[3], (DateTime)reader[4], (DateTime)reader[5], false, false, false);
+                        ContestDetails.Add(contest);
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// This method retrieves the most up-to-date list of contests from the database.
+        /// </summary>
+        /// <returns>True if success, false otherwise.</returns>
+        public async Task<bool> RefreshContestsAdminAsync()
+        {
+            // Load the contest that the users has part in from the Database
+            string query = "SELECT id_contest, contest_name, descript, start_date, limit_date, voting_limit_date " +
+                "FROM contest_table";
+
+            SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
+            cmd.CommandText = query;
+
+            // Execute query
+            using (DbDataReader reader = await cmd.ExecuteReaderAsync())
+            {
+                // Check if contest exists
+                if (reader.HasRows)
+                {
+                    ContestDetails.Clear();
+
                     while (await reader.ReadAsync())
                     {
                         ContestDetails contest = new ContestDetails((int)reader[0], reader[1].ToString(), reader[2].ToString(), (DateTime)reader[3], (DateTime)reader[4], (DateTime)reader[5], false, false, false);

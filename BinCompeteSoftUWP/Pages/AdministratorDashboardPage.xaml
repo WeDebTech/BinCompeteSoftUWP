@@ -1,0 +1,197 @@
+﻿<Page
+    x:Class="BinCompeteSoftUWP.Pages.AdministratorDashboardPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BinCompeteSoftUWP.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:charting="using:WinRTXamlToolkit.Controls.DataVisualization.Charting"
+    xmlns:classes="using:BinCompeteSoftUWP.Classes"
+    xmlns:conv="using:BinCompeteSoftUWP.Converters"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded">
+
+    <Page.Resources>
+        <conv:StringFormatConverter x:Name="StringFormatConverter" />
+        <conv:BooleanToVisibilityConverter x:Name="BoolToVis" />
+        <conv:BooleanToTooltipConverter x:Name="BoolToTooltip" />
+    </Page.Resources>
+
+    <Grid x:Name="RootGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="300" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" MinWidth="350" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" MinWidth="350" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Margin="0,0,0,0" Padding="10,10,10,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Users" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Grid.Column="1" />
+                <Button x:Name="AddUserButton" Content="&#xE710;" Click="AddUserButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" ToolTipService.ToolTip="Create a new user" Grid.Column="1" Margin="0,0,5,0" />
+                <Button x:Name="RefreshUsersButton" Content="&#xE72C;" Click="RefreshUsersButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" ToolTipService.ToolTip="Refresh users list" Grid.Column="2" />
+            </Grid>
+            <Border BorderThickness="0,0,0,1" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" Margin="0,0,0,0" Grid.Row="1" Padding="0,5,0,0" />
+            <Grid Grid.Row="2" Margin="0,10,0,0" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ProgressRing x:Name="LoadingUsersProgressRing" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0" />
+                <TextBlock x:Name="LoadingUsersTextBlock" Grid.Column="1" Text="Loading users..." FontSize="20" HorizontalAlignment="Stretch" TextAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed" />
+            </Grid>
+            <ListView x:Name="UsersListView" Grid.Row="2" Margin="0,5,0,0" IsMultiSelectCheckBoxEnabled="False">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="classes:User">
+                        <Grid x:Name="UserGrid" DoubleTapped="UserGrid_DoubleTapped">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind Path=Username}" FontWeight="Bold" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" />
+                            <TextBlock Text="{x:Bind Path=Name, Converter={StaticResource StringFormatConverter}, ConverterParameter='@{0}'}" FontWeight="Bold" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.Row="1" />
+                            <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="2" Grid.ColumnSpan="2" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button x:Name="ShowUserDetailsButton" Content="Show details" ToolTipService.ToolTip="Show user details" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="ShowUserDetailsButton_Click" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,10,0,0" />
+        </Grid>
+
+        <Grid Grid.Column="2" Padding="10,10,10,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Contests" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Grid.Column="1" />
+                <Button x:Name="RefreshContestsButton" Content="&#xE72C;" Click="RefreshContestsButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" ToolTipService.ToolTip="Refresh contests list" Grid.Column="2" />
+            </Grid>
+            <Border BorderThickness="0,0,0,1" Margin="0,0,0,0" Grid.Row="1" Padding="0,5,0,0" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" />
+            <Grid Grid.Row="2" Margin="0,10,0,0" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ProgressRing x:Name="LoadingContestProgressRing" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0" />
+                <TextBlock x:Name="LoadingContestsTextBlock" Grid.Column="1" Text="Loading contests..." FontSize="20" HorizontalAlignment="Stretch" TextAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed" />
+            </Grid>
+            <ListView x:Name="ContestsListView" Grid.Row="2" Margin="0,5,0,0" IsMultiSelectCheckBoxEnabled="False">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="classes:ContestDetails">
+                        <Grid x:Name="ContestGrid" DoubleTapped="ContestGrid_DoubleTapped">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" />
+                            <TextBlock Text="{x:Bind Path=Description}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" Grid.Row="1" />
+                            <TextBlock Text="{x:Bind Path=StartDate, Converter={StaticResource StringFormatConverter}, ConverterParameter='Start date: {0: dd-MM-yyyy}'}" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.Row="2" />
+                            <TextBlock Text="{x:Bind Path=LimitDate, Converter={StaticResource StringFormatConverter}, ConverterParameter='Limit date: {0: dd-MM-yyyy}'}" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.Row="3" />
+                            <TextBlock Text="{x:Bind Path=VotingDate, Converter={StaticResource StringFormatConverter}, ConverterParameter='Voting limit date: {0: dd-MM-yyyy}'}" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Margin="0,0,0,5" Grid.Row="4" />
+                            <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="5" Grid.ColumnSpan="2" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button x:Name="ShowContestDetailsButton" Content="Show details" ToolTipService.ToolTip="Show contest details" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="ShowContestDetailsButton_Click" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,10,0,0" />
+        </Grid>
+
+        <Grid Grid.Column="4" Margin="0,0,0,0" BorderThickness="0,0,1,0" Padding="10,10,10,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Criterias" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Grid.Column="1" />
+                <Button x:Name="AddCriteriaButton" Content="&#xE710;" Click="AddCriteriaButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" ToolTipService.ToolTip="Create a new criteria" Grid.Column="1" Margin="0,0,5,0" />
+                <Button x:Name="RefreshCriteriasButton" Content="&#xE72C;" Click="RefreshCriteriasButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" ToolTipService.ToolTip="Refresh criterias list" Grid.Column="2" />
+            </Grid>
+            <Border BorderThickness="0,0,0,1" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" Margin="0,0,0,0" Grid.Row="1" Padding="0,5,0,0" />
+            <Grid Grid.Row="2" Margin="0,10,0,0" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ProgressRing x:Name="LoadingCriteriasProgressRing" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,5,0" />
+                <TextBlock x:Name="LoadingCriteriasTextBlock" Grid.Column="1" Text="Loading criterias..." FontSize="20" HorizontalAlignment="Stretch" TextAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed" />
+            </Grid>
+            <ListView x:Name="CriteriasListView" Grid.Row="2" Margin="0,5,0,0" IsMultiSelectCheckBoxEnabled="False">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="classes:Criteria">
+                        <Grid x:Name="CriteriaGrid" DoubleTapped="CriteriaGrid_DoubleTapped">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind Path=Name}" FontWeight="Bold" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" />
+                            <TextBlock Text="{x:Bind Path=Description}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" Grid.Row="1" Grid.ColumnSpan="2" />
+                            <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="4" Grid.ColumnSpan="2" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button x:Name="ShowCriteriaDetailsButton" Content="Show details" ToolTipService.ToolTip="Show criteria details" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="ShowUserDetailsButton_Click" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="0,10,0,0" />
+        </Grid>
+
+        <controls:GridSplitter ResizeBehavior="BasedOnAlignment" ResizeDirection="Columns" Grid.Column="1">
+            <controls:GridSplitter.Element>
+                <TextBlock HorizontalAlignment="Center" FontFamily="Segoe MDL2 Assets" Text="&#xE784;" IsHitTestVisible="False" VerticalAlignment="Center" />
+            </controls:GridSplitter.Element>
+        </controls:GridSplitter>
+        <controls:GridSplitter ResizeBehavior="BasedOnAlignment" ResizeDirection="Columns" Grid.Column="3">
+            <controls:GridSplitter.Element>
+                <TextBlock HorizontalAlignment="Center" FontFamily="Segoe MDL2 Assets" Text="&#xE784;" IsHitTestVisible="False" VerticalAlignment="Center" />
+            </controls:GridSplitter.Element>
+        </controls:GridSplitter>
+    </Grid>
+</Page>

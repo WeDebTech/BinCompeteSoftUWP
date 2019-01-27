@@ -246,7 +246,14 @@ namespace BinCompeteSoftUWP.Pages
 
                         App.ShowContentDialog(contentMsg, null);
 
-                        this.Frame.Navigate(typeof(JudgeDashboardPage));
+                        if (Data.Instance.LoggedInUser.Administrator)
+                        {
+                            this.Frame.Navigate(typeof(AdministratorDashboardPage));
+                        }
+                        else
+                        {
+                            this.Frame.Navigate(typeof(JudgeDashboardPage));
+                        }
                     }
                     else
                     {
@@ -355,29 +362,32 @@ namespace BinCompeteSoftUWP.Pages
         /// </summary>
         private async Task LoadContestDetailsAsync()
         {
-            // Check if the contest has already ended it's voting time.
-            if (ContestToLoad.VotingDate < DateTime.Now.Date)
+            if (!Data.Instance.LoggedInUser.Administrator)
             {
-                ContestStarted = true;
-                ContestEnded = true;
-                ContestEndedVoting = true;
+                // Check if the contest has already ended it's voting time.
+                if (ContestToLoad.VotingDate < DateTime.Now.Date)
+                {
+                    ContestStarted = true;
+                    ContestEnded = true;
+                    ContestEndedVoting = true;
 
-                DisableContestFields();
-            }
-            // Check if contest has already ended.
-            else if(ContestToLoad.LimitDate < DateTime.Now.Date)
-            {
-                ContestStarted = true;
-                ContestEnded = true;
+                    DisableContestFields();
+                }
+                // Check if contest has already ended.
+                else if (ContestToLoad.LimitDate < DateTime.Now.Date)
+                {
+                    ContestStarted = true;
+                    ContestEnded = true;
 
-                DisableContestFields();
-            }
-            // Check if contest has alreadt started.
-            else if(ContestToLoad.StartDate < DateTime.Now.Date)
-            {
-                ContestStarted = true;
+                    DisableContestFields();
+                }
+                // Check if contest has alreadt started.
+                else if (ContestToLoad.StartDate < DateTime.Now.Date)
+                {
+                    ContestStarted = true;
 
-                DisableContestFields();
+                    DisableContestFields();
+                }
             }
 
             await LoadContestAsync();
