@@ -172,7 +172,7 @@ namespace BinCompeteSoftUWP
         public async Task<bool> RefreshJudgesAsync()
         {
             // Load the judges from the Database
-            string query = "SELECT id_user, fullname FROM user_table WHERE valid = 1";
+            string query = "SELECT id_user, fullname FROM user_table WHERE valid = 1 AND administrator = 0";
 
             SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
             cmd.CommandText = query;

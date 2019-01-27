@@ -25,10 +25,6 @@ namespace BinCompeteSoftUWP.Pages
     /// </summary>
     public sealed partial class AdministratorDashboardPage : Page
     {
-        #region Class variables
-
-        #endregion
-
         #region Class constructor
         public AdministratorDashboardPage()
         {
@@ -45,6 +41,8 @@ namespace BinCompeteSoftUWP.Pages
             await RefreshContests();
 
             await RefreshCriterias();
+
+            await RefreshCategories();
 
             await Data.Instance.RefreshJudgesAsync();
 
@@ -101,6 +99,17 @@ namespace BinCompeteSoftUWP.Pages
 
 
                 this.Frame.Navigate(typeof(ContestPage), contestDetails);
+            }
+            else
+            {
+                ContentDialog errorMsg = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "You must select a contest to view it's details!",
+                    CloseButtonText = "OK"
+                };
+
+                App.ShowContentDialog(errorMsg, null);
             }
         }
 
@@ -171,6 +180,17 @@ namespace BinCompeteSoftUWP.Pages
 
                 App.ShowContentDialog(editUserContentDialog, callback);
             }
+            else
+            {
+                ContentDialog errorMsg = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "You must select a user to view it's details!",
+                    CloseButtonText = "OK"
+                };
+
+                App.ShowContentDialog(errorMsg, null);
+            }
         }
 
         private void ShowCriteriaDetailsButton_Click(object sender, RoutedEventArgs e)
@@ -190,6 +210,86 @@ namespace BinCompeteSoftUWP.Pages
                 };
 
                 App.ShowContentDialog(editCriteriaContentDialog, callback);
+            }
+            else
+            {
+                ContentDialog errorMsg = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "You must select a criteria to view it's details!",
+                    CloseButtonText = "OK"
+                };
+
+                App.ShowContentDialog(errorMsg, null);
+            }
+        }
+
+        private void AddCategoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            EditCategoryContentDialog editCategoryContentDialog = new EditCategoryContentDialog(null);
+
+            // Create callback to be called when ContentDialog closes.
+            Action<ContentDialogResult> callback = async (result) =>
+            {
+                await RefreshCategories();
+            };
+
+            App.ShowContentDialog(editCategoryContentDialog, callback);
+        }
+
+        private async void RefreshCategoriesButton_Click(object sender, RoutedEventArgs e)
+        {
+            await RefreshCategories();
+        }
+
+        private void CategoryGrid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            // Get which contest is associated with this grid.
+            if (CategoriesListView.SelectedItems.Count == 1)
+            {
+                Category category = (Category)CategoriesListView.SelectedItems[0];
+
+
+                EditCategoryContentDialog editCategoryContentDialog = new EditCategoryContentDialog(category);
+
+                // Create callback to be called when ContentDialog closes.
+                Action<ContentDialogResult> callback = async (result) =>
+                {
+                    await RefreshCategories();
+                };
+
+                App.ShowContentDialog(editCategoryContentDialog, callback);
+            }
+        }
+
+        private void ShowCategoryDetailsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Get which contest is associated with this grid.
+            if (CategoriesListView.SelectedItems.Count == 1)
+            {
+                Category category = (Category)CategoriesListView.SelectedItems[0];
+
+
+                EditCategoryContentDialog editCategoryContentDialog = new EditCategoryContentDialog(category);
+
+                // Create callback to be called when ContentDialog closes.
+                Action<ContentDialogResult> callback = async (result) =>
+                {
+                    await RefreshCategories();
+                };
+
+                App.ShowContentDialog(editCategoryContentDialog, callback);
+            }
+            else
+            {
+                ContentDialog errorMsg = new ContentDialog
+                {
+                    Title = "Error",
+                    Content = "You must select a category to view it's details!",
+                    CloseButtonText = "OK"
+                };
+
+                App.ShowContentDialog(errorMsg, null);
             }
         }
         #endregion
@@ -247,6 +347,24 @@ namespace BinCompeteSoftUWP.Pages
             LoadingCriteriasTextBlock.Visibility = Visibility.Collapsed;
 
             CriteriasListView.ItemsSource = Data.Instance.Criterias;
+        }
+
+        /// <summary>
+        /// Loads all the categories.
+        /// </summary>
+        private async Task RefreshCategories()
+        {
+            CategoriesListView.ItemsSource = null;
+
+            LoadingCategoriesProgressRing.IsActive = true;
+            LoadingCategoriesTextBlock.Visibility = Visibility.Visible;
+
+            await Data.Instance.RefreshCategoriesAsync();
+
+            LoadingCategoriesProgressRing.IsActive = false;
+            LoadingCategoriesTextBlock.Visibility = Visibility.Collapsed;
+
+            CategoriesListView.ItemsSource = Data.Instance.Categories;
         }
         #endregion
     }

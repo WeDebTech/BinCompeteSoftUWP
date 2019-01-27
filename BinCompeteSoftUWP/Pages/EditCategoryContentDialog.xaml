@@ -1,0 +1,30 @@
+﻿<ContentDialog
+    x:Class="BinCompeteSoftUWP.Pages.EditCategoryContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BinCompeteSoftUWP.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Category"
+    PrimaryButtonText="Confirm"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Category name: " FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" />
+        <TextBox x:Name="CategoryNameTextBox" Grid.Column="1" Margin="10,0,0,5" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" MaxWidth="300" Width="200" />
+        <TextBlock x:Name="ErrorTextBlock" Text="You must fill all fields to update this category!" FontSize="{Binding FontSizeSmaller, Source={StaticResource Settings}}" Grid.Row="1" Grid.ColumnSpan="2" Visibility="Collapsed" />
+        <TextBlock x:Name="ErrorInsertTextBlock" Text="Error updating category" FontSize="{Binding FontSizeSmaller, Source={StaticResource Settings}}" Grid.Row="2" Grid.ColumnSpan="2" Visibility="Collapsed" />
+    </Grid>
+</ContentDialog>
