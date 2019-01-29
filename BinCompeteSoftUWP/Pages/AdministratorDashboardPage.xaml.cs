@@ -168,7 +168,7 @@ namespace BinCompeteSoftUWP.Pages
             // Get which contest is associated with this grid.
             if (UsersListView.SelectedItems.Count == 1)
             {
-                User user = (User)ContestsListView.SelectedItems[0];
+                User user = (User)UsersListView.SelectedItems[0];
 
                 EditUserContentDialog editUserContentDialog = new EditUserContentDialog(user);
 

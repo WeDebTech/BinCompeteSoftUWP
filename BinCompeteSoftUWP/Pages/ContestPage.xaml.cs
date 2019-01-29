@@ -10,6 +10,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -58,6 +60,8 @@ namespace BinCompeteSoftUWP.Pages
                 LimitDateCalendarDatePicker.MinDate = DateTime.Now.Date;
                 VotingLimitDateCalendarDatePicker.MinDate = DateTime.Now.Date;
             }
+
+            Window.Current.CoreWindow.Dispatcher.AcceleratorKeyActivated += Dispatch_AcceleratorKeyActivated;
         }
         #endregion
 
@@ -354,9 +358,55 @@ namespace BinCompeteSoftUWP.Pages
 
             App.ShowContentDialog(editProjectContentDialog, null);
         }
+
+        private void Dispatch_AcceleratorKeyActivated(CoreDispatcher sender, AcceleratorKeyEventArgs args)
+        {
+            if (args.EventType.ToString().Contains("Down"))
+            {
+                var ctrl = Window.Current.CoreWindow.GetKeyState(VirtualKey.Control);
+                if (ctrl.HasFlag(CoreVirtualKeyStates.Down))
+                {
+                    switch (args.VirtualKey)
+                    {
+                        case VirtualKey.G:
+                            FillContestDetailsShowcase();
+                            break;
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Class methods
+        /// <summary>
+        /// Fills a sample contest for showcase use.
+        /// </summary>
+        private void FillContestDetailsShowcase()
+        {
+            ContestNameTextBox.Text = "Cooking and Technology";
+
+            EditDescription("This contest's main goal is to gather an idea for a project for the integration of new technologies in the food industry.");
+
+            StartDateCalendarDatePicker.Date = new DateTime(2019, 2, 6);
+            LimitDateCalendarDatePicker.Date = new DateTime(2019, 2, 12);
+            VotingLimitDateCalendarDatePicker.Date = new DateTime(2019, 2, 20);
+
+            AddJudge(new JudgeMember(4, "Tiago Fonseca"));
+            AddJudge(new JudgeMember(3, "Nuno Miranda"));
+
+            ObservableCollection<Promoter> promoters = new ObservableCollection<Promoter>() { new Promoter(-1, "João Rosário", new DateTime(1990, 1, 12)), new Promoter(-1, "André Neves", new DateTime(1989, 9, 15)) };
+            ObservableCollection<Promoter> promoters2 = new ObservableCollection<Promoter>() { new Promoter(-1, "Maria Cunha", new DateTime(1975, 2, 20)), new Promoter(-1, "José Pinto", new DateTime(1976, 5, 21)) };
+            ObservableCollection<Promoter> promoters3 = new ObservableCollection<Promoter>() { new Promoter(-1, "Sara Dias", new DateTime(1994, 3, 2)), new Promoter(-1, "Mafalda Oliveira", new DateTime(1994, 5, 2)) };
+
+            AddProject(new Project(-1, "Fun cooking", "Cooking suited to the little ones.", new Category(1, "Social"), 2019) { Promoters = promoters });
+            AddProject(new Project(-1, "SmartPot", "Helping people cook with fewer ingredients.", new Category(2, "Technology"), 2019) { Promoters = promoters2 });
+            AddProject(new Project(-1, "Knifork", "Restaurant locator for mobile devices.", new Category(3, "Turism"), 2019) { Promoters = promoters3 });
+
+            AddCriteria(new Criteria(2, "Cost", "How much the project development will cost."));
+            AddCriteria(new Criteria(1, "Environmental Impact", "How much the project development affects the environment."));
+            AddCriteria(new Criteria(3, "Innovation", "The change in the current paradigm that the project will bring."));
+        }
+
         /// <summary>
         /// Set the correct bool variables indicating the contest status and loads the contest details.
         /// </summary>

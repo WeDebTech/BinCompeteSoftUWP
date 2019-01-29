@@ -58,7 +58,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Text="Promoter name" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,0,0" />
             <TextBox x:Name="PromoterNameTextBox" Grid.Column="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,5,5" Width="200" />
-            <TextBlock Text="Promoter age" Grid.Row="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,0,0" />
+            <TextBlock Text="Promoter date of birth" Grid.Row="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Margin="5,0,0,0" TextWrapping="Wrap" MaxWidth="150" />
             <CalendarDatePicker x:Name="PromoterDateOfBirthCalendarDatePicker" Grid.Row="1" Grid.Column="1" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,0,5,5" />
             <Button x:Name="AddPromoterButton" Content="Add promoter" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Margin="5,0,5,0" Click="AddPromoterButton_Click" />
         </Grid>

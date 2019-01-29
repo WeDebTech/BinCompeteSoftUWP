@@ -196,7 +196,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="Criterias" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Grid.Column="1" />
+                <TextBlock Text="Categories" FontSize="{Binding FontSizeTitle, Source={StaticResource Settings}}" Grid.Column="1" />
                 <Button x:Name="AddCategoryButton" Content="&#xE710;" Click="AddCategoryButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" ToolTipService.ToolTip="Create a new criteria" Grid.Column="1" Margin="0,0,5,0" />
                 <Button x:Name="RefreshCategoriesButton" Content="&#xE72C;" Click="RefreshCategoriesButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" ToolTipService.ToolTip="Refresh criterias list" Grid.Column="2" />
             </Grid>
