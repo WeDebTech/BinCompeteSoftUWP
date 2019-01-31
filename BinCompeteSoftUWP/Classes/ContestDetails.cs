@@ -21,6 +21,8 @@ namespace BinCompeteSoftUWP.Classes
         public bool HasVoted { get; set; }
         public bool HasResultsCalculated { get; set; }
         public bool HasBeenCreatedByCurrentUser { get; set; }
+        public bool EveryoneVoted { get; set; }
+        public int Status { get; set; }
         #endregion
 
         #region Class constructors
@@ -47,6 +49,8 @@ namespace BinCompeteSoftUWP.Classes
             HasVoted = hasVoted;
             HasResultsCalculated = hasResultsCalculated;
             HasBeenCreatedByCurrentUser = hasBeenCreatedByCurrentUser;
+            EveryoneVoted = false;
+            Status = 0;
         }
 
         /// <summary>

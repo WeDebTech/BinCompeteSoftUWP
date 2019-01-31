@@ -11,6 +11,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Loaded="Page_Loaded">
     <Page.Resources>
         <conv:StringFormatConverter x:Name="StringFormatConverter" />
+        <conv:IntToStatusStringConverter x:Name="IntToStatusStringConverter" />
     </Page.Resources>
 
     <Grid Padding="10,10,10,10">
@@ -25,6 +26,7 @@
                 <controls:DataGridTextColumn Header="Start date" Binding="{Binding StartDate, Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0: dd-MM-yyyy}'}" />
                 <controls:DataGridTextColumn Header="Limit date" Binding="{Binding LimitDate, Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0: dd-MM-yyyy}'}" />
                 <controls:DataGridTextColumn Header="Voting limit date" Binding="{Binding VotingDate, Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0: dd-MM-yyyy}'}" />
+                <controls:DataGridTextColumn Header="Status" Binding="{Binding Status, Converter={StaticResource IntToStatusStringConverter}}" />
             </controls:DataGrid.Columns>
         </controls:DataGrid>
         <Grid Grid.Row="1">

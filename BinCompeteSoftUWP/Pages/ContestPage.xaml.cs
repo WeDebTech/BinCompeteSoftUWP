@@ -461,7 +461,7 @@ namespace BinCompeteSoftUWP.Pages
                 AddCriteriaButton.IsEnabled = false;
                 CreateContestButton.IsEnabled = false;
             }
-            if (ContestEndedVoting)
+            if (ContestEndedVoting || ContestToLoad.EveryoneVoted)
             {
                 VotingLimitDateCalendarDatePicker.IsEnabled = false;
                 ShowResultsButton.IsEnabled = true;

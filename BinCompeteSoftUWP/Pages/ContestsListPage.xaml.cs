@@ -116,6 +116,22 @@ namespace BinCompeteSoftUWP.Pages
 
             ContestsDataGrid.ItemsSource = Data.Instance.ContestDetails.OrderByDescending(contest => contest.LimitDate).ToList();
 
+            // Cycle through all contests.
+            foreach(ContestDetails contestDetails in Data.Instance.ContestDetails)
+            {
+                contestDetails.EveryoneVoted = Data.Instance.GetContestAllJudgesVoteStatus(contestDetails.Id);
+
+                if (contestDetails.EveryoneVoted)
+                {
+                    contestDetails.Status = 2;
+                }
+                // Check if contest is in voting date.
+                else if(contestDetails.LimitDate < DateTime.Now.Date && contestDetails.VotingDate > DateTime.Now.Date)
+                {
+                    contestDetails.Status = 1;
+                }
+            }
+
             LoadingContestsProgressRing.IsActive = false;
             LoadingContestsTextBlock.Visibility = Visibility.Collapsed;
         }

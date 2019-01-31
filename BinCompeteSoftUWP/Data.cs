@@ -427,6 +427,46 @@ namespace BinCompeteSoftUWP
         }
 
         /// <summary>
+        /// This method retrieves if the given contest has been voted by every judge in it.
+        /// </summary>
+        /// <param name="contestId">The contest id to check.</param>
+        /// <returns>True if everyone voted, false otherwise.</returns>
+        public bool GetContestAllJudgesVoteStatus(int contestId)
+        {
+            List<bool> VotedStatus = new List<bool>();
+
+            string query = "SELECT has_voted FROM contest_juri_table WHERE id_contest = @id_contest AND id_user != @id_user";
+
+            SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
+            cmd.CommandText = query;
+
+            SqlParameter sqlContestId = new SqlParameter("@id_contest", SqlDbType.Int);
+            sqlContestId.Value = contestId;
+            cmd.Parameters.Add(sqlContestId);
+
+            SqlParameter sqlUserId = new SqlParameter("@id_user", SqlDbType.Int);
+            sqlUserId.Value = LoggedInUser.Id;
+            cmd.Parameters.Add(sqlUserId);
+
+            // Execute query.
+            using (DbDataReader reader = cmd.ExecuteReader())
+            {
+                // Check if user exists in contest.
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        VotedStatus.Add(reader.GetBoolean(0));
+                    }
+
+                    return !VotedStatus.Any(vote => vote == false);
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// This method retrieves if the given contest has been created by the current user.
         /// </summary>
         /// <param name="contestId">The contest id to check.</param>

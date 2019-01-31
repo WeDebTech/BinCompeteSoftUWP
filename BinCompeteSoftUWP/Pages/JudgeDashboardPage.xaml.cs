@@ -242,6 +242,8 @@ namespace BinCompeteSoftUWP.Pages
             ContestDetailsList.Clear();
             NotificationsList.Clear();
 
+            List<bool> VoteStatus = new List<bool>();
+
             // Cycle through all contests, and if they're after today's date, show them.
             // Also show contests that have finished, but haven't had their results calculated of which
             // the current user has created.
@@ -251,6 +253,8 @@ namespace BinCompeteSoftUWP.Pages
                 if (Data.Instance.GetIfContestIsCreatedByCurrentUser(contestDetails.Id))
                 {
                     contestDetails.HasBeenCreatedByCurrentUser = true;
+
+                    contestDetails.EveryoneVoted = Data.Instance.GetContestAllJudgesVoteStatus(contestDetails.Id);
 
                     // Check if the contest has already had it's results calculated.
                     contestDetails.HasResultsCalculated = Data.Instance.GetContestResultsCalculatedStatus(contestDetails.Id);
@@ -295,15 +299,32 @@ namespace BinCompeteSoftUWP.Pages
                         Content = "Contest '" + contestDetails.Name + NotificationEnd
                     });
                 }
-                else if (contestDetails.HasBeenCreatedByCurrentUser && contestDetails.VotingDate < DateTime.Now && !contestDetails.HasResultsCalculated)
+                else if (contestDetails.HasBeenCreatedByCurrentUser)
                 {
-                    // Add a notification to the notification list.
-                    NotificationsList.Add(new NotificationListItem
+                    if (contestDetails.VotingDate < DateTime.Now.Date && !contestDetails.HasResultsCalculated)
                     {
-                        Id = contestDetails.Id,
-                        Title = "Attention!",
-                        Content = "Contest '" + contestDetails.Name + "' has ended it's voting period, but hasn't had it's results calculated yet."
-                    });
+                        // Check if all judges have voted already.
+                        if (contestDetails.EveryoneVoted)
+                        {
+                            // Add a notification to the notification list.
+                            NotificationsList.Add(new NotificationListItem
+                            {
+                                Id = contestDetails.Id,
+                                Title = "Attention!",
+                                Content = "All judges already voted for '" + contestDetails.Name + "' , but it hasn't had it's results calculated yet."
+                            });
+                        }
+                        else
+                        {
+                            // Add a notification to the notification list.
+                            NotificationsList.Add(new NotificationListItem
+                            {
+                                Id = contestDetails.Id,
+                                Title = "Attention!",
+                                Content = "Contest '" + contestDetails.Name + "' has ended it's voting period, but hasn't had it's results calculated yet."
+                            });
+                        }
+                    }
                 }
             }
 
@@ -389,21 +410,23 @@ namespace BinCompeteSoftUWP.Pages
                 "WHERE proj.project_year = @selected_year " +
                 "ORDER BY eval.final_evaluation DESC";
 
-            SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
-            cmd.CommandText = query;
-
-            SqlParameter sqlProjectYear = new SqlParameter("@selected_year", SqlDbType.Int);
-            sqlProjectYear.Value = year;
-            cmd.Parameters.Add(sqlProjectYear);
-
-            using (DbDataReader reader = await cmd.ExecuteReaderAsync())
+            using (SqlCommand cmd = DBSqlHelper.Connection.CreateCommand())
             {
-                // Check if statistics exist.
-                if (reader.HasRows)
+                cmd.CommandText = query;
+
+                SqlParameter sqlProjectYear = new SqlParameter("@selected_year", SqlDbType.Int);
+                sqlProjectYear.Value = year;
+                cmd.Parameters.Add(sqlProjectYear);
+
+                using (DbDataReader reader = await cmd.ExecuteReaderAsync())
                 {
-                    while (await reader.ReadAsync())
+                    // Check if statistics exist.
+                    if (reader.HasRows)
                     {
-                        Data.Instance.Statistics[SelectedYear].BestProjects.Add(new BestProjects(reader[0].ToString(), decimal.ToDouble((decimal)reader[1])));
+                        while (await reader.ReadAsync())
+                        {
+                            Data.Instance.Statistics[SelectedYear].BestProjects.Add(new BestProjects(reader[0].ToString(), decimal.ToDouble((decimal)reader[1])));
+                        }
                     }
                 }
             }
