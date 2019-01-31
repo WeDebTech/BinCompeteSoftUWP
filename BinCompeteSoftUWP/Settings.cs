@@ -13,7 +13,6 @@ namespace BinCompeteSoftUWP
         #region Class variables
         public string Ip { get; set; }
         public string DBName { get; set; }
-        public string Security { get; set; }
         public string UserId { get; set; }
         public string Password { get; set; }
 

@@ -200,6 +200,9 @@
     <Compile Include="Pages\ResetPasswordContentDialog.xaml.cs">
       <DependentUpon>ResetPasswordContentDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SettingsContentDialog.xaml.cs">
+      <DependentUpon>SettingsContentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
@@ -243,9 +246,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
-    <Content Include="config.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -338,6 +338,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\ResetPasswordContentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SettingsContentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

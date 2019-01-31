@@ -24,6 +24,7 @@ namespace BinCompeteSoftUWP.Pages
         #region Class variables
         private bool ConnectedSuccessfully = false;
         private bool ErroredConnecting = false;
+        ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
         #endregion
 
         #region Class constructor
@@ -35,32 +36,30 @@ namespace BinCompeteSoftUWP.Pages
 
         #region Class methods
         /// <summary>
-        /// This class will load config.xml and place it's contents in the Settings.
+        /// This class will load the connection settings from local app settings.
         /// </summary>
-        private void ReadConfigFile()
+        public void ReadConnectionSettings()
         {
-            try
+            // Load the settings from local app settings.
+            object ip = localSettings.Values["ServerName"];
+            object dbName = localSettings.Values["DatabaseName"];
+            object userId = localSettings.Values["UserName"];
+            object password = localSettings.Values["UserPassword"];
+
+            // Check if there's any settings loaded.
+            if (ip != null && dbName != null && userId != null && password != null)
             {
+                var data = new Settings
+                {
+                    Ip = localSettings.Values["ServerName"].ToString(),
+                    DBName = localSettings.Values["DatabaseName"].ToString(),
+                    UserId = localSettings.Values["UserName"].ToString(),
+                    Password = localSettings.Values["UserPassword"].ToString()
+                };
+
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
 
-                // Set the config.xml file path.
-                string XMLFilePath = Path.Combine(Package.Current.InstalledLocation.Path, "config.xml");
-
-                // Read the config.xml file contents.
-                XDocument settingsData = XDocument.Load(XMLFilePath);
-
-                // Create a new Settings objects with the data read from the file.
-                var data = from query in settingsData.Descendants("settings")
-                           select new Settings
-                           {
-                               Ip = (string)query.Element("ip"),
-                               DBName = (string)query.Element("dbname"),
-                               Security = (string)query.Element("security"),
-                               UserId = (string)query.Element("user_id"),
-                               Password = (string)query.Element("password")
-                           };
-
-                DBSqlHelper.Settings = data.First();
+                DBSqlHelper.Settings = data;
 
                 // Check what data has been loaded.
                 if (!string.IsNullOrWhiteSpace(DBSqlHelper.Settings.Ip))
@@ -71,10 +70,7 @@ namespace BinCompeteSoftUWP.Pages
                 {
                     builder["Initial Catalog"] = DBSqlHelper.Settings.DBName;
                 }
-                if (!string.IsNullOrWhiteSpace(DBSqlHelper.Settings.Security))
-                {
-                    builder["Persist Security Info"] = DBSqlHelper.Settings.Security;
-                }
+                builder["Persist Security Info"] = false;
                 if (!string.IsNullOrWhiteSpace(DBSqlHelper.Settings.UserId))
                 {
                     builder["User ID"] = DBSqlHelper.Settings.UserId;
@@ -86,29 +82,16 @@ namespace BinCompeteSoftUWP.Pages
 
                 DBSqlHelper.ConnectionString = builder.ConnectionString;
             }
-            catch(FileNotFoundException ex)
+            else
             {
-                ContentDialog errorDialog = new ContentDialog()
+                ContentDialog contentDialog = new ContentDialog
                 {
-                    Title = "Error finding file",
-                    Content = "Can't find config.xml, is it in the program root folder?",
-                    CloseButtonText = "Ok"
+                    Title = "Error",
+                    Content = "No connection data found, please input the connection data in the settings.",
+                    CloseButtonText = "OK"
                 };
 
-                // Show ContentDialog with error message.
-                App.ShowContentDialog(errorDialog, null);
-            }
-            catch(Exception ex)
-            {
-                ContentDialog errorDialog = new ContentDialog()
-                {
-                    Title = "Error reading file",
-                    Content = "Can't read file data, is everything properly named?",
-                    CloseButtonText = "Ok"
-                };
-
-                // Show ContentDialog with error message.
-                App.ShowContentDialog(errorDialog, null);
+                App.ShowContentDialog(contentDialog, null);
             }
         }
 
@@ -130,10 +113,12 @@ namespace BinCompeteSoftUWP.Pages
             if (conected)
             {
                 ConnectedSuccessfully = true;
+                ConnectedStatusTextBlock.Text = "Connected";
             }
             else
             {
                 ErroredConnecting = true;
+                ConnectedStatusTextBlock.Text = "Error connecting";
             }
         }
 
@@ -328,7 +313,7 @@ namespace BinCompeteSoftUWP.Pages
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
             // Read config file so we can connect to the database.
-            ReadConfigFile();
+            ReadConnectionSettings();
 
             // Try to connect to the database.
             await ConnectToDBAsync();
@@ -355,6 +340,13 @@ namespace BinCompeteSoftUWP.Pages
             {
                 VerifyIfIsConnectedToDB();
             }
+        }
+        
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Show settings content dialog.
+            SettingsContentDialog settingsContentDialog = new SettingsContentDialog(this);
+            App.ShowContentDialog(settingsContentDialog, null);
         }
         #endregion
     }

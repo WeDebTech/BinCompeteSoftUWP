@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<settings>
-	<ip>DESKTOP-D560SSF\SQLEXPRESS</ip>
-	<dbname>BinCompeteSoft</dbname>
-	<security>True</security>
-	<user_id>sa</user_id>
-	<password>password123</password>
-</settings>

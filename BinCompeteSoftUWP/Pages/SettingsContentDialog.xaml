@@ -1,0 +1,39 @@
+﻿<ContentDialog
+    x:Class="BinCompeteSoftUWP.Pages.SettingsContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BinCompeteSoftUWP.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Settings"
+    PrimaryButtonText="Confirm"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="Settings for connecting to the database" Grid.ColumnSpan="2" Margin="0,0,0,5" />
+        <TextBlock Text="Server name" Margin="0,0,0,5" Grid.Row="1" />
+        <TextBlock Text="Database name" Margin="0,0,0,5" Grid.Row="2" />
+        <TextBlock Text="User name" Margin="0,0,0,5" Grid.Row="3" />
+        <TextBlock Text="User password" Grid.Row="4" />
+        <TextBox x:Name="ServerNameTextBox" Grid.Column="1" Grid.Row="1" Margin="5,0,0,5" PlaceholderText="Server name" Width="300" />
+        <TextBox x:Name="DatabaseNameTextBox" Grid.Column="1" Grid.Row="2" Margin="5,0,0,5" PlaceholderText="Database name" />
+        <TextBox x:Name="UserNameTextBox" Grid.Column="1" Grid.Row="3" Margin="5,0,0,5" PlaceholderText="User name" />
+        <PasswordBox x:Name="UserPasswordTextBox" Grid.Column="1" Grid.Row="4" Margin="5,0,0,5" PlaceholderText="User password" />
+        <TextBlock x:Name="ErrorTextBlock" Text="You must fill all fields to save the connection details!" Grid.Row="5" Grid.ColumnSpan="2" Visibility="Collapsed" />
+    </Grid>
+</ContentDialog>

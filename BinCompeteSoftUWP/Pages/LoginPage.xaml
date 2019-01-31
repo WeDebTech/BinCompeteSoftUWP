@@ -11,7 +11,7 @@
                       BackgroundSource="HostBackdrop"
                       TintOpacity="0.8" FallbackColor="{ThemeResource SystemChromeAltMediumHighColor}" TintColor="{ThemeResource SystemChromeMediumColor}" />
     </Page.Resources>
-    
+
     <Grid Background="{StaticResource HostBackDropBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -20,11 +20,14 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="600"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" BorderThickness="0,0,0,0">
+        <TextBlock x:Name="ConnectedStatusTextBlock" Text="Not connected" Grid.Row="3" VerticalAlignment="Bottom" Margin="10,0,0,10" FontSize="20" />
+        <Grid Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" BorderThickness="0,0,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="2*" />
@@ -69,6 +72,8 @@
                 </Grid>
             </Grid>
         </Grid>
-        <TextBlock Text="Wedeb © 2018-2019" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <TextBlock Text="Wedeb © 2018-2019" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,5" />
+        <Button x:Name="SettingsButton" Content="Settings" Grid.Column="4" HorizontalAlignment="Left" 
+Grid.Row="3" VerticalAlignment="Top" Grid.RowSpan="2" Margin="0,0,10,10" Click="SettingsButton_Click"/>
     </Grid>
 </Page>
