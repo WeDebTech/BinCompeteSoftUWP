@@ -54,7 +54,7 @@ namespace BinCompeteSoftUWP.Pages
             this.InitializeComponent();
 
             // Set minimum dates for all CalendarDateTimePicker controls if it's a new contest.
-            if (EditingContest)
+            if (!EditingContest)
             {
                 StartDateCalendarDatePicker.MinDate = DateTime.Now.Date;
                 LimitDateCalendarDatePicker.MinDate = DateTime.Now.Date;

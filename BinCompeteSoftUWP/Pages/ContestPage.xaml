@@ -191,7 +191,7 @@
                 </controls:GridSplitter.Element>
             </controls:GridSplitter>
             <Border Grid.Row="3" Grid.ColumnSpan="5" BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,2" Margin="0,5,0,0" />
-            <TextBlock Text="Fields marked with * are obligatory" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.ColumnSpan="5" Grid.Row="4" HorizontalAlignment="Right" Margin="0,0,10,0" />
+            <TextBlock Text="Fields marked with * are required" FontSize="{Binding FontSizeSmall, Source={StaticResource Settings}}" Grid.ColumnSpan="5" Grid.Row="4" HorizontalAlignment="Right" Margin="0,0,10,0" />
             <Grid Grid.Row="5" Grid.ColumnSpan="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
