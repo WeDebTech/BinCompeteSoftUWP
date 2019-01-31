@@ -138,6 +138,7 @@
     <Compile Include="Classes\Criteria.cs" />
     <Compile Include="Classes\Evaluation.cs" />
     <Compile Include="Classes\JudgeMember.cs" />
+    <Compile Include="Classes\JudgeMemberResult.cs" />
     <Compile Include="Classes\NotificationListItem.cs" />
     <Compile Include="Classes\Project.cs" />
     <Compile Include="Classes\ProjectContestEvaluation.cs" />
@@ -146,6 +147,8 @@
     <Compile Include="Classes\User.cs" />
     <Compile Include="Converters\BooleanToTooltipConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\BooleanToVotedColorConverter.cs" />
+    <Compile Include="Converters\BooleanToVotedTooltipConverter.cs" />
     <Compile Include="Converters\StringFormatConverter.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="DBSqlHelper.cs" />

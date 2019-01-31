@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:conv="using:BinCompeteSoftUWP.Converters"
+    xmlns:classes="using:BinCompeteSoftUWP.Classes"
     mc:Ignorable="d"
     Title="Contest Results"
     PrimaryButtonText="Export"
@@ -15,14 +16,41 @@
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
     <ContentDialog.Resources>
         <conv:StringFormatConverter x:Name="StringFormatConverter" />
+        <conv:BooleanToVotedColorConverter x:Name="BoolToVotedColorConverter" />
+        <conv:BooleanToVotedTooltipConverter x:Name="BoolToVotedTooltipConverter" />
     </ContentDialog.Resources>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
         <controls:DataGrid x:Name="ResultsDataGrid" Width="400" Height="200" IsReadOnly="True" AreRowDetailsFrozen="True" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserSortColumns="False" GridLinesVisibility="All">
             <controls:DataGrid.Columns>
                 <controls:DataGridTextColumn Header="Project name" Binding="{Binding Project.Name}" />
                 <controls:DataGridTextColumn Header="Project score" Binding="{Binding Result, Converter={StaticResource StringFormatConverter}, ConverterParameter=' {0:N3}'}" />
             </controls:DataGrid.Columns>
         </controls:DataGrid>
+        <TextBlock Text="Judges in contest" Grid.Row="1" Margin="0,5,0,5" />
+        <ListView x:Name="JudgesVotedListView" Grid.Row="2" IsMultiSelectCheckBoxEnabled="False" SelectionMode="None">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="classes:JudgeMemberResult">
+                    <Grid Background="{x:Bind Path=Voted, Converter={StaticResource BoolToVotedColorConverter}}" MaxWidth="400" ToolTipService.ToolTip="{x:Bind Path=Voted, Converter={StaticResource BoolToVotedTooltipConverter}}" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{x:Bind Path=Name}" FontSize="{Binding FontSizeNormal, Source={StaticResource Settings}}" TextWrapping="WrapWholeWords" Margin="5,0,5,0" />
+                        <Border BorderBrush="{ThemeResource AppBarSeparatorForegroundThemeBrush}" BorderThickness="0,0,0,1" Grid.Row="2" Grid.ColumnSpan="2" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </ContentDialog>

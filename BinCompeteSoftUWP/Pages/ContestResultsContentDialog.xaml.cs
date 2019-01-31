@@ -51,16 +51,55 @@ namespace BinCompeteSoftUWP.Pages
                 InsertResultsIntoDB();
             }
 
+            FillJudgeMembersListView();
+
             ResultsDataGrid.ItemsSource = contestResults;
         }
         #endregion
 
         #region Class methods
         /// <summary>
+        /// Fills the judge members voted list view.
+        /// </summary>
+        private void FillJudgeMembersListView()
+        {
+            string query = "SELECT id_user, has_voted FROM contest_juri_table WHERE id_contest = @id_contest AND president = 0";
+
+            SqlCommand cmd = DBSqlHelper.Connection.CreateCommand();
+            cmd.CommandText = query;
+
+            cmd.Parameters.Add(new SqlParameter("@id_contest", contest.Id));
+
+            List<JudgeMemberResult> judgeMemberResults = new List<JudgeMemberResult>();
+
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                // Try to read from the database.
+                while (reader.Read())
+                {
+                    int judgeId = reader.GetInt32(0);
+
+                    foreach (JudgeMember judgeMember in contest.JudgeMembers)
+                    {
+                        if (judgeMember.Id == judgeId)
+                        {
+                            judgeMemberResults.Add(new JudgeMemberResult(judgeId, judgeMember.Name, reader.GetBoolean(1)));
+
+                            break;
+                        }
+                    }
+
+                }
+            }
+
+            // Add the judges to the list view.
+            JudgesVotedListView.ItemsSource = judgeMemberResults;
+        }
+
+        /// <summary>
         /// This method checks in the database if the results have already been calculated,
         /// and if so, retrieves them.
         /// </summary>
-        /// <returns></returns>
         private bool CheckIfResultsAreCalculatedAndGetThem()
         {
             string query = "SELECT final_evaluation, id_project FROM final_result_table WHERE id_contest = @id_contest ORDER BY id_project ASC";
