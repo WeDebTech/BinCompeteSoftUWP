@@ -104,7 +104,7 @@ namespace BinCompeteSoftUWP.Pages
                 UserName = userId.ToString();
             }
 
-            if(password == null)
+            if(password != null)
             {
                 UserPassword = password.ToString();
             }
